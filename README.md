@@ -35,3 +35,4 @@ To be able to build and run this code, the following tools have to be installed:
 
 
     '{INPUT_PATH}': path to the input file. For example, './input/eingabe-sonne.txt'.
+
