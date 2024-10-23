@@ -54,20 +54,74 @@ double delta_t = 0.014;
 std::list<Particle> particles;
 
 int main(int argc, char *argsv[]) {
-
+  bool xyz = false;
+  bool vtu = false;
   std::cout << "Hello from MolSim for PSE!" << std::endl;
-  if (argc != 2) {
-    if (argc == 4) {
-       delta_t = atof(argsv[2]);
-       end_time = atof(argsv[3]);
-    }
-    else {
-      std::cout << "Erroneous programme call! " << std::endl;
-      std::cout << "./molsym filename" << std::endl;
+
+  //if input file is not specified --> error
+  if (argc < 2) {
+    std::cout << "Erroneous programme call! " << std::endl;
+    std::cout << "input filename not specified" << std::endl;
+    return 1;
+  }
+  else {
+    for (int i = 2; i < argc; i++) {
+      std::string arg = argsv[i];
+        // check if delta_t flag is set
+        if (arg == "-d" ) {
+          // check if the current parameter is the last one --> delta_t value isn't specified --> error
+          if (i+1 >= argc) {
+            std::cout << "Erroneous programme call! " << std::endl;
+            std::cout << "delta_t not specified" << std::endl;
+            return 1;}
+          // convert a string to double
+          delta_t = atof(argsv[i+1]);
+          // skip the next parameter since we already processed it
+          i++;
+          // check if conversion wasn't successful or if input range isn't valid
+          if (delta_t <= 0.0) {
+            std::cout << "Erroneous programme call! " << std::endl;
+            std::cout << "invalid delta_t" << std::endl;
+           return 1;}
+
+        }
+        // check if end_time flag is set
+        else if(arg == "-e" ) {
+          // check if the current parameter is the last one --> end_time value isn't specified --> error
+          if (i+1 >= argc) {
+            std::cout << "Erroneous programme call! " << std::endl;
+            std::cout << "end_time not specified" << std::endl;
+           return 1;}
+          // convert a string to double
+          end_time = atof(argsv[i+1]);
+          // skip the next parameter since we already processed it
+          i++;
+          // check if conversion wasn't successful or if input range isn't valid
+          if (end_time <= 0.0) {
+            std::cout << "Erroneous programme call! " << std::endl;
+            std::cout << "invalid end_time" << std::endl;
+           return 1;}
+
+        }
+        // check for a vtu flag
+        else if(arg == "-vtu" ) {
+          vtu = true;
+        }
+        //check for a xyz flag
+        else if(arg == "-xyz" ) {
+          xyz = true;
+        }
+       // argument isn't specified --> error
+       else {
+         std::cout << "Erroneous programme call! " << std::endl;
+         std::cout << "Undefined Parameter! " << std::endl;
+        return 1;
+       }
     }
   }
-  std::string out_name("test");
+  //initialize FileReader instance
   FileReader fileReader;
+  //read input file that provides initial information about our particles
   fileReader.readFile(particles, argsv[1]);
 
   double current_time = start_time;
@@ -84,14 +138,28 @@ int main(int argc, char *argsv[]) {
     calculateV();
 
     iteration++;
+    // produce output files every ten iterations
     if (iteration % 10 == 0) {
-      plotParticles(iteration);
-      outputWriter::VTKWriter writer;
-      writer.initializeOutput(particles.size());
-      for (auto &p : particles) {
-        writer.plotParticle(p);
+      //if xyz flag is set, produce .xyz file
+      if (xyz) {
+        plotParticles(iteration);
       }
-      writer.writeFile(out_name, iteration);
+      // if vtu flag is set, produce .vtu file
+      if(vtu) {
+        // define output file name
+        std::string out_name("Vtu_");
+        // initialize writer instance
+        outputWriter::VTKWriter writer;
+        // initialize output file
+        writer.initializeOutput(particles.size());
+        // iterate over all particles and plot them
+        for (auto &p : particles) {
+          writer.plotParticle(p);
+        }
+        // produce the output file
+        writer.writeFile(out_name, iteration);
+      }
+
     }
     std::cout << "Iteration " << iteration << " finished." << std::endl;
 
@@ -168,8 +236,7 @@ std::array<double, 3>  multiply_constant_vector(const std::array<double, 3> &a, 
 double magnitude(const std::array<double, 3> &a) {
   double out = 0;
   for (int i = 0; i < 3; ++i) {
-       out += pow(a[i], 2);
+    out += pow(a[i], 2);
   }
   return pow(out, 0.5);
-
 }
