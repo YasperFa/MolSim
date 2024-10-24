@@ -87,6 +87,7 @@ int main(int argc, char *argsv[]) {
       )" << std::endl;
       return 1;
     } else {
+      //if -h or --h is not the last parameter --> error
       std::cout << "Erroneous programme call! " << std::endl;
       std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
       return 1;
@@ -101,7 +102,6 @@ int main(int argc, char *argsv[]) {
     return 1;
   }
   else {
-
     for (int i = 2; i < argc; i++) {
       std::string arg = argsv[i];
         // check if delta_t flag is set
@@ -162,6 +162,7 @@ int main(int argc, char *argsv[]) {
     }
   }
 
+  //if no output writer is specified --> error
   if (xyz == false && vtu == false) {
     std::cout << "Erroneous programme call! " << std::endl;
     std::cout << "at least one output writer has to be specified" << std::endl;
