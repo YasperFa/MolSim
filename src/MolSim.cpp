@@ -55,7 +55,7 @@ std::list<Particle> particles;
 
 int main(int argc, char *argsv[]) {
   bool xyz = false;
-  bool vtu = false;
+  bool vtk = false;
   std::cout << "Hello from MolSim for PSE!" << std::endl;
 
   if (std::strcmp(argsv[1], "-h") == 0 || std::strcmp(argsv[1], "--help") == 0 ) {
@@ -82,7 +82,7 @@ int main(int argc, char *argsv[]) {
 
         Example Usage:
           './MolSim -h' or './MolSim --help'
-          './MolSim ../input/eingabe-sonne.txt -vtu'
+          './MolSim ../input/eingabe-sonne.txt -vtk'
           './MolSim ../input/eingabe-sonne.txt -d 0.014 -e 1000 -xyz'
       )" << std::endl;
       return 1;
@@ -145,8 +145,8 @@ int main(int argc, char *argsv[]) {
 
         }
         // check for a vtu flag
-        else if(arg == "-vtu" ) {
-          vtu = true;
+        else if(arg == "-vtk" ) {
+          vtk = true;
         }
         //check for a xyz flag
         else if(arg == "-xyz" ) {
@@ -163,7 +163,7 @@ int main(int argc, char *argsv[]) {
   }
 
   //if no output writer is specified --> error
-  if (xyz == false && vtu == false) {
+  if (xyz == false && vtk == false) {
     std::cout << "Erroneous programme call! " << std::endl;
     std::cout << "at least one output writer has to be specified" << std::endl;
     std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
@@ -196,7 +196,7 @@ int main(int argc, char *argsv[]) {
         plotParticles(iteration);
       }
       // if vtu flag is set, produce .vtu file
-      if(vtu) {
+      if(vtk) {
         // define output file name
         std::string out_name("Vtu_");
         // initialize writer instance
