@@ -1,4 +1,4 @@
-\mainpage
+<!--\mainpage-->
 # Molecular Dynamics WS24 - GroupG
 ===
 
@@ -22,9 +22,11 @@ To be able to build and run this code, the following tools have to be installed:
     'cmake ..'
 
     With Doxygen:    'cmake .. -D DOXY=1' (default)
+   
     Without Doxygen: 'cmake .. -D DOXY=0' 
 
     (The value of DOXY is saved in the cache, so for repeated calls 'cmake ..' is enough.
+   
     Doxygen is automatically disabled if the Doxygen executable can not be found.)
     
 ---
