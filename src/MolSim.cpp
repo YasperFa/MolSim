@@ -272,14 +272,14 @@ void calculateF() {
 
 void calculateX() {
   for (auto &p : particles) {
-    std::array<double, 3> newX = addVector(p.getX(), addVector( delta_t*p.getV() , multiply_constant_vector(multiply_constant_vector(p.getOldF(),pow(delta_t,2)), 0.5/p.getM())));
+    std::array<double, 3> newX = addVector(p.getX(), addVector( multiply_constant_vector(p.getV(),delta_t) , multiply_constant_vector(p.getOldF(),0.5*pow(delta_t,2)/p.getM())));
     p.setX(newX);
  }
 }
 
 void calculateV() {
   for (auto &p : particles) {
-    std::array<double, 3> newV = addVector(p.getV(), multiply_constant_vector(multiply_constant_vector(addVector(p.getOldF(),p.getF()),0.5/p.getM()),delta_t));
+    std::array<double, 3> newV = addVector(p.getV(), multiply_constant_vector(addVector(p.getOldF(),p.getF()),delta_t*0.5/p.getM()));
     p.setV(newV);
   }
 }
