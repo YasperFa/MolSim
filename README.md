@@ -42,7 +42,7 @@ To be able to build and run this code, the following tools have to be installed:
 
     Example calls: 
 
-       './MolSim -h' or './MolSim --help'
+        './MolSim -h' or './MolSim --help'
         './MolSim ../input/eingabe-sonne.txt -vtu'
         './MolSim ../input/eingabe-sonne.txt -d 0.014 -e 1000 -xyz'
     
