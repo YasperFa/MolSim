@@ -39,19 +39,48 @@ std::array<double, 3>  addVector(const std::array<double, 3> &a,const std::array
  */
 std::array<double, 3>  subtractVector(const std::array<double, 3> &a, const std::array<double, 3> &b);
 /**
- * helper function for multiplying a vector with constant;
+ * helper function for multiplying a vector with constant
  */
 std::array<double, 3>  multiply_constant_vector(const std::array<double, 3> &a,  double b);
 /**
  * helper function for calculating magnitude
  */
 double magnitude(const std::array<double, 3> &a);
+/**
+ * time of simulation start
+ */
 constexpr double start_time = 0;
+/**
+ * time of simulation end
+ */
 double end_time = 1000;
+/**
+ * time between iterations of the simulation */
 double delta_t = 0.014;
 
 // TODO: what data structure to pick?
+
+/** data structure for storing particles */
+
 std::list<Particle> particles;
+
+/** \brief Reads programme input and writes output file
+ * 
+ * @param int argc 
+ * @param char* argsv[]
+ * 
+ * Takes an input file path and optional parameters and flags to do particle simulation and write the output to a .vtu or .xyz file.
+ * 
+ * Optional parameters/flags: 
+ * - delta_t value (-d <double value>)
+ * - end_time (-e <double value>)
+ * - vtu output (-vtu)
+ * - xyz output (-xyz)
+ * 
+ * Returns 1 if there is no input file or wrong parameters are used.
+ * 
+ * 
+*/
 
 int main(int argc, char *argsv[]) {
   bool xyz = false;
