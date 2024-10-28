@@ -257,8 +257,8 @@ void calculateF() {
     std::array<double, 3> sigma = {.0,.0,.0};
     for (auto &p2 : particles) {
 
-      if (!p1.operator==(p2)) {
-        std::array<double, 3> sub = subtractVector(p1.getX(), p2.getX());
+      if (!(&p1==&p2)) {
+        std::array<double, 3> sub = subtractVector(p2.getX(), p1.getX());
         std::array<double, 3> fij = multiply_constant_vector(multiply_constant_vector(sub,p1.getM()*p2.getM()),1/pow(magnitude(sub),3));
         sigma = addVector(sigma,fij);
       }
