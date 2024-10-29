@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <list>
+#include <functional>
 
 #include "outputWriter/VTKWriter.h"
 
@@ -60,9 +61,9 @@ double delta_t = 0.014;
 
 // TODO: what data structure to pick?
 
-/** data structure for storing particles */
+/** data structure for storing particles and unique pairs of particles */
+ParticleContainer particles;
 
-std::list<Particle> particles;
 
 /** \brief Reads programme input and writes output file
  * 
@@ -74,7 +75,7 @@ std::list<Particle> particles;
  * Optional parameters/flags: 
  * - delta_t value (-d <double value>)
  * - end_time (-e <double value>)
- * - vtu output (-vtu)
+ * - vtk output (-vtk)
  * - xyz output (-xyz)
  * 
  * Returns 1 if there is no input file or wrong parameters are used.
@@ -118,7 +119,7 @@ int main(int argc, char *argsv[]) {
     } else {
       //if -h or --h is not the last parameter --> error
       std::cout << "Erroneous programme call! " << std::endl;
-      std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+      std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
       return 1;
     }
   }
@@ -126,8 +127,8 @@ int main(int argc, char *argsv[]) {
   //if input file is not specified --> error
   if (argc < 2) {
     std::cout << "Erroneous programme call! " << std::endl;
-    std::cout << "input filename not specified" << std::endl;
-    std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+    std::cout << "Input filename not specified!" << std::endl;
+    std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
     return 1;
   }
   else {
@@ -138,8 +139,8 @@ int main(int argc, char *argsv[]) {
           // check if the current parameter is the last one --> delta_t value isn't specified --> error
           if (i+1 >= argc) {
             std::cout << "Erroneous programme call! " << std::endl;
-            std::cout << "delta_t not specified" << std::endl;
-            std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+            std::cout << "delta_t not specified!" << std::endl;
+            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
             return 1;}
           // convert a string to double
           delta_t = atof(argsv[i+1]);
@@ -148,8 +149,8 @@ int main(int argc, char *argsv[]) {
           // check if conversion wasn't successful or if input range isn't valid
           if (delta_t <= 0.0) {
             std::cout << "Erroneous programme call! " << std::endl;
-            std::cout << "invalid delta_t" << std::endl;
-            std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+            std::cout << "Invalid delta_t" << std::endl;
+            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
            return 1;}
 
         }
@@ -158,8 +159,8 @@ int main(int argc, char *argsv[]) {
           // check if the current parameter is the last one --> end_time value isn't specified --> error
           if (i+1 >= argc) {
             std::cout << "Erroneous programme call! " << std::endl;
-            std::cout << "end_time not specified" << std::endl;
-            std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+            std::cout << "end_time not specified!" << std::endl;
+            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
            return 1;}
           // convert a string to double
           end_time = atof(argsv[i+1]);
@@ -168,8 +169,8 @@ int main(int argc, char *argsv[]) {
           // check if conversion wasn't successful or if input range isn't valid
           if (end_time <= 0.0) {
             std::cout << "Erroneous programme call! " << std::endl;
-            std::cout << "invalid end_time" << std::endl;
-            std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+            std::cout << "Invalid end_time!" << std::endl;
+            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
            return 1;}
 
         }
@@ -185,7 +186,7 @@ int main(int argc, char *argsv[]) {
         else {
          std::cout << "Erroneous programme call! " << std::endl;
          std::cout << "Undefined Parameter! " << std::endl;
-         std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+         std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
         return 1;
        }
     }
@@ -194,15 +195,16 @@ int main(int argc, char *argsv[]) {
   //if no output writer is specified --> error
   if (xyz == false && vtk == false) {
     std::cout << "Erroneous programme call! " << std::endl;
-    std::cout << "at least one output writer has to be specified" << std::endl;
-    std::cout << "try calling './MolSim -h' or './MolSim --help' for more information" << std::endl;
+    std::cout << "At least one output writer has to be specified!" << std::endl;
+    std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
     return 1;
   }
 
   //initialize FileReader instance
   FileReader fileReader;
   //read input file that provides initial information about our particles
-  fileReader.readFile(particles, argsv[1]);
+  fileReader.readToContainer(particles, argsv[1]);
+  particles.initializePairsVector();
 
   double current_time = start_time;
 
@@ -231,7 +233,7 @@ int main(int argc, char *argsv[]) {
         // initialize writer instance
         outputWriter::VTKWriter writer;
         // initialize output file
-        writer.initializeOutput(particles.size());
+        writer.initializeOutput(particles.sizeParticles());
         // iterate over all particles and plot them
         for (auto &p : particles) {
           writer.plotParticle(p);
@@ -251,23 +253,33 @@ int main(int argc, char *argsv[]) {
 }
 
 void calculateF() {
-  std::list<Particle>::iterator iterator;
-  iterator = particles.begin();
-  for (auto &p1 : particles) {
-    std::array<double, 3> sigma = {.0,.0,.0};
-    for (auto &p2 : particles) {
+  std::array<double, 3> sigma = {.0,.0,.0};
+  for (auto &p : particles) {
+    p.setOldF(p.getF());
+    p.setF(sigma);
+  }
 
-      if (!(&p1==&p2)) {
-        std::array<double, 3> sub = subtractVector(p2.getX(), p1.getX());
-        std::array<double, 3> fij = multiply_constant_vector(multiply_constant_vector(sub,p1.getM()*p2.getM()),1/pow(magnitude(sub),3));
-        sigma = addVector(sigma,fij);
-      }
+  for (auto &pair : particles.getParticlePairs()) {
+    Particle &p1 = pair.first.get();
+    Particle &p2 = pair.second.get();
+
+    std::array<double, 3> sub = subtractVector(p2.getX(), p1.getX());
+    double normCubed = pow(magnitude(sub),3);
+
+    //prevent division by 0
+    if (normCubed == 0) {
+      continue;
     }
 
-  p1.setOldF(p1.getF());
-  p1.setF(sigma);
 
+    std::array<double, 3> fij = multiply_constant_vector(multiply_constant_vector(sub, p1.getM()*p2.getM()),1/normCubed);
+
+    p1.setF(addVector(p1.getF(),fij));
+    p2.setF(subtractVector(p2.getF(),fij));
   }
+
+
+
 }
 
 void calculateX() {
@@ -289,7 +301,7 @@ void plotParticles(int iteration) {
   std::string out_name("MD_vtk");
 
   outputWriter::XYZWriter writer;
-  writer.plotParticles(particles, out_name, iteration);
+  writer.plotParticlesFromContainer(particles, out_name, iteration);
 
 }
 std::array<double, 3>  addVector(const std::array<double, 3> &a,const std::array<double, 3> &b) {
@@ -318,5 +330,5 @@ double magnitude(const std::array<double, 3> &a) {
   for (int i = 0; i < 3; ++i) {
     out += pow(a[i], 2);
   }
-  return pow(out, 0.5);
+  return std::sqrt(out);
 }
