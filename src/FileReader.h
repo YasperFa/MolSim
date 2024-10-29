@@ -11,6 +11,8 @@
 
 #include <list>
 
+#include "ParticleContainer.h"
+
 class FileReader {
 
 public:
@@ -18,4 +20,6 @@ public:
   virtual ~FileReader();
 
   void readFile(std::list<Particle> &particles, char *filename);
+
+  void readToContainer(ParticleContainer &particles, char *filename);
 };
