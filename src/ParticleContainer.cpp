@@ -41,8 +41,8 @@
 
     bool ParticleContainer::pairExists(const Particle &particle1, const Particle &particle2) const {
         for (const auto &p: particlePairs) {
-            if ((&p.first.get() == &particle1) && (&p.second.get() == &particle2) ||
-                (&p.first.get() == &particle2) && (&p.second.get() == &particle1)) {
+            if (((&p.first.get() == &particle1) && (&p.second.get() == &particle2)) ||
+                ((&p.first.get() == &particle2) && (&p.second.get() == &particle1))) {
                 return true;
             }
         }
