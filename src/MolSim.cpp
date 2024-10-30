@@ -6,6 +6,8 @@
 #include <iostream>
 #include <list>
 #include <functional>
+#include <string>
+#include <string_view>
 
 #include "outputWriter/VTKWriter.h"
 
@@ -28,23 +30,35 @@ void calculateV();
 
 /**
  * plot the particles to a xyz-file
+ * @param int iteration
  */
 void plotParticles(int iteration);
 /**
  * helper function for adding two vectors
+ * @param a first vector
+ * @param b second vector
+ * @returns vector sum of a and b
  */
 
 std::array<double, 3>  addVector(const std::array<double, 3> &a,const std::array<double, 3> &b);
 /**
  * helper function for subtracting two vectors
+ * @param a first vector
+ * @param b second vector
+ * @returns vector difference of a and b
  */
 std::array<double, 3>  subtractVector(const std::array<double, 3> &a, const std::array<double, 3> &b);
 /**
  * helper function for multiplying a vector with constant
+ * @param a first vector
+ * @param b double value
+ * @returns product of a and b
  */
 std::array<double, 3>  multiply_constant_vector(const std::array<double, 3> &a,  double b);
 /**
- * helper function for calculating magnitude
+ * helper function for calculating magnitude of a vector
+ * @param a vector
+ * @returns magnitude of a (double)
  */
 double magnitude(const std::array<double, 3> &a);
 /**
@@ -63,6 +77,35 @@ double delta_t = 0.014;
 
 /** data structure for storing particles and unique pairs of particles */
 ParticleContainer particles;
+
+/** Prints help message to stderr */
+
+void printHelp() {
+
+  std::cerr << R"(
+      If you want to execute the simulation, the program call has to follow this format:
+      ./MolSim .{INPUT_PATH} -d {DELTA_T} -e {END_TIME} {OUTPUT_WRITER}
+
+      Options:
+        Compulsory Options:
+          '{INPUT_PATH}': path to the input file. For example, './input/eingabe-sonne.txt'.
+          '{OUTPUT_WRITER}': specifies which output writer will be used. Either -vtk or -xyz has to be chosen.
+
+        Optional Options:
+          '{DELTA_T}': Time step which will be used for the simulation. The argument has to be passed with a positive number
+          following the format: '-d {positive number}'. If -d is not specified while executing the program, the default
+          value d = 0,014 will be used.
+
+          '{END_TIME}': The end time which will be used for the simulation. The argument has to be passed with a positive
+          number following the format: '-e {positive number}'. If -e is not specified while executing the program, the
+          default value e = 1000 will be used.
+
+        Example Usage:
+          './MolSim -h' or './MolSim --help' to print this help message
+          './MolSim ../input/eingabe-sonne.txt -vtk'
+          './MolSim ../input/eingabe-sonne.txt -d 0.014 -e 1000 -xyz'
+      )" << std::endl;
+}
 
 
 /** \brief Reads programme input and writes output file
@@ -83,55 +126,49 @@ ParticleContainer particles;
  * 
 */
 
+
 int main(int argc, char *argsv[]) {
   bool xyz = false;
   bool vtk = false;
   std::cout << "Hello from MolSim for PSE!" << std::endl;
 
+       //if input file is not specified --> error
+  if (argc < 2) {
+    std::cout << "Erroneous programme call! " << std::endl;
+    std::cout << "Input filename not specified!" << std::endl;
+    printHelp();
+    return 1;
+  }
+
+
   if (std::strcmp(argsv[1], "-h") == 0 || std::strcmp(argsv[1], "--help") == 0 ) {
+ 
     if (2 >= argc) {
-
-      std::cerr << R"(
-      Welcome to MolSim Helper!
-      If you want to execute the simulation, the program call has to follow this format:
-      ./MolSim .{INPUT_PATH} -d {DELTA_T} -e {END_TIME} {OUTPUT_WRITER}
-
-      Options:
-        Compulsory Options:
-          '{INPUT_PATH}': path to the input file. For example, './input/eingabe-sonne.txt'.
-          '{OUTPUT_WRITER}': specifies which output writer will be used. Either -vtk or -xyz has to be chosen.
-
-        Optional Options:
-          '{DELTA_T}': Time step which will be used for the simulation. The argument has to be passed with a positive number
-          following the format: '-d {positive number}'. If -d is not specified while executing the program, the default
-          value d = 0,014 will be used.
-
-          '{END_TIME}': The end time which will be used for the simulation. The argument has to be passed with a positive
-          number following the format: '-e {positive number}'. If -e is not specified while executing the program, the
-          default value e = 1000 will be used.
-
-        Example Usage:
-          './MolSim -h' or './MolSim --help'
-          './MolSim ../input/eingabe-sonne.txt -vtk'
-          './MolSim ../input/eingabe-sonne.txt -d 0.014 -e 1000 -xyz'
-      )" << std::endl;
-      return 1;
+        std::cerr << R"(Welcome to MolSim Helper!)" << std::endl;
+        printHelp();
+      return 0;
     } else {
       //if -h or --h is not the last parameter --> error
       std::cout << "Erroneous programme call! " << std::endl;
-      std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+      printHelp();
       return 1;
     }
   }
 
-  //if input file is not specified --> error
-  if (argc < 2) {
-    std::cout << "Erroneous programme call! " << std::endl;
-    std::cout << "Input filename not specified!" << std::endl;
-    std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
-    return 1;
-  }
+
   else {
+
+    //check if input is valid path
+   
+    const std::string path = argsv[1];
+    
+    if (path.length() < 5 || path.compare(path.length()- 4, 4, ".txt") != 0) {
+      std::cerr << "Invalid input path! Input path must be first argument and file must be .txt" << std::endl;
+      printHelp();
+      return 1;
+    }
+
+
     for (int i = 2; i < argc; i++) {
       std::string arg = argsv[i];
         // check if delta_t flag is set
@@ -140,7 +177,7 @@ int main(int argc, char *argsv[]) {
           if (i+1 >= argc) {
             std::cout << "Erroneous programme call! " << std::endl;
             std::cout << "delta_t not specified!" << std::endl;
-            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+            printHelp();
             return 1;}
           // convert a string to double
           delta_t = atof(argsv[i+1]);
@@ -150,7 +187,7 @@ int main(int argc, char *argsv[]) {
           if (delta_t <= 0.0) {
             std::cout << "Erroneous programme call! " << std::endl;
             std::cout << "Invalid delta_t" << std::endl;
-            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+            printHelp();
            return 1;}
 
         }
@@ -160,7 +197,7 @@ int main(int argc, char *argsv[]) {
           if (i+1 >= argc) {
             std::cout << "Erroneous programme call! " << std::endl;
             std::cout << "end_time not specified!" << std::endl;
-            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+            printHelp();
            return 1;}
           // convert a string to double
           end_time = atof(argsv[i+1]);
@@ -170,11 +207,11 @@ int main(int argc, char *argsv[]) {
           if (end_time <= 0.0) {
             std::cout << "Erroneous programme call! " << std::endl;
             std::cout << "Invalid end_time!" << std::endl;
-            std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+            printHelp();
            return 1;}
 
         }
-        // check for a vtu flag
+        // check for a vtk flag
         else if(arg == "-vtk" ) {
           vtk = true;
         }
@@ -186,7 +223,7 @@ int main(int argc, char *argsv[]) {
         else {
          std::cout << "Erroneous programme call! " << std::endl;
          std::cout << "Undefined Parameter! " << std::endl;
-         std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+         printHelp();
         return 1;
        }
     }
@@ -196,7 +233,7 @@ int main(int argc, char *argsv[]) {
   if (xyz == false && vtk == false) {
     std::cout << "Erroneous programme call! " << std::endl;
     std::cout << "At least one output writer has to be specified!" << std::endl;
-    std::cout << "Try calling './MolSim -h' or './MolSim --help' for more information." << std::endl;
+    printHelp();
     return 1;
   }
 
