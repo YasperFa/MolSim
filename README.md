@@ -1,9 +1,8 @@
-<!--\mainpage-->
-# Molecular Dynamics WS24 - GroupG
-===
+\mainpage Molecular Dynamics WS24 - GroupG
 
-## Installation
-### Prerequisites
+ 
+===
+## Prerequisites
 To be able to build and run this code, the following tools have to be installed:
 
 - cmake
@@ -11,7 +10,7 @@ To be able to build and run this code, the following tools have to be installed:
 - libxerces-c-dev
 (-Optional: Doxygen)
 
-### Building and Running
+## Building and Running
 1) Create a 'build' directory and switch to the newly created directory:
 
 
@@ -24,16 +23,16 @@ To be able to build and run this code, the following tools have to be installed:
    
         Without Doxygen: 'cmake .. -D DOXY=0' 
 
-    (The value of DOXY is saved in the cache, so for repeated calls, 'cmake ..' is enough.
+    The value of DOXY is saved in the cache, so for repeated calls, 'cmake ..' is enough.
    
-    Doxygen is automatically disabled if the Doxygen executable can not be found.)
+    Doxygen is automatically disabled if the Doxygen executable can not be found.
 
 ---
 3) Make:
 
-
         'make'
-   The user should ensure they are in the directory where they built the project with cmake.
+
+        The user should ensure they are in the directory where they built the project with cmake.
 ---
 4) Running the code:
 
@@ -45,13 +44,15 @@ To be able to build and run this code, the following tools have to be installed:
         './MolSim -h' or './MolSim --help'
         './MolSim ../input/eingabe-sonne.txt -vtk'
         './MolSim ../input/eingabe-sonne.txt -d 0.014 -e 1000 -xyz'
+
+    The output should be in the build directory.    
     
 ---
 5) Arguments:
 
     Compulsory arguments:
 
-        '{INPUT_PATH}': path to the input file. For example, './input/eingabe-sonne.txt'.
+        '{INPUT_PATH}': path to the input file. For example, '../input/eingabe-sonne.txt'.
 
         '{OUTPUT_WRITER}': specifies which output writer will be used. Either -vtk or -xyz has to be chosen.
 
@@ -67,9 +68,13 @@ To be able to build and run this code, the following tools have to be installed:
     
 
 ---
-6) Creating Doxygen Documentation:
+## Creating Doxygen Documentation:
+
+        After running cmake with Doxygen enabled (see 2.):
 
         'make doc_doxygen'
-        (If running this command and doxygen is disabled, nothing will happen.)
+
+        If running this command and doxygen is disabled, nothing will happen.
+        The output is in the directory ../doxys_documentation.
 
 
