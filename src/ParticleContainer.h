@@ -77,6 +77,10 @@ class ParticleContainer {
     /**
     * This method checks if a pair containing both particles passed as arguments
     * already exits in the particlePairs vector.
+    * 
+    * @param particle1
+    * @param particle2
+    * @returns true if pair already exists in the particlePairs vector
     */
     bool pairExists(const Particle& particle1, const Particle& particle2) const;
 
