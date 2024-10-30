@@ -6,8 +6,6 @@
 #include <iostream>
 #include <list>
 #include <functional>
-#include <string>
-#include <string_view>
 
 #include "outputWriter/VTKWriter.h"
 
