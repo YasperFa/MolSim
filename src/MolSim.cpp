@@ -30,7 +30,12 @@ void calculateV();
  * plot the particles to a xyz-file
  * @param int iteration
  */
-void plotParticles(int iteration);
+void plotParticles_XYZ(int iteration);
+/**
+ * plot the particles to a vtk-file
+ * @param int iteration
+ */
+void plotParticles_VTK(int iteration);
 /**
  * helper function for adding two vectors
  * @param a first vector
@@ -259,22 +264,11 @@ int main(int argc, char *argsv[]) {
     if (iteration % 10 == 0) {
       //if xyz flag is set, produce .xyz file
       if (xyz) {
-        plotParticles(iteration);
+        plotParticles_XYZ(iteration);
       }
       // if vtu flag is set, produce .vtu file
       if(vtk) {
-        // define output file name
-        std::string out_name("Vtu_");
-        // initialize writer instance
-        outputWriter::VTKWriter writer;
-        // initialize output file
-        writer.initializeOutput(particles.sizeParticles());
-        // iterate over all particles and plot them
-        for (auto &p : particles) {
-          writer.plotParticle(p);
-        }
-        // produce the output file
-        writer.writeFile(out_name, iteration);
+        plotParticles_VTK(iteration);
       }
 
     }
@@ -331,12 +325,28 @@ void calculateV() {
   }
 }
 
-void plotParticles(int iteration) {
+void plotParticles_XYZ(int iteration) {
 
   std::string out_name("MD_vtk");
 
   outputWriter::XYZWriter writer;
   writer.plotParticlesFromContainer(particles, out_name, iteration);
+
+}
+void plotParticles_VTK(int iteration) {
+
+  // define output file name
+  std::string out_name("Vtu_");
+  // initialize writer instance
+  outputWriter::VTKWriter writer;
+  // initialize output file
+  writer.initializeOutput(particles.sizeParticles());
+  // iterate over all particles and plot them
+  for (auto &p : particles) {
+    writer.plotParticle(p);
+  }
+  // produce the output file
+  writer.writeFile(out_name, iteration);
 
 }
 std::array<double, 3>  addVector(const std::array<double, 3> &a,const std::array<double, 3> &b) {
