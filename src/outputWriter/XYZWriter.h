@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include "Particle.h"
+#include "Objects/Particle.h"
 
 #include <fstream>
 #include <list>
 
-#include "ParticleContainer.h"
+#include "Objects/ParticleContainer.h"
 
 namespace outputWriter {
 

@@ -12,8 +12,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "ParticleContainer.h"
-
 FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;

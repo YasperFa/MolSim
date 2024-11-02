@@ -2,8 +2,8 @@
 // Created by Yasmine Farah on 01/11/2024.
 //
 #include "gtest/gtest.h"
-#include "../src/ParticleContainer.h"
-#include "../src/Particle.h"
+#include "../src/Objects/ParticleContainer.h"
+#include "../src/Objects/Particle.h"
 
 // check if sizeParticles() works correctly
 TEST(ParticleContainerTest, StrctureAfterAddParticle) {

@@ -9,8 +9,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include "ParticleContainer.h"
-
 namespace outputWriter {
 
 XYZWriter::XYZWriter() = default;
