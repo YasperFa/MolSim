@@ -22,6 +22,10 @@ To be able to build and run this code, the following tools have to be installed:
         With Doxygen:    'cmake .. -D DOXY=1' (default)
    
         Without Doxygen: 'cmake .. -D DOXY=0' 
+   
+        With Tests:      'cmake ..  -DBUILD_TESTS=ON' (default)
+
+        Without Tests:   'cmake ..  -DBUILD_TESTS=OFF'
 
     The value of DOXY is saved in the cache, so for repeated calls, 'cmake ..' is enough.
    
@@ -77,4 +81,14 @@ To be able to build and run this code, the following tools have to be installed:
         If running this command and doxygen is disabled, nothing will happen.
         The output is in the directory ../doxys_documentation.
 
+---
+## Executing tests:
+      
+       After running cmake with tests enabled (see 2.), and then running make:
+
+       The executable is in the folder build/tests. For execution either navigate to the folder tests and run ./Test,
+       or run ctest / ctest -V (for detailed execution) in build directory
+
+        
+       
 
