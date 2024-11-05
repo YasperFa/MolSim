@@ -206,7 +206,7 @@ int main(int argc, char *argsv[]) {
     //initialize FileReader instance
     FileReader fileReader;
     //read input file that provides initial information about our particles
-    fileReader.readToContainer(particles, argsv[1]);
+    fileReader.readFile(particles, argsv[1]);
     particles.initializePairsVector();
 
     double current_time = start_time;
