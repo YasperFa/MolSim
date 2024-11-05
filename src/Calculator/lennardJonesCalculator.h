@@ -2,8 +2,8 @@
 // Created by Yasmine Farah on 05/11/2024.
 //
 
-#ifndef LENNARDJONESCALCULATOR_H
-#define LENNARDJONESCALCULATOR_H
+#pragma once
+
 #include "Calculator.h"
 #include "Objects/ParticleContainer.h"
 #include <Objects/Particle.h>
@@ -25,5 +25,3 @@ namespace Calculators{
     };
 }
 
-
-#endif //LENNARDJONESCALCULATOR_H
