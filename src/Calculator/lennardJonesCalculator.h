@@ -6,7 +6,7 @@
 #define LENNARDJONESCALCULATOR_H
 #include "Calculator.h"
 #include "Objects/ParticleContainer.h"
-
+#include <Objects/Particle.h>
 namespace Calculators{
 
     class lennardJonesCalculator : public Calculator {
