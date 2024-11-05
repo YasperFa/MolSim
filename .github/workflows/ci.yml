@@ -24,7 +24,7 @@ jobs:
         run: mkdir build
 
       - name: Configure build
-        run: cmake -DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_FLAGS="-fsanitize=address" -B build .
+        run: cmake -DCMAKE_CXX_FLAGS="-fsanitize=address" -B build .
 
       - name: Build project
         run: cmake --build build
