@@ -6,9 +6,9 @@
 
 #include "Calculator.h"
 #include "Objects/ParticleContainer.h"
-#include <Objects/Particle.h>
-namespace Calculators{
+#include "Objects/Particle.h"
 
+namespace Calculators{
     class lennardJonesCalculator : public Calculator {
         public:
 
@@ -19,7 +19,7 @@ namespace Calculators{
           *  function for calculating the force F acting between particles
           * @param particleContainer
           */
-          void calculateF(ParticleContainer &particleContainer) override;
+          void calculateF(ParticleContainer& particleContainer) override;
 
 
     };
