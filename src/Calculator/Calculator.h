@@ -4,8 +4,8 @@
 
 #pragma once
 #include "Objects/ParticleContainer.h"
-
-
+#include <cmath>
+#include <Objects/Particle.h>
 
 namespace Calculators {
     class Calculator {
@@ -128,4 +128,5 @@ namespace Calculators {
             return std::sqrt(out);
         }
     };
+
 }
