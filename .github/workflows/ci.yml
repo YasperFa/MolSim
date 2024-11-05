@@ -22,9 +22,12 @@ jobs:
 
       - name: Create build directory
         run: mkdir build
+        
+      - name: Check compiler version
+        run: g++ --version
 
       - name: Configure build
-        run: cmake -DCMAKE_CXX_FLAGS="-fsanitize=address" -B build .
+        run: cmake -DCMAKE_CXX_STANDARD=14 -DCMAKE_CXX_FLAGS="-fsanitize=address" -B build .
 
       - name: Build project
         run: cmake --build build
