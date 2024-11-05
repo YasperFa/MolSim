@@ -10,6 +10,7 @@
 #include "outputWriter/VTKWriter.h"
 
 #include "Calculator/Calculator.h"
+#include "Calculator/lennardJonesCalculator.h"
 
 /**** forward declaration of the calculation functions ****/
 
@@ -41,7 +42,7 @@ double delta_t = 0.014;
 
 /**
  * calculator that will be used for the simulation */
-Calculators::Calculator calculator;
+Calculators::lennardJonesCalculator calculator;
 
 // TODO: what data structure to pick?
 
