@@ -17,7 +17,7 @@ namespace Calculators{
           virtual ~lennardJonesCalculator() = default;
           /**
           *  function for calculating the force F acting between particles
-          * @param ParticleContainer
+          * @param particleContainer
           */
           void calculateF(ParticleContainer &particleContainer) override;
 

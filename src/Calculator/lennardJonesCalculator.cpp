@@ -5,6 +5,8 @@
 #include "lennardJonesCalculator.h"
 #include "utils/ArrayUtils.h"
 #include <cmath>
+#include "Objects/ParticleContainer.h"
+#include "Objects/Particle.h"
 
 
 static const double epsilon = 5;
