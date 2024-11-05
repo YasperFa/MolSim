@@ -6,6 +6,7 @@
 #include "utils/ArrayUtils.h"
 #include <cmath>
 
+
 static const double epsilon = 5;
 static const double small_sigma = 1;
 void Calculators::lennardJonesCalculator::calculateF(ParticleContainer &particleContainer) {
