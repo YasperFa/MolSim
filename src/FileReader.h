@@ -19,14 +19,17 @@ public:
   FileReader();
   virtual ~FileReader();
 
-  void readFile(std::list<Particle> &particles, char *filename);
+  void readFile(ParticleContainer &particles, char *filename);
 
   
-/**Initializes a ParticleContainer with input data from a file 
+/**Initializes a ParticleContainer with input Particles data from a file
  * @param particles: the empty particle container
  * @param filename: path to input file
 */
-
-
-  void readToContainer(ParticleContainer &particles, char *filename);
+  void readParticles(ParticleContainer &particles, std::ifstream &input_file);
+ /**Initializes a ParticleContainer with input Cuboids data from a file
+ * @param particles: the empty particle container
+ * @param filename: path to input file
+ */
+ void readCuboids(ParticleContainer &particles, std::ifstream &input_file);
 };
