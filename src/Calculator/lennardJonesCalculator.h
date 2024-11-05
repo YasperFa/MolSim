@@ -5,7 +5,7 @@
 #ifndef LENNARDJONESCALCULATOR_H
 #define LENNARDJONESCALCULATOR_H
 #include "Calculator.h"
-
+#include "Objects/ParticleContainer.h"
 
 namespace Calculators{
 
