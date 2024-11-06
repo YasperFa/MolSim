@@ -7,6 +7,7 @@ class Particle;
 #include <Objects/Particle.h>
 #include "Objects/ParticleContainer.h"
 #include <cmath>
+#include <functional> 
 
 
 namespace Calculators {
