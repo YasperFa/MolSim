@@ -40,9 +40,6 @@ double end_time = 1000;
  * time between iterations of the simulation */
 double delta_t = 0.014;
 
-/**
- * calculator that will be used for the simulation */
-Calculators::lennardJonesCalculator calculator;
 
 // TODO: what data structure to pick?
 
@@ -100,6 +97,8 @@ void printHelp() {
 int main(int argc, char *argsv[]) {
     bool xyz = false;
     bool vtk = false;
+    bool LJCalc = false;
+    bool defaultCalc = true;
     std::cout << "Hello from MolSim for PSE!" << std::endl;
 
     //if input file is not specified --> error
@@ -123,7 +122,7 @@ int main(int argc, char *argsv[]) {
             return 1;
         }
     } else {
-        //check if input is valid path
+        //check if input is valid pat
 
         const std::string path = argsv[1];
 
@@ -133,8 +132,40 @@ int main(int argc, char *argsv[]) {
             return 1;
         }
 
+        int i = 2;
 
-        for (int i = 2; i < argc; i++) {
+        //check if the calculator that is supposed to be used is specified.
+        if (std::string(argsv[i]) == "-c") {
+            //if -c is the last argument, fail.
+            if (3 >= argc) {
+                std::cout << "Erroneous programme call! " << std::endl;
+                std::cout << "calculator not specified!" << std::endl;
+                printHelp();
+                return 1;
+            }
+            //set the calculator to default calculator.
+            if (std::string(argsv[i + 1]) == "default") {
+                defaultCalc = true;
+                i += 2;
+            } else if (std::string(argsv[i + 1]) == "LJCalculator") {
+                //set the calculator to a LJ Calculator and change the default parameters in case they are not specified
+                //in the upcoming arguments.
+                LJCalc = true;
+                defaultCalc = false;
+                end_time = 5;
+                delta_t = 0.0002;
+                i += 2;
+            } else {
+                //if an invalid calculator is given, fail.
+                std::cout << "Erroneous programme call! " << std::endl;
+                std::cout << "invalid calculator!" << std::endl;
+                printHelp();
+                return 1;
+            }
+        }
+
+
+        for (; i < argc; i++) {
             std::string arg = argsv[i];
             // check if delta_t flag is set
             if (arg == "-d") {
@@ -186,6 +217,7 @@ int main(int argc, char *argsv[]) {
             else if (arg == "-xyz") {
                 xyz = true;
             }
+
             // argument isn't specified --> error
             else {
                 std::cout << "Erroneous programme call! " << std::endl;
@@ -211,12 +243,20 @@ int main(int argc, char *argsv[]) {
     particles.initializePairsVector();
 
     double current_time = start_time;
-
     int iteration = 0;
+
+
+    //calculator that will be used for the simulation
+    std::unique_ptr<Calculators::Calculator> calculator;
+    if (LJCalc == true) {
+        calculator = std::make_unique<Calculators::lennardJonesCalculator>();
+    } else if (defaultCalc == true) {
+        calculator = std::make_unique<Calculators::Calculator>();
+    }
 
     // for this loop, we assume: current x, current f and current v are known
     while (current_time < end_time) {
-        calculator.calculateXFV(particles, delta_t);
+        calculator->calculateXFV(particles, delta_t);
 
         iteration++;
         // produce output files every ten iterations
