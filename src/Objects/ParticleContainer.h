@@ -6,6 +6,7 @@
 #include "Particle.h"
 
 #include <vector>
+#include <functional> 
 
 /**
  * Container for storing Particle objects and
