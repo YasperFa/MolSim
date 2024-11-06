@@ -3,9 +3,11 @@
 //
 
 #pragma once
+class Particle;
+#include <Objects/Particle.h>
 #include "Objects/ParticleContainer.h"
 #include <cmath>
-#include <Objects/Particle.h>
+
 
 namespace Calculators {
     class Calculator {
