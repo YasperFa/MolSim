@@ -5,8 +5,9 @@
 #pragma once
 
 #include "Calculator.h"
-#include "Objects/ParticleContainer.h"
 #include "Objects/Particle.h"
+#include "Objects/ParticleContainer.h"
+
 
 namespace Calculators{
     class lennardJonesCalculator : public Calculator {

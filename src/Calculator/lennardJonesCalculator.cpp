@@ -1,7 +1,7 @@
 //
 // Created by Yasmine Farah on 05/11/2024.
 //
-
+#include "../Objects/Particle.h"
 #include "lennardJonesCalculator.h"
 #include "utils/ArrayUtils.h"
 #include <cmath>
