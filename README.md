@@ -18,20 +18,26 @@ To be able to build and run this code, the following tools have to be installed:
 ---
 2) Build the code by using the following command:
 
+        'cmake ..'
 
-        With Doxygen:    'cmake .. -D DOXY=1' (default)
-   
-        Without Doxygen: 'cmake .. -D DOXY=0' 
-   
-        With Tests:      'cmake ..  -DBUILD_TESTS=ON' (default)
+    Using optional arguments: (if an argument is not specified, the default value is used)
 
-        Without Tests:   'cmake ..  -DBUILD_TESTS=OFF'
+    Doxygen:    With Doxygen:    'cmake .. -D DOXY=1'   (default)
+                Without Doxygen: 'cmake .. -D DOXY=0' 
+    
+                Doxygen is automatically disabled if the Doxygen executable can not be found.
 
-The value of DOXY is saved in the cache, so for repeated calls, 'cmake ..' is enough.
-   
-Doxygen is automatically disabled if the Doxygen executable can not be found.
+    Tests:      With Tests:      'cmake ..  -DBUILD_TESTS=ON'   (default)
+                Without Tests:   'cmake ..  -DBUILD_TESTS=OFF'
 
-Tests are automatically enabled if only cmake .. is used
+    Logging:    'cmake .. -D LVL={LOG_LEVEL}'           (default = 'INFO')
+
+                Possible values, in ascending order: 'OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE', 'ALL'
+                'ALL' is an alias of 'TRACE' and enables all possible logs.
+                The compile-time log level can be overridden with a lower log level at runtime (see 5. for details).
+
+    Note that cmake variables are saved in the cache and therefore do not automatically reset to the default value.
+    It is possible to combine several optional arguments.
 
 ---
 3) Make:
@@ -44,12 +50,12 @@ The user should ensure they are in the directory where they built the project wi
 4) Running the code:
 
 
-        './MolSim .{INPUT_PATH} -c {CALCULATOR} -d {DELTA_T} -e {END_TIME} {OUTPUT_WRITER}'
+        './MolSim .{INPUT_PATH} -c {CALCULATOR} -d {DELTA_T} -e {END_TIME} {OUTPUT_WRITER} -l {LOG_LEVEL}'
 
 Example calls: 
 
         './MolSim -h' or './MolSim --help'
-        './MolSim ../input/eingabe-sonne.txt -c default -vtk'
+        './MolSim ../input/eingabe-sonne.txt -c default -vtk -l debug'
         './MolSim ../input/eingabe-sonne.txt -c default -d 0.014 -e 1000 -xyz'
         './MolSim ../input/cuboid-example.txt -c LJCalculator -vtk -d 0.0002 -e 5'
 
@@ -81,6 +87,11 @@ The output should be in the build directory.
         following the format: '-e {positive number}'
         If -e is not specified while executing the program, or the default calculator the value e = 1000 and for the LJCalculator
         the default value d = 5 will be used.
+
+        '{LOG_LEVEL}': The log level that is to be used. It is not possible to set a log level higher than the compile-time 
+        log level at runtime (see 2.). 
+        Possible values are, in ascending order: 'off', 'error', 'warn', 'info', 'debug' and 'trace' / 'all'. 
+        If -l is not specified, the log level specified at compile time will be used.
 
 ---
 ## Creating Doxygen Documentation:
