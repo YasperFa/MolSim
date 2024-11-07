@@ -5,6 +5,7 @@ project(PSEMolDyn_GroupG VERSION 0.0.1)
 
 # let ccmake and cmake-gui offer the default build type options
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
+
 # testing is enabled by default
 option(BUILD_TESTS "Build the tests" ON)
 # build tests only if enabled
@@ -12,6 +13,7 @@ if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
 # set Release as the default build type if it is not yet set.
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -47,15 +49,20 @@ target_link_libraries(MolSim
         xerces-c
 )
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+include(doxygen)
+include(spdlog)
+
 # activate all compiler warnings. Clean up your code :P
 # depending on the compiler different flags are used
 target_compile_options(MolSim
         PRIVATE
-        $<$<CXX_COMPILER_ID:GNU>:-Wall>
+        $<$<CXX_COMPILER_ID:GNU>: -Wall -D SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL}> 
         # disable some spam warnings for icpc...
         $<$<CXX_COMPILER_ID:Intel>:-w3 -wd383,981,1418,1572,2259>
 )
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
-include(doxygen)
+
+
+
