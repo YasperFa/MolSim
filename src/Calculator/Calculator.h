@@ -31,32 +31,36 @@ namespace Calculators {
         */
         virtual void calculateF(ParticleContainer &particleContainer) {
             SPDLOG_TRACE("executing calculateF");
+            // initialize sigma with zeros
             std::array<double, 3> sigma = {.0,.0,.0};
+
             for (auto &p : particleContainer) {
                 p.setOldF(p.getF());
                 p.setF(sigma);
             }
-
             for (auto &pair : particleContainer.getParticlePairs()) {
                 Particle &p1 = pair.first.get();
                 Particle &p2 = pair.second.get();
-
                 std::array<double, 3> sub = subtractVector(p2.getX(), p1.getX());
                 double normCubed = pow(magnitude(sub),3);
-
                 //prevent division by 0
-                if (normCubed == 0) {
+                if (normCubed < 1e-8) {
                     continue;
                 }
-
-
-                std::array<double, 3> fij = multiply_constant_vector(multiply_constant_vector(sub, p1.getM()*p2.getM()),1/normCubed);
-
+                // calculate Force between the current pair of particles
+                std::array<double, 3> fij = calculateFIJ(subtractVector(p1.getX(), p2.getX()),p1.getM(),p2.getM(),normCubed);
+                // add force of this pair to the overall force of particle 1
                 p1.setF(addVector(p1.getF(),fij));
+                // make use of Newton's third law and add the negative force calculated above to particle 2
                 p2.setF(subtractVector(p2.getF(),fij));
             }
         }
-
+        /**
+        * calculate the force between particle i and j
+        */
+        virtual std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) {
+            return multiply_constant_vector(multiply_constant_vector(sub, m1*m2),1/normCubed);
+        }
 
         /**
          * calculate the position for all particles
