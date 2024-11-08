@@ -9,7 +9,6 @@ FetchContent_Declare(
         PREFIX spdlog
 )
 
-# Download and add GoogleTest to the build
 FetchContent_MakeAvailable(spdlog)
 
 target_link_libraries(MolSim 

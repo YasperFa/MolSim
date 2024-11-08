@@ -29,6 +29,7 @@ target_include_directories(Test
 target_link_libraries(Test PRIVATE
         gtest
         gtest_main
+        spdlog
 )
 
 add_test(NAME Test COMMAND Test)
