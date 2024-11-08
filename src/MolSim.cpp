@@ -201,7 +201,7 @@ int main(int argc, char *argsv[]) {
         int i = 2;
 
         //check if the calculator that is supposed to be used is specified.
-        if (std::string(argsv[i]) == "-c") {
+        if (argc > 2 && std::string(argsv[i]) == "-c") {
             //if -c is the last argument, fail.
             if (3 >= argc) {
                 SPDLOG_ERROR("Erroneous programme call! calculator not specified");
