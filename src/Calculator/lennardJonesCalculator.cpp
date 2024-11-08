@@ -5,12 +5,15 @@
 #include "lennardJonesCalculator.h"
 #include "utils/ArrayUtils.h"
 #include <cmath>
+#include "spdlog/spdlog.h"
 
 
 namespace Calculators {
     static const double epsilon = 5;
     static const double small_sigma = 1;
     void lennardJonesCalculator::calculateF(ParticleContainer &particleContainer) {
+        SPDLOG_TRACE("executing calculateF with lennardJonesCalculator");
+
         // initialize sigma with zeros
         std::array<double, 3> sigma = {.0,.0,.0};
         // move the current F values to Oldf, initialize current F values with sigma

@@ -1,5 +1,4 @@
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h" 
 
 #include "FileReader.h"
 #include "outputWriter/XYZWriter.h"

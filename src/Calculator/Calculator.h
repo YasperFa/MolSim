@@ -8,6 +8,7 @@ class Particle;
 #include "Objects/ParticleContainer.h"
 #include <cmath>
 #include <functional> 
+#include "spdlog/spdlog.h"
 
 
 namespace Calculators {
@@ -18,6 +19,7 @@ namespace Calculators {
         virtual ~Calculator() = default;
 
         virtual void calculateXFV(ParticleContainer &particleContainer, double delta_t) {
+            SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
             calculateF(particleContainer);
             calculateV(particleContainer, delta_t);
@@ -28,6 +30,7 @@ namespace Calculators {
         * calculate the force for all particles
         */
         virtual void calculateF(ParticleContainer &particleContainer) {
+            SPDLOG_TRACE("executing calculateF");
             std::array<double, 3> sigma = {.0,.0,.0};
             for (auto &p : particleContainer) {
                 p.setOldF(p.getF());
@@ -59,6 +62,7 @@ namespace Calculators {
          * calculate the position for all particles
          */
         virtual  void calculateX(ParticleContainer &particleContainer, double delta_t) {
+            SPDLOG_TRACE("executing calculateX");
             for (auto &p : particleContainer) {
                 std::array<double, 3> newX = addVector(p.getX(), addVector( multiply_constant_vector(p.getV(),delta_t) , multiply_constant_vector(p.getOldF(),0.5*pow(delta_t,2)/p.getM())));
                 p.setX(newX);
@@ -69,6 +73,7 @@ namespace Calculators {
          * calculate the position for all particles
          */
         virtual void calculateV(ParticleContainer &particleContainer, double delta_t) {
+            SPDLOG_TRACE("executing calculateV");
             for (auto &particle: particleContainer) {
                 std::array<double, 3> newV = addVector(particle.getV(), multiply_constant_vector(addVector(particle.getOldF(),particle.getF()),delta_t*0.5/particle.getM()));
                 particle.setV(newV);
@@ -82,6 +87,7 @@ namespace Calculators {
         * @returns vector sum of a and b
         */
         virtual  std::array<double, 3> addVector(const std::array<double, 3> &a, const std::array<double, 3> &b) {
+            //SPDLOG_TRACE("adding vectors");
             std::array<double, 3> out{};
             for (int i = 0; i < 3; ++i) {
                 out[i] = a[i] + b[i];
@@ -97,6 +103,7 @@ namespace Calculators {
          * @returns vector difference of a and b
          */
         virtual  std::array<double, 3> subtractVector(const std::array<double, 3> &a, const std::array<double, 3> &b) {
+            //SPDLOG_TRACE("subtracting vectors");
             std::array<double, 3> out{};
             for (int i = 0; i < 3; ++i) {
                 out[i] = a[i] - b[i];
@@ -111,6 +118,7 @@ namespace Calculators {
          * @returns product of a and b
          */
         virtual  std::array<double, 3> multiply_constant_vector(const std::array<double, 3> &a, const double b) {
+            //SPDLOG_TRACE("multiplying vector with constant");
             std::array<double, 3> out{};
             for (int i = 0; i < 3; ++i) {
                 out[i] = a[i] * b;
@@ -124,6 +132,7 @@ namespace Calculators {
          * @returns magnitude of a (double)
          */
         virtual double magnitude(const std::array<double, 3> &a) {
+            //SPDLOG_TRACE("calculating magnitude");
             double out = 0;
             for (int i = 0; i < 3; ++i) {
                 out += pow(a[i], 2);

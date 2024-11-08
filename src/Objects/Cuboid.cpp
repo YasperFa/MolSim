@@ -2,6 +2,7 @@
 // Created by Sawsan Farah on 03/11/2024.
 //
 
+#include "spdlog/spdlog.h"
 #include "Cuboid.h"
 #include "../utils/MaxwellBoltzmannDistribution.h"
 
@@ -12,6 +13,7 @@ Cuboid::Cuboid(const std::array<double, 3> x, const std::array<double, 3> N, con
 
 void Cuboid::generate_particles(ParticleContainer &particles) {
     // iterate over the specified dimensions and generate particles
+    SPDLOG_DEBUG("generating cuboid particles");
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
              for (int i=0; i < N[0];++i) {
