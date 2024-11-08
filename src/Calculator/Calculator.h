@@ -64,7 +64,7 @@ namespace Calculators {
         virtual  void calculateX(ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p : particleContainer) {
-                std::array<double, 3> newX = addVector(p.getX(), addVector( multiply_constant_vector(p.getV(),delta_t) , multiply_constant_vector(p.getOldF(),0.5*pow(delta_t,2)/p.getM())));
+                std::array<double, 3> newX = addVector(p.getX(), addVector( multiply_constant_vector(p.getV(),delta_t) , multiply_constant_vector(p.getF(),0.5*pow(delta_t,2)/p.getM())));
                 p.setX(newX);
             }
         }
