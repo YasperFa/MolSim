@@ -22,8 +22,8 @@ To be able to build and run this code, the following tools have to be installed:
 
     Using optional arguments: (if an argument is not specified, the default value is used)
 
-    Doxygen:    With Doxygen:    'cmake .. -D DOXY=1'   (default)
-                Without Doxygen: 'cmake .. -D DOXY=0' 
+    Doxygen:    With Doxygen:    'cmake .. -D DOXY=ON'   (default)
+                Without Doxygen: 'cmake .. -D DOXY=OFF' 
     
                 Doxygen is automatically disabled if the Doxygen executable can not be found.
 
@@ -109,7 +109,7 @@ The output is in the directory ../doxys_documentation.
       
        After running cmake with tests enabled (see 2.), and then running make:
 
-The executable is in the folder build/tests. For execution either navigate to the folder tests and run 
+The executable is in the folder build. For execution either run:
 
       ./Test
 or run 
