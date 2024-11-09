@@ -109,7 +109,7 @@ The output is in the directory ../doxys_documentation.
       
        After running cmake with tests enabled (see 2.), and then running make:
 
-The executable is in the folder build/tests. For execution either navigate to the folder tests and run 
+The executable is in the folder build. For execution either run:
 
       ./Test
 or run 

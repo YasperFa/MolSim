@@ -2,10 +2,10 @@
 include(FetchContent)
 # collect all cpp files in tests
 file(GLOB_RECURSE TEST_SRC
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../src/Particle.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../src/ParticleContainer.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../src/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleContainer.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
@@ -22,8 +22,8 @@ add_executable(Test ${TEST_SRC})
 
 target_include_directories(Test
         PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../tests
-        ${CMAKE_CURRENT_SOURCE_DIR}/../src
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 target_link_libraries(Test PRIVATE
