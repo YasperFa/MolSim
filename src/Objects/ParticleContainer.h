@@ -26,7 +26,6 @@ class ParticleContainer {
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> particlePairs;
 
     public:
-    /////////////////////////////////////////////(Iterators)///////////////////////////////////////////////////////////
     /**
     * @return an iterator to the beginning of the particles vector.
     */
@@ -49,7 +48,6 @@ class ParticleContainer {
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator end_pairs();
 
 
-    ///////////////////////////////////(Constructor and Deconstructor)//////////////////////////////////////////////////
     /**
     * default constructor
     */
@@ -60,7 +58,6 @@ class ParticleContainer {
      */
     ~ParticleContainer() = default;
 
-    //////////////////////////////////////////////(Methods)/////////////////////////////////////////////////////////////
 
     /**
     * This method adds the passed particle into the container.
@@ -110,7 +107,6 @@ class ParticleContainer {
     size_t sizeParticlePairs() const;
 
 
-    //////////////////////////////////////////////(Getters)/////////////////////////////////////////////////////////////
     std::vector<Particle> getParticles() const;
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> getParticlePairs() const;
 

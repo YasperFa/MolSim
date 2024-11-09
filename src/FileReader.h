@@ -19,7 +19,7 @@ public:
   FileReader();
   virtual ~FileReader();
 
-  void readFile(ParticleContainer &particles, char *filename);
+  void readFile(ParticleContainer &particles, const std::string& filename);
 
   
 /**Initializes a ParticleContainer with input Particles data from a file

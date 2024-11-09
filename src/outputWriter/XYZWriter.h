@@ -8,37 +8,35 @@
 #pragma once
 
 #include "Objects/Particle.h"
+#include "OutputWriter.h"
 
 #include <fstream>
 #include <list>
 
 #include "Objects/ParticleContainer.h"
 
-namespace outputWriter {
+namespace outputWriters {
+    class XYZWriter : public OutputWriter {
+    public:
+        XYZWriter() = default;
 
-class XYZWriter {
+        virtual ~XYZWriter() = default;
 
-public:
-  XYZWriter();
+        /**Plots particles from a particle list
+       * @param particles: the particle container
+       * @param filename of file where output should be written
+       * @param iteration
+       */
 
-  virtual ~XYZWriter();
+        void plotParticles(std::list<Particle> particles, const std::string &filename,
+                           int iteration);
 
-  /**Plots particles from a particle list
- * @param particles: the particle container
- * @param filename of file where output should be written
- * @param iteration
- */
 
-  void plotParticles(std::list<Particle> particles, const std::string &filename,
-                     int iteration);
-
-  
-/**Plots particles from a particle container
- * @param particles: the particle container
- * @param filename of file where output should be written
- * @param iteration
- */
-  void plotParticlesFromContainer(ParticleContainer &particles, const std::string &filename, int iteration);
-};
-
+        /**Plots particles from a particle container
+         * @param particles: the particle container
+         * @param filename of file where output should be written
+         * @param iteration
+         */
+        void plotParticles(int iteration, ParticleContainer &particleContainer, const std::string &filename) override;
+    };
 } // namespace outputWriter
