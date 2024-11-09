@@ -32,6 +32,6 @@ target_link_libraries(Test PRIVATE
         spdlog
 )
 
-add_test(NAME Test COMMAND Test)
-
+include(GoogleTest)
+gtest_discover_tests(Test)
 include(CTest)
