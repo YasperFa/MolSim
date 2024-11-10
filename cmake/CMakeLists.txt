@@ -32,6 +32,26 @@ target_link_libraries(Test PRIVATE
         spdlog
 )
 
+if(LVL STREQUAL ERROR)
+        set(LOG_LEVEL SPDLOG_LEVEL_ERROR)
+elseif(LVL STREQUAL WARN)
+        set (LOG_LEVEL SPDLOG_LEVEL_WARN)
+elseif(LVL STREQUAL OFF)
+        set (LOG_LEVEL SPDLOG_LEVEL_OFF)
+elseif(LVL STREQUAL DEBUG)
+        set (LOG_LEVEL SPDLOG_LEVEL_DEBUG)
+elseif(LVL STREQUAL TRACE)
+        set (LOG_LEVEL SPDLOG_LEVEL_TRACE)
+elseif(LVL STREQUAL ALL)
+        set (LOG_LEVEL SPDLOG_LEVEL_TRACE)
+else()
+        set (LOG_LEVEL SPDLOG_LEVEL_INFO)
+endif()
+
+target_compile_options(Test
+        PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>: -Wall -g -D SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL}>)
+
 include(GoogleTest)
 gtest_discover_tests(Test)
 include(CTest)
