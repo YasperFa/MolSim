@@ -44,6 +44,10 @@ private:
   */
  int type;
 
+ /** Id of the particle. New particles are created with ascending id numbers, every id is unique. */
+
+int id;
+
 public:
  explicit Particle(int type = 0);
 
@@ -64,6 +68,8 @@ public:
  const std::array<double, 3> &getF() const;
 
  const std::array<double, 3> &getOldF() const;
+
+ int getID() const;
 
  double getM() const;
 

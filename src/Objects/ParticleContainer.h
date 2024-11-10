@@ -71,6 +71,25 @@ class ParticleContainer {
     */
     void removeParticle(const Particle& particle);
 
+    /**
+     * This method returns the particle with the corresponding id
+     * @param id is a unique int identifier
+     * @returns the corresponding particle
+     * 
+     * Throws an error if the container does not contain a particle with this id
+     */
+
+    Particle& getParticle(int id);
+
+    /**
+     * This method returns the particle from the container with the corresponding id
+     * @param a particle p which exists in the container
+     * @returns the corresponding particle
+     * 
+     * Throws an error if the container does not contain a particle with this id
+     */
+
+    Particle& getParticle(Particle& p);
 
     /**
     * This method checks if a pair containing both particles passed as arguments
