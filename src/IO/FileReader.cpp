@@ -13,7 +13,7 @@
 #include <sstream>
 #include "spdlog/spdlog.h"
 #include "Objects/Cuboid.h"
-
+#include "Objects/ParticleGenerator.h"
 FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
@@ -140,7 +140,9 @@ void FileReader::readCuboids(ParticleContainer &particles, std::ifstream &input_
         Cuboid cuboid(x, N, h, m, v, mv);
         SPDLOG_DEBUG("Cuboid created!: ");
         // generates the particles in the cuboid
-        cuboid.generate_particles(particles);
+
+        ParticleGenerator::generateCuboid(particles,cuboid);
+
         // read another line (if more cuboids follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);

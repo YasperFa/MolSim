@@ -94,10 +94,7 @@ public:
     double  get_mean_velocity() const {
      return mv;
     }
-    /**
-    * @brief generates particles from a given cuboid
-    */
-    void generate_particles(ParticleContainer &particles);
+
 };
 
 

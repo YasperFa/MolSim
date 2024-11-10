@@ -7,11 +7,11 @@
 
 #include "Calculator/Calculator.h"
 #include "Calculator/lennardJonesCalculator.h"
-#include "FileReader.h"
+#include "IO/FileReader.h"
 #include "Objects/ParticleContainer.h"
-#include "outputWriter/OutputWriter.h"
-#include "outputWriter/VTKWriter.h"
-#include "outputWriter/XYZWriter.h"
+#include "IO/outputWriter/OutputWriter.h"
+#include "IO/outputWriter/VTKWriter.h"
+#include "IO/outputWriter/XYZWriter.h"
 #include "spdlog/spdlog.h"
 #include "cxxopts.hpp"
 
