@@ -13,10 +13,12 @@
  * Takes an input file path and optional parameters and flags to do particle simulation and write the output to a .vtu or .xyz file.
  *
  * Optional parameters/flags:
- * - delta_t value (-d <double value>)
- * - end_time (-e <double value>)
- * - vtk output (-vtk)
- * - xyz output (-xyz)
+ * - deltaT value (-d <double value>)
+ * - endTime (-e <double value>)
+ * - vtk output (-o VTK)
+ * - xyz output (-o XYZ)
+ * - logLevel (-l {logLevel})
+ * - calculator (-c {calculator})
  *
  * Returns 1 if there is no input file or wrong parameters are used.
  *
@@ -39,6 +41,7 @@ int main(int argc, char *argsv[]) {
 
     FileReader fileReader;
     fileReader.readFile(particleContainer, inputFile);
+    particleContainer.initializePairsVector();
 
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 

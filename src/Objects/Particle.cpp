@@ -35,9 +35,8 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   std::cout << "Particle generated!" << std::endl;
 }
 
-void logHelper(){/*SPDLOG_INFO("Particle destructed!")*/;}
 
-Particle::~Particle() {/*SPDLOG_INFO("Particle destructed!")*/ logHelper();} //This causes segfault for some reason
+Particle::~Particle() {SPDLOG_INFO("Particle destructed!");}
 
 const std::array<double, 3> &Particle::getX() const { return x; }
 

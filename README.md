@@ -50,14 +50,18 @@ The user should ensure they are in the directory where they built the project wi
 4) Running the code:
 
 
-        './MolSim .{INPUT_PATH} -c {CALCULATOR} -d {DELTA_T} -e {END_TIME} {OUTPUT_WRITER} -l {LOG_LEVEL}'
+        './MolSim -i .{INPUT_PATH} -c {CALCULATOR} -d {DELTA_T} -e {END_TIME} -o {OUTPUT_WRITER} -l {LOG_LEVEL}'
+or
+
+        './MolSim --input=.{INPUT_PATH} --calculator={CALCULATOR} --deltaT={DELTA_T} -endTime={END_TIME} --output={OUTPUT_WRITER} --logLevel {LOG_LEVEL}'
+
 
 Example calls: 
 
         './MolSim -h' or './MolSim --help'
-        './MolSim ../input/eingabe-sonne.txt -c default -vtk -l debug'
-        './MolSim ../input/eingabe-sonne.txt -c default -d 0.014 -e 1000 -xyz'
-        './MolSim ../input/cuboid-example.txt -c LJCalculator -vtk -d 0.0002 -e 5'
+        './MolSim -i ../input/eingabe-sonne.txt -c default -o VTK -l debug'
+        './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info'
+        './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5'
 
 The output should be in the build directory.    
     
@@ -66,32 +70,30 @@ The output should be in the build directory.
 
     Compulsory arguments:
 
-        '{INPUT_PATH}': Path to the input file. For example, '../input/eingabe-sonne.txt' or '../input/cuboid-example.txt'.
+        '{INPUT_PATH}': Path to the input file. For example, '-i ../input/eingabe-sonne.txt' or 'input=../input/cuboid-example.txt'.
 
-        '{OUTPUT_WRITER}': Specifies which output writer will be used. Either -vtk or -xyz has to be chosen.
+        '{OUTPUT_WRITER}': Specifies which output writer will be used. Either VTK or XYZ has to be chosen. Examples: "-o VTK" or "-output XYZ"
 
     Optional arguments:
 
         '{CALCULATOR}': Specifies which calculator will be used druing the program execution. If no calculator is specified
-         the default calculator will be used. If a calculator is specified this argument has to come directly after the
-         {INPUT-PATH}. The argument has to be passed with a valid calculator type with the following format:
-         '-c {calculator type}'
-         The implemented calculators right now are 'default' and 'LJCalculator'
+         the default calculator will be used. The argument has to be passed with a valid calculator type with the following format:
+         '-c {calculator type}' or '--calculator={calculator type}'
+         The implemented calculators right now are 'Default' and 'LJC'
 
         '{DELTA_T}': Time step which will be used for the simulation. The argument has to be passed with a positive number
-        following the format: '-d {positive number}'
-        If -d is not specified while executing the program, for the default calculator the value d = 0.014 and for the LJCalculator
-        the default value d = 0.0002 will be used.
+        following the format: '-d {positive number}' or '--deltaT {positive number}'
+        If -d is not specified while executing the program, the value d = 0.014 will be used.
 
         '{END_TIME}': The end time used for the simulation. The argument has to be passed with a positive number
-        following the format: '-e {positive number}'
-        If -e is not specified while executing the program, or the default calculator the value e = 1000 and for the LJCalculator
-        the default value d = 5 will be used.
+        following the format: '-e {positive number}' or '--endTime {positive number}'
+        If -e is not specified while executing the program, the value e = 1000 will be used.
 
         '{LOG_LEVEL}': The log level that is to be used. It is not possible to set a log level higher than the compile-time 
         log level at runtime (see 2.). 
         Possible values are, in ascending order: 'off', 'error', 'warn', 'info', 'debug' and 'trace' / 'all'. 
         If -l is not specified, the log level specified at compile time will be used.
+        The argument has to be passed with the following format: '-l {logLevel}' or '--logLevel {logLevel}' 
 
 ---
 ## Creating Doxygen Documentation:
