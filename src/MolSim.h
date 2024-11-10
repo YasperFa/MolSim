@@ -17,7 +17,6 @@
 
 class MolSim {
 public:
-
     static void printHelp() {
         std::cout << R"(
     Welcome to MolSim helper!
@@ -73,7 +72,6 @@ public:
     static bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                std::unique_ptr<Calculators::Calculator> &calculator) {
-
         cxxopts::Options options("MolSim", "Molecular Simulation Of Group G WS24");
 
         options.add_options()
@@ -109,7 +107,7 @@ public:
 
         //check if the input file exists
         std::ifstream file(inputFile);
-        if(!file) {
+        if (!file) {
             SPDLOG_ERROR("Failed to open input file {}, check if the spelling is correct!", inputFile);
             printHelp();
             return false;
@@ -130,8 +128,6 @@ public:
         outputWriter = std::make_unique<outputWriters::VTKWriter>();
         calculator = std::make_unique<Calculators::Calculator>();
         spdlog::set_level(spdlog::level::info);
-
-
 
 
         //set the outpit writer
@@ -193,8 +189,9 @@ public:
     }
 
 
-    static void runSim(ParticleContainer& particleContainer, double& deltaT, double& endTime,
-        std::unique_ptr<outputWriters::OutputWriter>& outputWriter, std::unique_ptr<Calculators::Calculator>& calculator) {
+    static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime,
+                       std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                       std::unique_ptr<Calculators::Calculator> &calculator) {
         SPDLOG_INFO("Hello from MolSim for PSE!");
 
         const std::string outName = "MD";
