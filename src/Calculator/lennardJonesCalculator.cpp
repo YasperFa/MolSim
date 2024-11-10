@@ -14,7 +14,7 @@ namespace Calculators {
     std::array<double, 3> lennardJonesCalculator::calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) {
         SPDLOG_TRACE("executing calculateF with lennardJonesCalculator");
         double potential_dirivative = -24*epsilon*(pow((small_sigma/normCubed),6) - 2*pow((small_sigma/normCubed),12))/normCubed;
-        std::array<double,3> fij = multiply_constant_vector(sub,potential_dirivative/normCubed);
+        const std::array<double,3> fij = multiply_constant_vector(subtractVector({0.0,0.0,0.0},sub),potential_dirivative/normCubed);
         return fij;
     }
 }

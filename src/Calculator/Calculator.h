@@ -48,7 +48,7 @@ namespace Calculators {
                     continue;
                 }
                 // calculate Force between the current pair of particles
-                std::array<double, 3> fij = calculateFIJ(subtractVector(p1.getX(), p2.getX()),p1.getM(),p2.getM(),normCubed);
+                std::array<double, 3> fij = calculateFIJ(sub,p1.getM(),p2.getM(),normCubed);
                 // add force of this pair to the overall force of particle 1
                 p1.setF(addVector(p1.getF(),fij));
                 // make use of Newton's third law and add the negative force calculated above to particle 2
