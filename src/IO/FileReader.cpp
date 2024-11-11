@@ -27,12 +27,10 @@ void FileReader::readFile(ParticleContainer &particles, const std::string& filen
         std::string tmp_string;
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
-
         while (tmp_string.empty() or tmp_string[0] == '#') {
             getline(input_file, tmp_string);
             SPDLOG_DEBUG("Read line: {}", tmp_string);
         }
-
         std::istringstream numstream(tmp_string);
         int object_type = 0;
         numstream >> object_type;
@@ -56,7 +54,6 @@ void FileReader::readParticles(ParticleContainer &particles, std::ifstream &inpu
     double m;
     int num_particles = 0;
     std::string tmp_string;
-
     getline(input_file, tmp_string);
     SPDLOG_DEBUG("Read line: {}", tmp_string);
     std::istringstream numstream(tmp_string);
@@ -74,11 +71,11 @@ void FileReader::readParticles(ParticleContainer &particles, std::ifstream &inpu
         for (auto &vj: v) {
             datastream >> vj;
         }
-        if (datastream.eof()) {
-            SPDLOG_ERROR("Error reading file: eof reached unexpectedly reading from line {}", i);
+        datastream >> m;
+        if (datastream.fail()) {
+            SPDLOG_ERROR("Error reading file: unexpected data format");
             exit(-1);
         }
-        datastream >> m;
         particles.addParticle(Particle(x, v, m));
 
         getline(input_file, tmp_string);
@@ -129,20 +126,17 @@ void FileReader::readCuboids(ParticleContainer &particles, std::ifstream &input_
         datastream >> h;
         // get the mass
         datastream >> m;
-        // check if end of line is reach --> not enough data
-        if (datastream.eof()) {
-            SPDLOG_ERROR("Error reading file: eof reached unexpectedly reading from line {}", i);
-            exit(-1);
-        }
         // get the mean velocity
         datastream >> mv;
+        if (datastream.fail()) {
+            SPDLOG_ERROR("Error reading file: unexpected data format");
+            exit(-1);
+        }
         // create a cuboid with the parameters
         Cuboid cuboid(x, N, h, m, v, mv);
         SPDLOG_DEBUG("Cuboid created!: ");
         // generates the particles in the cuboid
-
         ParticleGenerator::generateCuboid(particles,cuboid);
-
         // read another line (if more cuboids follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
