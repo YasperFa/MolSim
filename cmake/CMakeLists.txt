@@ -4,7 +4,9 @@ include(FetchContent)
 file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleContainer.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleGenerator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 # fetch Googletest from the github repository

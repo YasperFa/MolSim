@@ -30,7 +30,7 @@ TEST(CalculatorTest, correctXcalculations) {
 /*Checks that calculateF() correctly updates the force between particles*/
 TEST(CalculatorTest, correctFIJcalculations) {
     ParticleContainer test;
-    std::array old = {1.0, 2.0, 3.0};
+    std::array<double,3> old = {1.0, 2.0, 3.0};
 
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
     i.setF(old);
