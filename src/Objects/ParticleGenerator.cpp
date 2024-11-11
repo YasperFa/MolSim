@@ -11,12 +11,12 @@
 void ParticleGenerator::generateCuboid(ParticleContainer &particles, Cuboid &cuboid) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
-    std::array<double,3> N = cuboid.get_num_of_particlespDimension();
-    std::array<double,3> x = cuboid.get_lower_front_corner();
-    std::array<double,3> v = cuboid.get_init_velocity();
-    double h = cuboid.get_dist_pasrticles();
-    double mv = cuboid.get_mean_velocity();
-    double m = cuboid.get_mass();
+    std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
+    std::array<double,3> x = cuboid.getLowerFrontCorner();
+    std::array<double,3> v = cuboid.getInitVelocity();
+    double h = cuboid.getDistBetweenParticles();
+    double mv = cuboid.getMeanVelocity();
+    double m = cuboid.getMass();
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
             for (int i=0; i < N[0];++i) {

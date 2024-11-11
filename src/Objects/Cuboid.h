@@ -56,42 +56,42 @@ public:
      * @brief Get the lower left front corner of the cuboid.
      * @return The lower left front corner of the cuboid.
      */
-    std::array<double, 3> get_lower_front_corner() const {
+    std::array<double, 3> getLowerFrontCorner() const {
      return x;
     }
     /**
     * @brief Get the number of particles per dimension in the cuboid.
     * @return the number of particles per dimension in the cuboid.
     */
-    std::array<double, 3> get_num_of_particlespDimension() const {
+    std::array<double, 3> getNumOfParticlesPerDimension() const {
      return N;
     }
      /**
      * @brief Get the distance between particles in the cuboid.
      * @return the distance between particles in the cuboid.
      */
-    double get_dist_pasrticles() const {
+    double getDistBetweenParticles() const {
      return h;
     }
     /**
     * @brief Get the mass of particles in the cuboid.
     * @return the mass of particles in the cuboid.
     */
-    double get_mass() const {
+    double getMass() const {
      return m;
     }
     /**
    * @brief Get the initial velocity of particles in the cuboid.
    * @return the initial velocity of particles in the cuboid.
    */
-    std::array<double, 3> get_init_velocity() const {
+    std::array<double, 3> getInitVelocity() const {
      return v;
     }
      /**
     * @brief Get the mean velocity of particles in the cuboid.
     * @return the mean velocity of particles in the cuboid.
     */
-    double  get_mean_velocity() const {
+    double  getMeanVelocity() const {
      return mv;
     }
 
