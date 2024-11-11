@@ -27,6 +27,7 @@
 
 
 int main(int argc, char *argsv[]) {
+    spdlog::set_level(spdlog::level::trace); 
     std::string inputFile;
     double deltaT;
     double endTime;

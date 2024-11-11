@@ -81,7 +81,7 @@ public:
                 ("e,endTime", "Set endTime", cxxopts::value<double>()->default_value("1000"))
                 ("o,output", "Set Outputwriter (VTK or XYZ)", cxxopts::value<std::string>())
                 ("c,calculator", "Set Calculator", cxxopts::value<std::string>())
-                ("l,logLevel", "Set log level", cxxopts::value<std::string>()->default_value("info"));
+                ("l,logLevel", "Set log level", cxxopts::value<std::string>());
 
 
         auto res = options.parse(argc, argv);
@@ -127,7 +127,6 @@ public:
         endTime = res["endTime"].as<double>();
         outputWriter = std::make_unique<outputWriters::VTKWriter>();
         calculator = std::make_unique<Calculators::Calculator>();
-        spdlog::set_level(spdlog::level::info);
 
 
         //set the outpit writer
@@ -191,9 +190,8 @@ public:
 
     static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime,
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                       std::unique_ptr<Calculators::Calculator> &calculator) {
+                       std::unique_ptr<Calculators::Calculator> &calculator) {            
         SPDLOG_INFO("Hello from MolSim for PSE!");
-
         const std::string outName = "MD";
 
         double currentTime = 0.0;
@@ -207,7 +205,7 @@ public:
                 outputWriter->plotParticles(iteration, particleContainer, outName);
             }
 
-            SPDLOG_TRACE("Iteration {} finished.", iteration);
+            SPDLOG_DEBUG("Iteration {} finished.", iteration);
             currentTime += deltaT;
         }
         SPDLOG_INFO("Output written. Terminating...");
