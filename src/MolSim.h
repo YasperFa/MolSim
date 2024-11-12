@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "Calculator/Calculator.h"
-#include "Calculator/lennardJonesCalculator.h"
+#include "Calculator/LennardJonesCalculator.h"
 #include "IO/Input/FileReader.h"
 #include "Objects/ParticleContainer.h"
 #include "IO/Output//outputWriter/OutputWriter.h"
@@ -149,7 +149,7 @@ public:
         if (res.count("calculator")) {
             std::string calculatorTemp = res["calculator"].as<std::string>();
             if (calculatorTemp == "LJC") {
-                calculator = std::make_unique<Calculators::lennardJonesCalculator>();
+                calculator = std::make_unique<Calculators::LennardJonesCalculator>();
                 SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
             } else if (calculatorTemp == "Default") {
                 calculator = std::make_unique<Calculators::Calculator>();

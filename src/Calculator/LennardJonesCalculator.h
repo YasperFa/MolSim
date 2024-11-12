@@ -10,12 +10,12 @@
 
 
 namespace Calculators{
-    class lennardJonesCalculator : public Calculator {
+    class LennardJonesCalculator : public Calculator {
         public:
 
-          lennardJonesCalculator() = default;
+          LennardJonesCalculator() = default;
 
-          virtual ~lennardJonesCalculator() = default;
+          virtual ~LennardJonesCalculator() = default;
           /**
           *  function for calculating the force FIJ acting between two particles according to lennard jones
           * @param sub: subtraction of positions

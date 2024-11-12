@@ -30,7 +30,7 @@ namespace Calculators {
         /**
         * calculate the force for all particles
         */
-        virtual void calculateF(ParticleContainer &particleContainer) {
+        void calculateF(ParticleContainer &particleContainer) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0,0.0,0.0};
