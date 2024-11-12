@@ -2,9 +2,9 @@
 // Created by Yasmine Farah on 07/11/2024.
 //
 #include "gtest/gtest.h"
-#include "../src/Calculator/Calculator.h"
-#include "../src/Objects/ParticleContainer.h"
-#include "../src/Objects/Particle.h"
+#include "../../src/Calculator/Calculator.h"
+#include "../../src/Objects/ParticleContainer.h"
+#include "../../src/Objects/Particle.h"
 
 /*Checks that calculateX() correctly updates the position of a particle*/
 TEST(CalculatorTest, correctXcalculations) {

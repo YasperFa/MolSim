@@ -1,12 +1,11 @@
 //
-// Created by Yasmine Farah on 11/11/2024.
+// Created by Yasmine Farah on 12/11/2024.
 //
 
 #include <gtest/gtest.h>
-
-#include "../src/Objects/ParticleGenerator.h"
-#include "../src/Objects/Cuboid.h"
-#include "../src/Objects/ParticleContainer.h"
+#include "../../src/Objects/ParticleGenerator.h"
+#include "../../src/Objects/Cuboid.h"
+#include "../../src/Objects/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 TEST(ParticleGeneratorTest, checkContainerSize) {
     std::array<double,3> x = {0.0,0.0,0.0} ;

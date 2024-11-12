@@ -3,6 +3,9 @@ include(FetchContent)
 # collect all cpp files in tests
 file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/Calculator/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/ParticleGeneratorTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleContainer.cpp"
@@ -20,7 +23,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # create testing executable
-add_executable(Test ${TEST_SRC})
+add_executable(Test ${TEST_SRC}
+        ../tests/Objects/CuboidTest.cpp
+        ../tests/Objects/ParticleGeneratorTest.cpp)
 
 target_include_directories(Test
         PRIVATE
