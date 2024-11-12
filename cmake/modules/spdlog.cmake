@@ -32,4 +32,4 @@ else()
         set (LOG_LEVEL SPDLOG_LEVEL_INFO)
 endif()
 
-target_compile_definitions(MolSim PRIVATE SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL})
+target_compile_definitions(MolSim PRIVATE -D SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL})

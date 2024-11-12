@@ -59,7 +59,7 @@ or
 Example calls: 
 
         './MolSim -h' or './MolSim --help'
-        './MolSim -i ../input/eingabe-sonne.txt -c default -o VTK -l debug'
+        './MolSim -i ../input/eingabe-sonne.txt -c Default -o VTK -l debug'
         './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info'
         './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5'
 
