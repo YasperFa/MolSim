@@ -3,6 +3,7 @@
 //
 #include "gtest/gtest.h"
 #include "../../src/Calculator/Calculator.h"
+#include "../../src/Calculator/LennardJonesCalculator.h"
 #include "../../src/Objects/ParticleContainer.h"
 #include "../../src/Objects/Particle.h"
 
@@ -120,6 +121,33 @@ TEST(CalculatorTest, correctVcalculations) {
         EXPECT_NEAR(6.296405819, (test.getParticle(j).getV())[in], 0.00001);
         EXPECT_NEAR(10.26234435, (test.getParticle(k).getV())[in], 0.00001);
     }
+
+    }
+
+    /*Checks that calculateF() of LJC correctly updates the force between particles*/
+TEST(CalculatorTest, correctLJcalculations) {
+    ParticleContainer test;
+
+    Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
+    test.addParticle(i);
+
+    Particle j({2.0, 2.0, 2.0},{0.0, 0.0, 0.0},2.0,0);
+    test.addParticle(j);
+
+    Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
+    test.addParticle(k);
+
+    test.initializePairsVector();
+
+    Calculators::LennardJonesCalculator calc;
+    calc.calculateF(test); 
+
+    for (int in = 0; in < 3; in++) {
+        EXPECT_NEAR(0.01165109898, (test.getParticle(i).getF())[in], 0.00001);
+        EXPECT_NEAR(0, (test.getParticle(j).getF())[in], 0.00001);
+        EXPECT_NEAR(-0.01165109898, (test.getParticle(k).getF())[in], 0.00001);
+    }
     
 
 }
+    
