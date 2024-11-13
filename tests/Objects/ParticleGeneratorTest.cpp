@@ -7,6 +7,8 @@
 #include "../../src/Objects/Cuboid.h"
 #include "../../src/Objects/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
+
+/* checks if particle container has the correct number of particles */
 TEST(ParticleGeneratorTest, checkContainerSize) {
     std::array<double,3> x = {0.0,0.0,0.0} ;
     std::array<double,3> N = {1.0, 1.0, 1.0} ;
@@ -30,6 +32,7 @@ TEST(ParticleGeneratorTest, checkContainerSize) {
     // size should be 2*4*3 plus existing particles
     EXPECT_EQ(27,pc.sizeParticles());
 }
+/* checks if the particles are initialized with the correct position */
 TEST(ParticleGeneratorTest, checkParticlePositions) {
     std::array<double,3> x = {0.0,0.0,0.0} ;
     std::array<double,3> N = {2.0, 2.0, 2.0} ;
@@ -51,6 +54,7 @@ TEST(ParticleGeneratorTest, checkParticlePositions) {
 
 
 }
+/* checks if the generator correctly initializes mass, left up front corner*/
 TEST(ParticleGeneratorTest, checkOtherVariables) {
     std::array<double,3> x = {0.7,0.0,0.0} ;
     std::array<double,3> N = {1.0, 1.0, 1.0} ;

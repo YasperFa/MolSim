@@ -5,6 +5,7 @@
 
 #include "../../src/Objects/Cuboid.h"
 
+/* tests if getters and constructor work correctly */
 TEST(CuboidTest, testGettersAndConstructor) {
     std::array<double,3> x = {4.0,5.0,6.0} ;
     std::array<double,3> N = {3.0, 2.0, 1.0} ;
