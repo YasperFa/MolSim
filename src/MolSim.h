@@ -112,17 +112,30 @@ public:
             printHelp();
             return false;
         }
+
+        file.seekg(0, std::ios::end);
+        if (file.tellg() == 0) {
+            SPDLOG_ERROR("Failed to read input file {}! Input file is empty", inputFile);
+            printHelp();
+            return false;
+        }
         file.close();
 
-        //check if the input file is empty
-        if (inputFile.empty()) {
-            SPDLOG_ERROR("Input file is empty.");
+
+
+        //set deltaT and endTime
+        if (res["deltaT"].as<double>() < 0.0) {
+            SPDLOG_ERROR("Invalid deltaT value. DeltaT has to be positive");
             printHelp();
             return false;
         }
 
+        if (res["endTime"].as<double>() < 0.0) {
+            SPDLOG_ERROR("Invalid endTime value. EndTime has to be positive");
+            printHelp();
+            return false;
+        }
 
-        //set deltaT and endTime
         deltaT = res["deltaT"].as<double>();
         endTime = res["endTime"].as<double>();
         outputWriter = std::make_unique<outputWriters::VTKWriter>();
@@ -201,9 +214,12 @@ public:
             calculator->calculateXFV(particleContainer, deltaT);
 
             iteration++;
+
+
             if (iteration % 10 == 0) {
                 outputWriter->plotParticles(iteration, particleContainer, outName);
             }
+
 
             SPDLOG_DEBUG("Iteration {} finished.", iteration);
             currentTime += deltaT;
