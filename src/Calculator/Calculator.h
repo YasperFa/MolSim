@@ -43,7 +43,7 @@ namespace Calculators {
                 Particle &p1 = pair.first.get();
                 Particle &p2 = pair.second.get();
                 std::array<double, 3> sub = operator-(p2.getX(), p1.getX());
-                double normCubed = pow(ArrayUtils::L2Norm(sub),3.0);
+                double normCubed = ArrayUtils::L2Norm(sub);
                 //prevent division by 0
                 if (normCubed < 1e-8) {
                     continue;
@@ -61,7 +61,7 @@ namespace Calculators {
         * calculate the force between particle i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) {
-            return operator*(1.0/normCubed, operator*(m1*m2, sub));
+            return operator*(1.0/pow(normCubed, 3), operator*(m1*m2, sub));
         }
 
         /**

@@ -13,8 +13,8 @@ namespace Calculators {
     static const double smallSigma = 1;
     std::array<double, 3> LennardJonesCalculator::calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) {
         SPDLOG_TRACE("executing calculateF with lennardJonesCalculator");
-        double potential_dirivative = -24*epsilon*(pow((smallSigma/normCubed),6) - 2*pow((smallSigma/normCubed),12))/normCubed;
-        const std::array<double,3> fij = operator*(potential_dirivative/normCubed, operator-({0.0,0.0,0.0},sub));
+        double potential_dirivative = -24*epsilon*(pow((smallSigma/normCubed),6) - 2*pow((smallSigma/normCubed),12))/pow(normCubed, 2);
+        const std::array<double,3> fij = operator*(potential_dirivative, operator*(-1,sub));
         return fij;
     }
 }
