@@ -215,7 +215,6 @@ public:
 
             iteration++;
 
-
             if (iteration % 10 == 0) {
                 outputWriter->plotParticles(iteration, particleContainer, outName);
             }
