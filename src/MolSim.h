@@ -124,13 +124,13 @@ public:
 
 
         //set deltaT and endTime
-        if (res["deltaT"].as<double>() < 0.0) {
+        if (res["deltaT"].as<double>() <= 0.0) {
             SPDLOG_ERROR("Invalid deltaT value. DeltaT has to be positive");
             printHelp();
             return false;
         }
 
-        if (res["endTime"].as<double>() < 0.0) {
+        if (res["endTime"].as<double>() <= 0.0) {
             SPDLOG_ERROR("Invalid endTime value. EndTime has to be positive");
             printHelp();
             return false;
