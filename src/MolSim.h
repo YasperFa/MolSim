@@ -31,7 +31,7 @@ public:
     Example calls:
 
         './MolSim -h' or './MolSim --help'
-        './MolSim -i ../input/eingabe-sonne.txt -c default -o VTK -l debug'
+        './MolSim -i ../input/eingabe-sonne.txt -c Default -o VTK -l debug'
         './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info'
         './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5'
 
@@ -92,10 +92,35 @@ public:
             return false;
         }
 
+        if (res.count("logLevel")) {
+            std::string level = res["logLevel"].as<std::string>();
+            if (level == "off") {
+                spdlog::set_level(spdlog::level::off);
+            } else if (level == "trace") {
+                spdlog::set_level(spdlog::level::trace);
+            } else if (level == "debug") {
+                spdlog::set_level(spdlog::level::debug);
+            } else if (level == "info") {
+                spdlog::set_level(spdlog::level::info);
+            } else if (level == "warn") {
+                spdlog::set_level(spdlog::level::warn);
+            } else if (level == "error") {
+                spdlog::set_level(spdlog::level::err);
+            } else if (level == "all") {
+                spdlog::set_level(spdlog::level::trace);
+            } else {
+                SPDLOG_ERROR("Erroneous programme call! Invalid log level");
+                printHelp();
+                return false;
+            }
+            SPDLOG_DEBUG("log level was set to {}", level);
+        }
+
+
         //set the input file
         if (res.count("input")) {
             inputFile = res["input"].as<std::string>();
-            SPDLOG_INFO("Input file is: {}", inputFile);
+            SPDLOG_DEBUG("Input file is: {}", inputFile);
         }
 
         //check if the input file ends with ".txt"
@@ -147,10 +172,10 @@ public:
             std::string outputWriterTemp = res["output"].as<std::string>();
             if (outputWriterTemp == "VTK") {
                 outputWriter = std::make_unique<outputWriters::VTKWriter>();
-                SPDLOG_INFO("{} is selected as the output writer", outputWriterTemp);
+                SPDLOG_DEBUG("{} is selected as the output writer", outputWriterTemp);
             } else if (outputWriterTemp == "XYZ") {
                 outputWriter = std::make_unique<outputWriters::XYZWriter>();
-                SPDLOG_INFO("{} is selected as the output writer", outputWriterTemp);
+                SPDLOG_DEBUG("{} is selected as the output writer", outputWriterTemp);
             } else {
                 SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified!");
                 printHelp();
@@ -173,30 +198,7 @@ public:
             }
         }
 
-        if (res.count("logLevel")) {
-            std::string level = res["logLevel"].as<std::string>();
-            if (level == "off") {
-                spdlog::set_level(spdlog::level::off);
-            } else if (level == "trace") {
-                spdlog::set_level(spdlog::level::trace);
-            } else if (level == "debug") {
-                spdlog::set_level(spdlog::level::debug);
-            } else if (level == "info") {
-                spdlog::set_level(spdlog::level::info);
-            } else if (level == "warn") {
-                spdlog::set_level(spdlog::level::warn);
-            } else if (level == "error") {
-                spdlog::set_level(spdlog::level::err);
-            } else if (level == "all") {
-                spdlog::set_level(spdlog::level::trace);
-            } else {
-                SPDLOG_ERROR("Erroneous programme call! Invalid log level");
-                printHelp();
-                return false;
-            }
-            SPDLOG_DEBUG("log level was set to {}", level);
-        }
-
+        
         return true;
     }
 
@@ -204,7 +206,7 @@ public:
     static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime,
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                        std::unique_ptr<Calculators::Calculator> &calculator) {            
-        SPDLOG_INFO("Hello from MolSim for PSE!");
+        
         const std::string outName = "MD";
 
         double currentTime = 0.0;
