@@ -221,7 +221,6 @@ public:
                 outputWriter->plotParticles(iteration, particleContainer, outName);
             }
 
-
             SPDLOG_DEBUG("Iteration {} finished.", iteration);
             currentTime += deltaT;
         }
