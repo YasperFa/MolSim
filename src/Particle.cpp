@@ -29,11 +29,7 @@ Particle::Particle(const Particle &other) {
 
 // Todo: maybe use initializater list instead of copy?
 Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
-                   double m_arg, int type_arg) {
-  x = x_arg;
-  v = v_arg;
-  m = m_arg;
-  type = type_arg;
+                   double m_arg, int type_arg) : x(x_arg), v(v_arg), m(m_arg), type(type_arg) {
   f = {0., 0., 0.};
   old_f = {0., 0., 0.};
   std::cout << "Particle generated!" << std::endl;
@@ -53,6 +49,23 @@ double Particle::getM() const { return m; }
 
 int Particle::getType() const { return type; }
 
+void Particle::setF(const std::array<double, 3> &newF) {
+  f = newF;
+}
+
+void Particle::setOldF(const std::array<double, 3> &newOldF) {
+  old_f = newOldF;
+}
+void Particle::setX(const std::array<double, 3> &X) {
+  x = X;
+}
+
+void Particle::setV(const std::array<double, 3> &V) {
+  v = V;
+}
+
+
+
 std::string Particle::toString() const {
   std::stringstream stream;
   stream << "Particle: X:" << x << " v: " << v << " f: " << f
@@ -69,3 +82,4 @@ std::ostream &operator<<(std::ostream &stream, Particle &p) {
   stream << p.toString();
   return stream;
 }
+
