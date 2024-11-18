@@ -7,6 +7,7 @@
 #include <iostream>
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 #include "schema.hxx"
+#include "spdlog/spdlog.h"
 
 
 
@@ -26,8 +27,8 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
         if (sim.get() != nullptr) { // Check if parsing succeeded
 
             if(sim->output().writeFrequency().present()){
-                SPDLOG_DEBUG("Writer frequency from xml: " <<iteration);
                 freq = sim->output().writeFrequency().get();
+                SPDLOG_DEBUG("Writer frequency from xml: {}", freq);
                 if (freq <= 0){
                     SPDLOG_ERROR("Invalid Frequency, Frequency should be positive!, using default value");
                     freq = 10;
@@ -36,7 +37,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
             if(sim->parameters().deltaT().present()){
 
                 deltaT = sim->parameters().deltaT().get();
-                SPDLOG_DEBUG("deltaT from XML selected: " << deltaT);
+                SPDLOG_DEBUG("deltaT from XML selected: {}",deltaT);
                 if (deltaT <= 0){
                     SPDLOG_ERROR("Invalid deltaT, deltaT should be positive!, using default value");
                     deltaT = 0.0002;
@@ -44,7 +45,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
             }
             if(sim->parameters().tEnd().present()){
                 endTime = sim->parameters().tEnd().get();
-                SPDLOG_DEBUG("endTime from XML selected: " << endTime);
+                SPDLOG_DEBUG("endTime from XML selected: {}", endTime);
                 if (endTime < 0){
                     SPDLOG_ERROR("Invalid endTime, endTime should be >= 0 !, using default value");
                     endTime = 5;
@@ -84,7 +85,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
                     return;
                 }
             }
-            for (int i=0; i < sim->cuboids().size();i++){
+            for (int i=0; i < (int) sim->cuboids().size();i++){
                 SPDLOG_DEBUG("reading cuboids from xml file");
                 // define all Cuboid parameters
                 std::array<double, 3> x;
@@ -113,7 +114,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
         }
     } catch (const xml_schema::exception& e) {
         // Handle parsing exceptions
-        SPDLOG_DEBUG("XML parsing error: " << e.what);
+        SPDLOG_DEBUG("XML parsing error: {}" , e.what());
         return;
     }
 }
