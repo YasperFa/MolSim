@@ -9,10 +9,11 @@
 TEST(ParticleContainerTest, StrctureAfterAddParticle) {
     ParticleContainer test;
     Particle p(0);
+    
     EXPECT_EQ(test.sizeParticles(), 0);
     test.addParticle(p);
     EXPECT_EQ(test.sizeParticles(), 1);
-    
+
     test.removeParticle(p);
     EXPECT_EQ(test.sizeParticles(), 0);
     
