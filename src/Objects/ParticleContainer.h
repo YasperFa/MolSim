@@ -61,12 +61,21 @@ class ParticleContainer {
 
     /**
     * This method adds the passed particle into the container.
+    * No pairs are created. Call initializePairsVector() after adding all particles.
     * @param particle is the particle to be added.
     */
     void addParticle(const Particle& particle);
 
     /**
+    * This method adds the passed particle into the container and creates all new pairs containing this particle.
+    * Equivalent to calling addParticle() and then calling reinitializePairs(), but more efficient.
+    * @param particle is the particle to be added.
+    */
+    void addParticleToPairs(Particle& particle);
+
+    /**
     * This method removes the passed particle from the container.
+    * All pairs containing this particle are removed.
     * @param particle is the particle to be removed.
     */
     void removeParticle(const Particle& particle);

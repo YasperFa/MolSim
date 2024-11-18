@@ -29,8 +29,29 @@
         particles.push_back(particle);
     }
 
+     void ParticleContainer::addParticleToPairs(Particle& particle) {
+        for ( auto & p : particles) {
+            std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>> pair = std::make_pair(std::ref(p), std::ref(particle));
+            particlePairs.push_back(pair);
+            //SPDLOG_TRACE("Pair created! {},{}" ,p.getID(), particle.getID());
+        }
+        
+        particles.push_back(particle);
+     }
+
     void ParticleContainer::removeParticle(const Particle &particle) {
         SPDLOG_TRACE("removing particle from container");
+
+        particlePairs.erase(
+            std::remove_if(begin_pairs(), end_pairs(), [&particle] (std::pair<std::reference_wrapper<Particle>, std::reference_wrapper <Particle>> pair) {
+                    if  ((pair.first.get().getID() == particle.getID())|| (pair.second.get().getID() == particle.getID()) ) {
+                        //SPDLOG_TRACE("removing pair {},{}", pair.first.get().getID(),pair.second.get().getID( ));
+                        return true;
+                    }
+                    return false;
+            }),
+            end_pairs());
+
         particles.erase(
             std::remove_if(particles.begin(), particles.end(), [&particle](const Particle &p) {
                     if (p.getID() == particle.getID()) {
@@ -39,7 +60,6 @@
                     return false;
             }),
             particles.end());
-        reinitializePairs();
     }
 
     Particle& ParticleContainer::getParticle(int id) {
