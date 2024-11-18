@@ -124,7 +124,7 @@ public:
         }
 
         //check if the input file ends with ".txt"
-        if (inputFile.length() < 5 || inputFile.compare(inputFile.length() - 4, 4, ".txt") != 0) {
+        if (inputFile.length() < 5 || (inputFile.compare(inputFile.length() - 4, 4, ".txt") != 0 && inputFile.compare(inputFile.length() - 4, 4, ".xml") != 0)) {
             SPDLOG_ERROR("Invalid input path! Input file must be a '.txt' file");
             printHelp();
             return false;
@@ -203,7 +203,7 @@ public:
     }
 
 
-    static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime,
+    static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                        std::unique_ptr<Calculators::Calculator> &calculator) {            
         
@@ -217,7 +217,7 @@ public:
 
             iteration++;
 
-            if (iteration % 10 == 0) {
+            if (iteration % freq == 0) {
                 outputWriter->plotParticles(iteration, particleContainer, outName);
             }
 

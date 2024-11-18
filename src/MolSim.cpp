@@ -4,6 +4,8 @@
 
 #include "MolSim.h"
 
+#include "IO/Input/XMLfileReader.h"
+
 
 /** \brief Reads programme input and writes output file
  *
@@ -31,25 +33,34 @@ int main(int argc, char *argsv[]) {
     std::string inputFile;
     double deltaT;
     double endTime;
+    int iteration;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
-
-    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator)) {
+    ParticleContainer particleContainer;
+    //parses and sets arguments from the command line
+    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator)){
         return 1;
+       }
+    //if the specified input file is xml, overwrite and set new arguments
+    if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
+        std::ifstream file(inputFile);
+        XMLfileReader::parseXMLFromFile(file,deltaT,endTime, iteration, outputWriter,calculator, particleContainer);
+    }
+    else{
+        FileReader fileReader;
+        fileReader.readFile(particleContainer, inputFile);
     }
 
-    ParticleContainer particleContainer;
 
-    FileReader fileReader;
-    fileReader.readFile(particleContainer, inputFile);
     particleContainer.initializePairsVector();
 
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(particleContainer, deltaT, endTime, outputWriter, calculator);
+    MolSim::runSim(particleContainer, deltaT, endTime, iteration, outputWriter, calculator);
 
     SPDLOG_DEBUG("Simulation finished!");
 
     return 0;
+
 }

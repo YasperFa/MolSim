@@ -47,7 +47,7 @@ To be able to build and run this code, the following tools have to be installed:
 The user should ensure they are in the directory where they built the project with cmake.
 
 ---
-4) Running the code:
+4) Running the code: ** values from the command line will be overwritten by the values specified in the xml file if the latter is specified as input file **
 
 
         './MolSim -i .{INPUT_PATH} -c {CALCULATOR} -d {DELTA_T} -e {END_TIME} -o {OUTPUT_WRITER} -l {LOG_LEVEL}'
@@ -60,6 +60,8 @@ Example calls:
 
         './MolSim -h' or './MolSim --help'
         './MolSim -i ../input/eingabe-sonne.txt -c Default -o VTK -l debug'
+        './MolSim -i ../input/schema.xml'
+        './MolSim -i ../input/schema.xml -c Default -o VTK -l debug'
         './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info'
         './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5'
 
@@ -70,7 +72,7 @@ The output should be in the build directory.
 
     Compulsory arguments:
 
-        '{INPUT_PATH}': Path to the input file. For example, '-i ../input/eingabe-sonne.txt' or 'input=../input/cuboid-example.txt'.
+        '{INPUT_PATH}': Path to the input file. For example, '-i ../input/eingabe-sonne.txt' or 'input=../input/cuboid-example.txt' or s'input=../input/schema.xml'.
 
         '{OUTPUT_WRITER}': Specifies which output writer will be used. Either VTK or XYZ has to be chosen. Examples: "-o VTK" or "-output XYZ"
 
