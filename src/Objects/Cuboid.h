@@ -10,7 +10,7 @@
 
 
 class Cuboid {
-public:
+private:
  /**
   * Coordinate of the  lower left front-side corner
   */
