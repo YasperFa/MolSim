@@ -2,9 +2,13 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "master", "Assignment2", "Assignment3"]
+    branches:
+      - 'master'
+      - 'Assignment?'
   pull_request:
-    branches: [ "master", "Assignment2", "Assignment3"]
+    branches: 
+      - 'master'
+      - 'Assignment?'
 
 jobs:
   build:
