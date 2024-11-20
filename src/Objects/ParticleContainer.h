@@ -6,6 +6,7 @@
 #include "Particle.h"
 
 #include <vector>
+#include <functional> 
 
 /**
  * Container for storing Particle objects and
@@ -25,7 +26,6 @@ class ParticleContainer {
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> particlePairs;
 
     public:
-    /////////////////////////////////////////////(Iterators)///////////////////////////////////////////////////////////
     /**
     * @return an iterator to the beginning of the particles vector.
     */
@@ -48,7 +48,6 @@ class ParticleContainer {
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator end_pairs();
 
 
-    ///////////////////////////////////(Constructor and Deconstructor)//////////////////////////////////////////////////
     /**
     * default constructor
     */
@@ -59,7 +58,6 @@ class ParticleContainer {
      */
     ~ParticleContainer() = default;
 
-    //////////////////////////////////////////////(Methods)/////////////////////////////////////////////////////////////
 
     /**
     * This method adds the passed particle into the container.
@@ -73,6 +71,25 @@ class ParticleContainer {
     */
     void removeParticle(const Particle& particle);
 
+    /**
+     * This method returns the particle with the corresponding id
+     * @param id is a unique int identifier
+     * @returns the corresponding particle
+     * 
+     * Throws an error if the container does not contain a particle with this id
+     */
+
+    Particle& getParticle(int id);
+
+    /**
+     * This method returns the particle from the container with the corresponding id
+     * @param a particle p which exists in the container
+     * @returns the corresponding particle
+     * 
+     * Throws an error if the container does not contain a particle with this id
+     */
+
+    Particle& getParticle(Particle& p);
 
     /**
     * This method checks if a pair containing both particles passed as arguments
@@ -109,7 +126,6 @@ class ParticleContainer {
     size_t sizeParticlePairs() const;
 
 
-    //////////////////////////////////////////////(Getters)/////////////////////////////////////////////////////////////
     std::vector<Particle> getParticles() const;
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> getParticlePairs() const;
 
