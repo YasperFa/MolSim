@@ -11,17 +11,17 @@
 
 
 
-void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
+int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                      std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                      std::unique_ptr<Calculators::Calculator> &calculator, ParticleContainer &particleContainer) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");
-        return;
+        return 1;
     }
     try {
         // Parse the XML file into a DOM object
-        std::unique_ptr<simulation> sim = simulation_(fileStream,xml_schema::flags::dont_validate);
+        std::unique_ptr<simulation> sim = simulation_(fileStream);
 
         // Access the parsed data
         if (sim.get() != nullptr) { // Check if parsing succeeded
@@ -65,7 +65,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
                     SPDLOG_DEBUG("xyz is selected from xml as the output writer");
                 } else {
                     SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified! Using default value/value from flag");
-                    return;
+                    return 1;
                 }
             }
             if(sim->calculator().calculatorForce().present())
@@ -82,7 +82,7 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
                     calculator = std::make_unique<Calculators::Calculator>();
                 } else {
                     SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! Using default value/value from flag");
-                    return;
+                    return 1;
                 }
             }
             for (int i=0; i < (int) sim->cuboids().size();i++){
@@ -108,13 +108,14 @@ void XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, d
             }
 
 
-
+        return 0;
         } else {
             SPDLOG_DEBUG("Parsing returned a null object.");
+            return 1;
         }
     } catch (const xml_schema::exception& e) {
         // Handle parsing exceptions
-        SPDLOG_DEBUG("XML parsing error: {}" , e.what());
-        return;
+        SPDLOG_ERROR("XML parsing error: {}, invalid xml format" , e.what());
+        return 1;
     }
 }

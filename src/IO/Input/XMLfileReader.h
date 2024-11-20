@@ -25,7 +25,7 @@ class XMLfileReader {
    * @param calculator: calculator LJC/Default
    * @param particleContainer: particle container
    */
-   static void parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
+   static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                std::unique_ptr<Calculators::Calculator> &calculator, ParticleContainer &particleContainer);
 };
