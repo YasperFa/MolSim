@@ -50,6 +50,6 @@ int main(int argc, char *argsv[]) {
     MolSim::runSim(particleContainer, deltaT, endTime, outputWriter, calculator);
 
     SPDLOG_DEBUG("Simulation finished!");
-
+  
     return 0;
 }

@@ -1,0 +1,42 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - Assignment?
+  pull_request:
+    branches: 
+      - master
+      - Assignment?
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checksout code
+        uses: actions/checkout@v4
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Dependencies
+        run: sudo apt install libxerces-c-dev
+
+      - name: Create build directory
+        run: mkdir build
+        
+      - name: Check compiler version
+        run: g++ --version
+
+      - name: Configure build
+        run: cmake -DCMAKE_CXX_FLAGS="-fsanitize=address" -B build .
+
+      - name: Build project
+        run: cmake --build build
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest
