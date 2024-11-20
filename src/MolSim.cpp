@@ -52,8 +52,8 @@ int main(int argc, char *argsv[]) {
         fileReader.readFile(particleContainer, inputFile);
     }
 
-
     particleContainer.initializePairsVector();
+
 
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
