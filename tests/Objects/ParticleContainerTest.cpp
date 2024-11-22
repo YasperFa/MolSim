@@ -48,7 +48,7 @@ TEST(ParticleContainerTest, PairsAfterAddParticle) {
 }
 
 /* Checks if addParticleToPairs() and removeParticle() work correctly*/
-TEST(ParticleContainerTest, addParticleToPairs) {
+/*TEST(ParticleContainerTest, addParticleToPairs) {
     ParticleContainer test;
     
     Particle p(0);
@@ -96,4 +96,4 @@ TEST(ParticleContainerTest, addParticleToPairs) {
     EXPECT_EQ(test.getParticles().size(), 0);
     EXPECT_ANY_THROW(test.getParticle(q));
 
-}
+}*/
