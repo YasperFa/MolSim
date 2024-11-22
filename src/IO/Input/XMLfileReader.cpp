@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
-#include "schema.hxx"
+#include "schema.h"
 #include "spdlog/spdlog.h"
 
 

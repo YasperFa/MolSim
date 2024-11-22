@@ -38,7 +38,7 @@
 
 #include <xsd/cxx/pre.hxx>
 
-#include "schema.hxx"
+#include "schema.h"
 
 // OutputType
 // 

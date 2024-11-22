@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef SCHEMA_HXX
-#define SCHEMA_HXX
+#ifndef SCHEMA_H
+#define SCHEMA_H
 
 #ifndef XSD_CXX11
 #define XSD_CXX11
@@ -1069,4 +1069,4 @@ simulation_ (::xml_schema::dom::unique_ptr< ::xercesc::DOMDocument > d,
 //
 // End epilogue.
 
-#endif // SCHEMA_HXX
+#endif // SCHEMA_H
