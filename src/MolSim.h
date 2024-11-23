@@ -8,7 +8,7 @@
 #include "Calculator/Calculator.h"
 #include "Calculator/LennardJonesCalculator.h"
 #include "IO/Input/FileReader.h"
-#include "Objects/ParticleContainer.h"
+#include "Objects/Containers/ParticleContainer.h"
 #include "IO/Output//outputWriter/OutputWriter.h"
 #include "IO/Output/outputWriter/VTKWriter.h"
 #include "IO/Output/outputWriter/XYZWriter.h"
@@ -84,16 +84,16 @@ public:
                 ("l,logLevel", "Set log level", cxxopts::value<std::string>());
 
 
-        auto res = options.parse(argc, argv);
+        auto parseResult = options.parse(argc, argv);
 
         //if the argument help or h is read print the help message
-        if (res.count("help")) {
+        if (parseResult.count("help")) {
             printHelp();
             return false;
         }
 
-        if (res.count("logLevel")) {
-            std::string level = res["logLevel"].as<std::string>();
+        if (parseResult.count("logLevel")) {
+            std::string level = parseResult["logLevel"].as<std::string>();
             if (level == "off") {
                 spdlog::set_level(spdlog::level::off);
             } else if (level == "trace") {
@@ -118,8 +118,8 @@ public:
 
 
         //set the input file
-        if (res.count("input")) {
-            inputFile = res["input"].as<std::string>();
+        if (parseResult.count("input")) {
+            inputFile = parseResult["input"].as<std::string>();
             SPDLOG_DEBUG("Input file is: {}", inputFile);
         }
 
@@ -149,27 +149,27 @@ public:
 
 
         //set deltaT and endTime
-        if (res["deltaT"].as<double>() <= 0.0) {
+        if (parseResult["deltaT"].as<double>() <= 0.0) {
             SPDLOG_ERROR("Invalid deltaT value. DeltaT has to be positive");
             printHelp();
             return false;
         }
 
-        if (res["endTime"].as<double>() <= 0.0) {
+        if (parseResult["endTime"].as<double>() <= 0.0) {
             SPDLOG_ERROR("Invalid endTime value. EndTime has to be positive");
             printHelp();
             return false;
         }
 
-        deltaT = res["deltaT"].as<double>();
-        endTime = res["endTime"].as<double>();
+        deltaT = parseResult["deltaT"].as<double>();
+        endTime = parseResult["endTime"].as<double>();
         outputWriter = std::make_unique<outputWriters::VTKWriter>();
         calculator = std::make_unique<Calculators::Calculator>();
 
 
         //set the outpit writer
-        if (res.count("output")) {
-            std::string outputWriterTemp = res["output"].as<std::string>();
+        if (parseResult.count("output")) {
+            std::string outputWriterTemp = parseResult["output"].as<std::string>();
             if (outputWriterTemp == "VTK") {
                 outputWriter = std::make_unique<outputWriters::VTKWriter>();
                 SPDLOG_DEBUG("{} is selected as the output writer", outputWriterTemp);
@@ -184,8 +184,8 @@ public:
         }
 
         //set the calculator
-        if (res.count("calculator")) {
-            std::string calculatorTemp = res["calculator"].as<std::string>();
+        if (parseResult.count("calculator")) {
+            std::string calculatorTemp = parseResult["calculator"].as<std::string>();
             if (calculatorTemp == "LJC") {
                 calculator = std::make_unique<Calculators::LennardJonesCalculator>();
                 SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);

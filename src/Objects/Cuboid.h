@@ -6,7 +6,7 @@
 #define CUBOID_H
 #include <array>
 
-#include "ParticleContainer.h"
+#include "Containers/ParticleContainer.h"
 
 
 class Cuboid {

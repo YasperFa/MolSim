@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "../../src/Objects/ParticleGenerator.h"
 #include "../../src/Objects/Cuboid.h"
-#include "../../src/Objects/ParticleContainer.h"
+#include "../../src/Objects/Containers/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
 /* checks if particle container has the correct number of particles */
