@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Cuboid.h"
+#include "Disc.h"
 class ParticleGenerator {
 
 
@@ -15,6 +16,10 @@ public:
    * @brief generates particles from a given cuboid
    */
    static void generateCuboid(ParticleContainer &particles, Cuboid& cuboid);
+   /**
+   * @brief generates particles from a given disc
+   */
+   static void generateDisc(ParticleContainer &particles, Disc& disc);
 };
 
 

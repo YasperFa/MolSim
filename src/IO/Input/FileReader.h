@@ -29,7 +29,12 @@ public:
   static void readParticles(ParticleContainer &particles, std::ifstream &input_file);
  /**Initializes a ParticleContainer with input Cuboids data from a file
  * @param particles: the empty particle container
- * @param filename: path to input file
+ * @param input_file: stream of file data
  */
  static void readCuboids(ParticleContainer &particles, std::ifstream &input_file);
+ /**Initializes a ParticleContainer with input Discs data from a file
+  * @param particles: the empty particle container
+  * @param input_file: stream of file data
+  */
+ static void readDiscs(ParticleContainer &particles, std::ifstream &input_file);
 };
