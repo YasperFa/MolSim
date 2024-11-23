@@ -33,7 +33,7 @@ int main(int argc, char *argsv[]) {
     std::string inputFile;
     double deltaT;
     double endTime;
-    int iteration;
+    int freq = 10;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     ParticleContainer particleContainer;
@@ -44,7 +44,7 @@ int main(int argc, char *argsv[]) {
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, iteration, outputWriter,calculator, particleContainer))
+        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, freq, outputWriter,calculator, particleContainer))
             return 1;
     }
     else{
@@ -58,7 +58,7 @@ int main(int argc, char *argsv[]) {
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(particleContainer, deltaT, endTime, iteration, outputWriter, calculator);
+    MolSim::runSim(particleContainer, deltaT, endTime, freq, outputWriter, calculator);
 
     SPDLOG_DEBUG("Simulation finished!");
 
