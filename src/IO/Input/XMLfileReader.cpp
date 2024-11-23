@@ -85,7 +85,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     return 1;
                 }
             }
-            for (int i=0; i < sim->shapes().particle().size(); i++) {
+            for (int i=0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
                 // define all particle parameters
                 std::array<double, 3> x;
