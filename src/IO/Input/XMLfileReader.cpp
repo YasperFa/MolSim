@@ -85,26 +85,59 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     return 1;
                 }
             }
-            for (int i=0; i < (int) sim->cuboids().size();i++){
+            for (int i=0; i < sim->shapes().particle().size(); i++) {
+                SPDLOG_DEBUG("reading particles from xml file");
+                // define all particle parameters
+                std::array<double, 3> x;
+                x[0] = sim->shapes().particle().at(i).position().x();
+                x[1] = sim->shapes().particle().at(i).position().y();
+                x[2] = sim->shapes().particle().at(i).position().z();
+                std::array<double, 3> v;
+                v[0] = sim->shapes().particle().at(i).velocity().x();
+                v[1] = sim->shapes().particle().at(i).velocity().y();
+                v[2] = sim->shapes().particle().at(i).velocity().z();
+                double m = sim->shapes().particle().at(i).mass();
+                Particle newParticle(x,v,m,0);
+                particleContainer.addParticle(newParticle);
+            }
+            for (int i=0; i < (int) sim->shapes().cuboid().size();i++){
                 SPDLOG_DEBUG("reading cuboids from xml file");
                 // define all Cuboid parameters
                 std::array<double, 3> x;
-                x[0] = sim->cuboids().at(i).position().x();
-                x[1] = sim->cuboids().at(i).position().y();
-                x[2] = sim->cuboids().at(i).position().z();
+                x[0] = sim->shapes().cuboid().at(i).position().x();
+                x[1] = sim->shapes().cuboid().at(i).position().y();
+                x[2] = sim->shapes().cuboid().at(i).position().z();
                 std::array<double, 3> N;
-                N[0] = sim->cuboids().at(i).dimensions().x();
-                N[1] = sim->cuboids().at(i).dimensions().y();
-                N[2] = sim->cuboids().at(i).dimensions().z();
+                N[0] = sim->shapes().cuboid().at(i).dimensions().x();
+                N[1] = sim->shapes().cuboid().at(i).dimensions().y();
+                N[2] = sim->shapes().cuboid().at(i).dimensions().z();
                 std::array<double, 3> v;
-                v[0] = sim->cuboids().at(i).initialVelocity().x();
-                v[1] = sim->cuboids().at(i).initialVelocity().y();
-                v[2] = sim->cuboids().at(i).initialVelocity().z();
-                double h = sim->cuboids().at(i).distance();
-                double m = sim->cuboids().at(i).mass();
-                double mv = sim->cuboids().at(i).meanVelocity();
+                v[0] = sim->shapes().cuboid().at(i).initialVelocity().x();
+                v[1] = sim->shapes().cuboid().at(i).initialVelocity().y();
+                v[2] = sim->shapes().cuboid().at(i).initialVelocity().z();
+                double h = sim->shapes().cuboid().at(i).distance();
+                double m = sim->shapes().cuboid().at(i).mass();
+                double mv = sim->shapes().cuboid().at(i).meanVelocity();
                 Cuboid cuboid(x,N,h,m,v,mv);
                 ParticleGenerator::generateCuboid(particleContainer, cuboid);
+            }
+            for (int i=0; i < (int) sim->shapes().disc().size();i++){
+                SPDLOG_DEBUG("reading discs from xml file");
+                // define all disc parameters
+                std::array<double, 3> x;
+                x[0] = sim->shapes().disc().at(i).center().x();
+                x[1] = sim->shapes().disc().at(i).center().y();
+                x[2] = sim->shapes().disc().at(i).center().z();
+                std::array<double, 3> v;
+                v[0] = sim->shapes().disc().at(i).initialVelocity().x();
+                v[1] = sim->shapes().disc().at(i).initialVelocity().y();
+                v[2] = sim->shapes().disc().at(i).initialVelocity().z();
+                double h = sim->shapes().disc().at(i).distance();
+                double m = sim->shapes().disc().at(i).mass();
+                double radius = sim->shapes().disc().at(i).radius();
+
+                Disc disc(x,v,radius,h,m);
+                ParticleGenerator::generateDisc(particleContainer, disc);
             }
 
 
