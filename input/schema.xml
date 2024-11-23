@@ -9,47 +9,24 @@
          <calculatorForce>Default</calculatorForce>
     </calculator>
     <parameters>
-        <tEnd>0.1</tEnd>
+        <tEnd>0.01</tEnd>
         <deltaT>0.0003</deltaT>
     </parameters>
-    <cuboids>
-        <position>
-            <x>0.0</x>
-            <y>1.0</y>
-            <z>0.0</z>
-        </position>
-        <dimensions>
-            <x>2</x>
-            <y>1</y>
-            <z>1</z>
-        </dimensions>
-        <initialVelocity>
-            <x>0.0</x>
-            <y>0.0</y>
-            <z>0.0</z>
-        </initialVelocity>
-        <distance>1.0</distance>
-        <meanVelocity>0.0</meanVelocity>
-        <mass>1.0</mass>
-    </cuboids>
-    <cuboids>
-        <position>
-            <x>10.0</x>
-            <y>1.0</y>
-            <z>0.0</z>
-        </position>
-        <dimensions>
-            <x>2</x>
-            <y>1</y>
-            <z>1</z>
-        </dimensions>
-        <initialVelocity>
-            <x>0.0</x>
-            <y>0.0</y>
-            <z>0.0</z>
-        </initialVelocity>
-        <distance>1.0</distance>
-        <meanVelocity>0.0</meanVelocity>
-        <mass>1.0</mass>
-    </cuboids>
+    <shapes>
+        <disc>
+            <center>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </center>
+            <radius>2</radius>
+            <initialVelocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </initialVelocity>
+            <distance>1.0</distance>
+            <mass>1.0</mass>
+        </disc>
+    </shapes>
 </simulation>

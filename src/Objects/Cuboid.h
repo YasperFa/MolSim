@@ -8,7 +8,9 @@
 
 #include "Containers/ParticleContainer.h"
 
-
+/**
+ * a class that defines cuboid parameters
+ */
 class Cuboid {
 private:
  /**
@@ -46,7 +48,7 @@ private:
     * @param mv Mean velocity of the particles.
     */
     Cuboid(const std::array<double, 3> x, const std::array<double, 3> N, const double h, const double m, const std::array<double, 3> v
-    ,const double mv);
+    ,const double mv) : x(x), N(N), h(h), m(m), v(v), mv(mv){}
 
     /**
     * @brief default destructor of the cuboid.

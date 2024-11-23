@@ -13,6 +13,7 @@
 #include <sstream>
 #include "spdlog/spdlog.h"
 #include "Objects/Cuboid.h"
+#include "Objects/Disc.h"
 #include "Objects/ParticleGenerator.h"
 FileReader::FileReader() = default;
 
@@ -32,16 +33,23 @@ void FileReader::readFile(ParticleContainer &particles, const std::string& filen
             SPDLOG_DEBUG("Read line: {}", tmp_string);
         }
         std::istringstream numstream(tmp_string);
-        int object_type = 0;
-        numstream >> object_type;
-        SPDLOG_DEBUG("Reading {}", object_type);
-        if (object_type == 0) {
-            readParticles(particles, input_file);
-        } else if (object_type == 1) {
-            readCuboids(particles, input_file);
-        } else {
-            SPDLOG_ERROR("Invalid object in input file");
-            throw std::invalid_argument("Invalid object.");
+        int objectType = 0;
+        numstream >> objectType;
+        SPDLOG_DEBUG("Reading {}", objectType);
+        // based on object type call respective function
+        switch(objectType) {
+            case 0:
+                readParticles(particles, input_file);
+                break;
+            case 1:
+                readCuboids(particles, input_file);
+                break;
+            case 2:
+                readDiscs(particles, input_file);
+                break;
+            default:
+                SPDLOG_ERROR("Invalid object in input file");
+                throw std::invalid_argument("Invalid object.");
         }
     }
 }
@@ -138,6 +146,60 @@ void FileReader::readCuboids(ParticleContainer &particles, std::ifstream &input_
         // generates the particles in the cuboid
         ParticleGenerator::generateCuboid(particles,cuboid);
         // read another line (if more cuboids follow)
+        getline(input_file, tmp_string);
+        SPDLOG_DEBUG("Read line: {}", tmp_string);
+    }
+}
+void FileReader::readDiscs(ParticleContainer &particles, std::ifstream &input_file) {
+    SPDLOG_DEBUG("reading discs from file");
+    // define all Cuboid parameters
+    std::array<double, 3> centerCoord;
+    std::array<double, 3> initVel;
+    int radius;
+    double h;
+    double m;
+    // initialize the number of discs which will be later read from the file
+    int numDiscs;
+    // initialize a string which will contain a line
+    std::string tmp_string;
+    // get the first line of data from the file. this line will specify the number of discs
+    getline(input_file, tmp_string);
+    SPDLOG_DEBUG("Read line: {}", tmp_string);
+    // convert the string to a stream, where strings are seperated by space
+    std::istringstream numstream(tmp_string);
+    // save the number of cuboids
+    numstream >> numDiscs;
+    SPDLOG_DEBUG("Reading {}.", numDiscs);
+    // get the second line of data, which has the parameters of the first disc
+    getline(input_file, tmp_string);
+    SPDLOG_DEBUG("Read line: {}", tmp_string);
+
+    for (int i = 0; i < numDiscs; i++) {
+        std::istringstream datastream(tmp_string);
+        // get the center of coordinates
+        for (auto &xj: centerCoord) {
+            datastream >> xj;
+        }
+        // get the initial velocity
+        for (auto &vj: initVel) {
+            datastream >> vj;
+        }
+        // get the radius
+        datastream >> radius;
+        // get the distance between particles
+        datastream >> h;
+        // get the mass
+        datastream >> m;
+        if (datastream.fail()) {
+            SPDLOG_ERROR("Error reading file: unexpected data format");
+            exit(-1);
+        }
+        // create a disc with the parameters
+       Disc disc(centerCoord, initVel, radius, h, m);
+        SPDLOG_DEBUG("Disc created!: ");
+        // generates the particles in the disc
+        ParticleGenerator::generateDisc(particles,disc);
+        // read another line (if more discs follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
     }
