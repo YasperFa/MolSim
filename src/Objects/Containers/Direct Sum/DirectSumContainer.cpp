@@ -43,7 +43,7 @@
         SPDLOG_TRACE("removing particle from container");
 
         particlePairs.erase(
-            std::remove_if(begin_pairs(), end_pairs(), [&particle] (std::pair<std::reference_wrapper<Particle>, std::reference_wrapper <Particle>> pair) {
+            std::remove_if(begin_pairs(), end_pairs(), [&particle] (const std::pair<std::reference_wrapper<Particle>, std::reference_wrapper <Particle>> &pair) {
                     if  ((pair.first.get().getID() == particle.getID())|| (pair.second.get().getID() == particle.getID()) ) {
                         //SPDLOG_TRACE("removing pair {},{}", pair.first.get().getID(),pair.second.get().getID( ));
                         return true;
