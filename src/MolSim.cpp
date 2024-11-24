@@ -36,7 +36,7 @@ int main(int argc, char *argsv[]) {
     int freq = 10;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
-    ParticleContainer particleContainer;
+    DirectSumContainer particleContainer;
     //parses and sets arguments from the command line
     if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator)){
         return 1;

@@ -6,7 +6,7 @@
 
 #include "Calculator.h"
 #include "Objects/Particle.h"
-#include "../Objects/Containers/ParticleContainer.h"
+#include "../Objects/Containers/Direct Sum/DirectSumContainer.h"
 
 
 namespace Calculators{

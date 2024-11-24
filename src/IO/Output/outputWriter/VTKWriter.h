@@ -46,7 +46,7 @@ namespace outputWriters {
          */
         void writeFile(const std::string &filename, int iteration);
 
-        void plotParticles(int iteration, ParticleContainer &particleContainer, const std::string &filename) override;
+        void plotParticles(int iteration, DirectSumContainer &particleContainer, const std::string &filename) override;
 
     private:
         VTKFile_t *vtkFile{};

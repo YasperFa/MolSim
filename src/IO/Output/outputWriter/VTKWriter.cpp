@@ -93,7 +93,7 @@ namespace outputWriters {
         pointsIterator->push_back(p.getX()[2]);
     }
 
-    void VTKWriter::plotParticles(int iteration, ParticleContainer &particleContainer, const std::string &filename) {
+    void VTKWriter::plotParticles(int iteration, DirectSumContainer &particleContainer, const std::string &filename) {
         outputWriters::VTKWriter plotter;
         plotter.initializeOutput(particleContainer.sizeParticles());
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {

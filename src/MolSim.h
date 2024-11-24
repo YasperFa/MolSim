@@ -8,7 +8,7 @@
 #include "Calculator/Calculator.h"
 #include "Calculator/LennardJonesCalculator.h"
 #include "IO/Input/FileReader.h"
-#include "Objects/Containers/ParticleContainer.h"
+#include "Objects/Containers/Direct Sum/DirectSumContainer.h"
 #include "IO/Output//outputWriter/OutputWriter.h"
 #include "IO/Output/outputWriter/VTKWriter.h"
 #include "IO/Output/outputWriter/XYZWriter.h"
@@ -203,7 +203,7 @@ public:
     }
 
 
-    static void runSim(ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
+    static void runSim(DirectSumContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                        std::unique_ptr<Calculators::Calculator> &calculator) {            
         

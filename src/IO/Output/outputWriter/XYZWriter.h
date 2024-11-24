@@ -13,7 +13,7 @@
 #include <fstream>
 #include <list>
 
-#include "../../../Objects/Containers/ParticleContainer.h"
+#include "../../../Objects/Containers/Direct Sum/DirectSumContainer.h"
 
 namespace outputWriters {
     class XYZWriter : public OutputWriter {
@@ -37,6 +37,6 @@ namespace outputWriters {
          * @param filename of file where output should be written
          * @param iteration
          */
-        void plotParticles(int iteration, ParticleContainer &particleContainer, const std::string &filename) override;
+        void plotParticles(int iteration, DirectSumContainer &particleContainer, const std::string &filename) override;
     };
 } // namespace outputWriter

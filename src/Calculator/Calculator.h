@@ -5,7 +5,7 @@
 #pragma once
 class Particle;
 #include <Objects/Particle.h>
-#include "../Objects/Containers/ParticleContainer.h"
+#include "../Objects/Containers/Direct Sum/DirectSumContainer.h"
 #include <cmath>
 #include <functional> 
 #include "spdlog/spdlog.h"
@@ -19,7 +19,7 @@ namespace Calculators {
 
         virtual ~Calculator() = default;
 
-        virtual void calculateXFV(ParticleContainer &particleContainer, double delta_t) {
+        virtual void calculateXFV(DirectSumContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
             calculateF(particleContainer);
@@ -30,7 +30,7 @@ namespace Calculators {
         /**
         * calculate the force for all particles
         */
-        void calculateF(ParticleContainer &particleContainer) {
+        void calculateF(DirectSumContainer &particleContainer) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0,0.0,0.0};
@@ -67,7 +67,7 @@ namespace Calculators {
         /**
          * calculate the position for all particles
          */
-        virtual  void calculateX(ParticleContainer &particleContainer, double delta_t) {
+        virtual  void calculateX(DirectSumContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p : particleContainer) {
                 std::array<double, 3> newX = operator+(p.getX(), operator+( operator*(delta_t, p.getV()) , operator*(0.5*pow(delta_t,2)/p.getM(), p.getF())));
@@ -78,7 +78,7 @@ namespace Calculators {
         /**
          * calculate the position for all particles
          */
-        virtual void calculateV(ParticleContainer &particleContainer, double delta_t) {
+        virtual void calculateV(DirectSumContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateV");
             for (auto &particle: particleContainer) {
                 std::array<double, 3> newV = operator+(particle.getV(), operator*(delta_t*0.5/particle.getM(), operator+(particle.getOldF(),particle.getF())));

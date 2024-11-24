@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../../../Objects/Containers/ParticleContainer.h"
+#include "../../../Objects/Containers/Direct Sum/DirectSumContainer.h"
 
 namespace outputWriters {
     class OutputWriter {
@@ -12,6 +12,6 @@ namespace outputWriters {
         OutputWriter() = default;
         virtual ~OutputWriter() = default;
 
-        virtual void plotParticles(int iteration, ParticleContainer& particleContainer, const std::string& filename) = 0;
+        virtual void plotParticles(int iteration, DirectSumContainer& particleContainer, const std::string& filename) = 0;
     };
 }

@@ -15,11 +15,11 @@ public:
    /**
    * @brief generates particles from a given cuboid
    */
-   static void generateCuboid(ParticleContainer &particles, Cuboid& cuboid);
+   static void generateCuboid(DirectSumContainer &particles, Cuboid& cuboid);
    /**
    * @brief generates particles from a given disc
    */
-   static void generateDisc(ParticleContainer &particles, Disc& disc);
+   static void generateDisc(DirectSumContainer &particles, Disc& disc);
 };
 
 

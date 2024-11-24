@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "../../src/Objects/ParticleGenerator.h"
 #include "../../src/Objects/Cuboid.h"
-#include "../../src/Objects/Containers/ParticleContainer.h"
+#include "../../src/Objects/Containers/Direct Sum/DirectSumContainer.h"
 #include "utils/ArrayUtils.h"
 
 /* checks if particle container has the correct number of particles */
@@ -17,7 +17,7 @@ TEST(ParticleGeneratorTest, checkContainerSize) {
     double m = 0.5 ;
     double mv = 0.5 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
-    ParticleContainer pc;
+    DirectSumContainer pc;
     ParticleGenerator::generateCuboid(pc,cuboid1);
     // size should be 1*1*1
     EXPECT_EQ(1,pc.sizeParticles());
@@ -41,7 +41,7 @@ TEST(ParticleGeneratorTest, checkParticlePositions) {
     double m = 0.5 ;
     double mv = 0.5 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
-    ParticleContainer pc;
+    DirectSumContainer pc;
     ParticleGenerator::generateCuboid(pc,cuboid1);
     std::array<std::array<double,3>,8> expected = {std::array<double,3>{0.0,0.0,0.0},std::array<double,3>{0.5,0.0,0.0},std::array<double,3>{0.0,0.5,0.0},std::array<double,3>{0.5,0.5,0.0},std::array<double,3>{0.0,0.0,0.5},std::array<double,3>{0.5,0.0,0.5},std::array<double,3>{0.0,0.5,0.5},std::array<double,3>{0.5,0.5,0.5}};
     int i = 0;
@@ -63,7 +63,7 @@ TEST(ParticleGeneratorTest, checkOtherVariables) {
     double m = 0.5 ;
     double mv = 1.0 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
-    ParticleContainer pc;
+    DirectSumContainer pc;
     ParticleGenerator::generateCuboid(pc,cuboid1);
     for (Particle &p : pc) {
         //check X

@@ -2,34 +2,34 @@
 // Created by Celik Yucel on 23.10.24.
 //
 
-    #include "ParticleContainer.h"
+    #include "DirectSumContainer.h"
     #include "spdlog/spdlog.h"
     #include <algorithm>
     #include <exception>
 
-    std::vector<Particle>::iterator ParticleContainer::begin() {
+    std::vector<Particle>::iterator DirectSumContainer::begin() {
         return particles.begin();
     }
-    std::vector<Particle>::iterator ParticleContainer::end() {
+    std::vector<Particle>::iterator DirectSumContainer::end() {
         return particles.end();
     }
 
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator ParticleContainer::begin_pairs() {
+    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator DirectSumContainer::begin_pairs() {
         return particlePairs.begin();
     }
 
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle> > >::iterator ParticleContainer::end_pairs() {
+    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle> > >::iterator DirectSumContainer::end_pairs() {
         return particlePairs.end();
     }
 
+    DirectSumContainer::~DirectSumContainer() = default;
 
-
-    void ParticleContainer::addParticle(const Particle &particle) {
+    void DirectSumContainer::addParticle(const Particle &particle) {
         SPDLOG_TRACE("adding particle to container");
         particles.push_back(particle);
     }
 
-     void ParticleContainer::addParticleToPairs(Particle& particle) {
+     void DirectSumContainer::addParticleToPairs(Particle& particle) {
         for ( auto & p : particles) {
             std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>> pair = std::make_pair(std::ref(p), std::ref(particle));
             particlePairs.push_back(pair);
@@ -39,7 +39,7 @@
         particles.push_back(particle);
      }
 
-    void ParticleContainer::removeParticle(const Particle &particle) {
+    void DirectSumContainer::removeParticle(const Particle &particle) {
         SPDLOG_TRACE("removing particle from container");
 
         particlePairs.erase(
@@ -62,7 +62,7 @@
             particles.end());
     }
 
-    Particle& ParticleContainer::getParticle(int id) {
+    Particle& DirectSumContainer::getParticle(int id) {
         if ((int)particles.size() < id + 1) { //linear search
             for (auto &p:particles) {
                 if (p.getID() == id){
@@ -87,12 +87,12 @@
         throw std::runtime_error("Particle not found");
     }
 
-    Particle& ParticleContainer::getParticle(Particle& p) {
-        return ParticleContainer::getParticle(p.getID());
+    Particle& DirectSumContainer::getParticle(Particle& p) {
+        return DirectSumContainer::getParticle(p.getID());
     }
 
 
-    bool ParticleContainer::pairExists(const Particle &particle1, const Particle &particle2) const {
+    bool DirectSumContainer::pairExists(const Particle &particle1, const Particle &particle2) const {
         for (const auto &p: particlePairs) {
             if (((&p.first.get() == &particle1) && (&p.second.get() == &particle2)) ||
                 ((&p.first.get() == &particle2) && (&p.second.get() == &particle1))) {
@@ -102,7 +102,7 @@
         return false;
     }
 
-    void ParticleContainer::initializePairsVector() {
+    void DirectSumContainer::initializePairsVector() {
         SPDLOG_DEBUG("Initializing pairs vector");
         for (auto iterator1 = particles.begin(); iterator1 != particles.end(); ++iterator1) {
             for (auto iterator2 = iterator1 + 1; iterator2 != particles.end(); ++iterator2) {
@@ -113,24 +113,24 @@
         }
     }
 
-    void ParticleContainer::reinitializePairs() {
+    void DirectSumContainer::reinitializePairs() {
         particlePairs.clear();
         initializePairsVector();
     }
 
-    size_t ParticleContainer::sizeParticles() const {
+    size_t DirectSumContainer::sizeParticles() const {
         return particles.size();
     }
 
-    size_t ParticleContainer::sizeParticlePairs() const {
+    size_t DirectSumContainer::sizeParticlePairs() const {
         return particlePairs.size();
     }
 
-    std::vector<Particle> ParticleContainer::getParticles() const {
+    std::vector<Particle> DirectSumContainer::getParticles() const {
         return particles;
     }
 
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> ParticleContainer::getParticlePairs() const {
+    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> DirectSumContainer::getParticlePairs() const {
         return particlePairs;
     }
 

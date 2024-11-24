@@ -2,12 +2,12 @@
 // Created by Yasmine Farah on 01/11/2024.
 //
 #include "gtest/gtest.h"
-#include "../../src/Objects/Containers/ParticleContainer.h"
+#include "../../src/Objects/Containers/Direct Sum/DirectSumContainer.h"
 #include "../src/Objects/Particle.h"
 
 /* Checks if sizeParticles() and addParticle() works correctly */
 TEST(ParticleContainerTest, StrctureAfterAddParticle) {
-    ParticleContainer test;
+    DirectSumContainer test;
     Particle p(0);
     
     EXPECT_EQ(test.sizeParticles(), 0);
@@ -22,7 +22,7 @@ TEST(ParticleContainerTest, StrctureAfterAddParticle) {
 
 /* Checks if pairs are initialized correctly*/
 TEST(ParticleContainerTest, PairsAfterAddParticle) {
-    ParticleContainer test;
+    DirectSumContainer test;
     Particle p(0);
     Particle q(1);
     test.addParticle(p);
