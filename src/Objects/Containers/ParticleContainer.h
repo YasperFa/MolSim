@@ -35,41 +35,12 @@ class ParticleContainer {
     */
     virtual void removeParticle(const Particle& particle) = 0;
 
-    /**
-    * This method checks if a pair containing both particles passed as arguments
-    * already exits in the particlePairs vector.
-    *
-    * @param particle1
-    * @param particle2
-    * @returns true if pair already exists in the particlePairs vector
-    */
-    virtual bool pairExists(const Particle& particle1, const Particle& particle2) const = 0;
-
-    /**
-    * This method creates pairs for every particle in the container
-    * and adds these pairs to particlesPairs vector.
-    */
-    virtual void initializePairsVector() = 0;
-
-    /**
-    * This method clears the particlePairs vector and initializes
-    * the pairs once again.
-    * This method is to be used after removing a particle from the container.
-    */
-    virtual void reinitializePairs() = 0;
 
     /**
      * @return the number of particles in the container
      */
     virtual size_t sizeParticles() const = 0;
 
-    /**
-    * @return the number of particle pairs in the container
-    */
-    virtual size_t sizeParticlePairs() const = 0;
-
-
     virtual std::vector<Particle> getParticles() const = 0;
-    virtual std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> getParticlePairs() const = 0;
 
 };

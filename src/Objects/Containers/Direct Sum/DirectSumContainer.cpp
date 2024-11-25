@@ -14,14 +14,6 @@
         return particles.end();
     }
 
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator DirectSumContainer::begin_pairs() {
-        return particlePairs.begin();
-    }
-
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle> > >::iterator DirectSumContainer::end_pairs() {
-        return particlePairs.end();
-    }
-
     void DirectSumContainer::addParticle(const Particle &particle) {
         SPDLOG_TRACE("adding particle to container");
         particles.push_back(particle);
@@ -104,47 +96,14 @@
     }
 
 
-    bool DirectSumContainer::pairExists(const Particle &particle1, const Particle &particle2) const {
-        for (const auto &p: particlePairs) {
-            if (((&p.first.get() == &particle1) && (&p.second.get() == &particle2)) ||
-                ((&p.first.get() == &particle2) && (&p.second.get() == &particle1))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void DirectSumContainer::initializePairsVector() {
-        SPDLOG_DEBUG("Initializing pairs vector");
-        for (auto iterator1 = particles.begin(); iterator1 != particles.end(); ++iterator1) {
-            for (auto iterator2 = iterator1 + 1; iterator2 != particles.end(); ++iterator2) {
-                if (!pairExists(*iterator1, *iterator2)) {
-                    particlePairs.push_back({*iterator1,*iterator2});
-                }
-            }
-        }
-    }
-
-    void DirectSumContainer::reinitializePairs() {
-        particlePairs.clear();
-        initializePairsVector();
-    }
-
     size_t DirectSumContainer::sizeParticles() const {
         return particles.size();
-    }
-
-    size_t DirectSumContainer::sizeParticlePairs() const {
-        return particlePairs.size();
     }
 
     std::vector<Particle> DirectSumContainer::getParticles() const {
         return particles;
     }
 
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> DirectSumContainer::getParticlePairs() const {
-        return particlePairs;
-    }
 
 
 

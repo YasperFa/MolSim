@@ -20,32 +20,6 @@ TEST(ParticleContainerTest, StrctureAfterAddParticle) {
 
 }
 
-/* Checks if pairs are initialized correctly*/
-TEST(ParticleContainerTest, PairsAfterAddParticle) {
-    DirectSumContainer test;
-    Particle p(0);
-    Particle q(1);
-    test.addParticle(p);
-    test.addParticle(q);
-
-    test.initializePairsVector();
-    EXPECT_EQ(test.getParticlePairs().size(), 1);
-
-    Particle r(1);
-    test.addParticle(r);
-    test.reinitializePairs();
-    EXPECT_EQ(test.getParticlePairs().size(), 3);
-
-    Particle s(1);
-    test.addParticle(s);
-    test.reinitializePairs();
-    EXPECT_EQ(test.getParticlePairs().size(), 6);
-
-    test.removeParticle(s);
-    test.reinitializePairs();
-    EXPECT_EQ(test.getParticlePairs().size(), 3);
-
-}
 
 /* Checks if addParticleToPairs() and removeParticle() work correctly*/
 /*TEST(ParticleContainerTest, addParticleToPairs) {

@@ -45,8 +45,6 @@ TEST(CalculatorTest, correctFIJcalculations) {
     k.setF(old);
     test.addParticle(k);
 
-    test.initializePairsVector();
-
 
     Calculators::Calculator calc;
     calc.calculateF(test); 
@@ -98,8 +96,6 @@ TEST(CalculatorTest, correctVcalculations) {
     k.setF(c); //newF: -1.025398134
     test.addParticle(k);
 
-    test.initializePairsVector();
-
 
     Calculators::Calculator calc;
     calc.calculateXFV(test, 0.5); 
@@ -136,8 +132,6 @@ TEST(CalculatorTest, correctLJcalculations) {
 
     Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
     test.addParticle(k);
-
-    test.initializePairsVector();
 
     Calculators::LennardJonesCalculator calc;
     calc.calculateF(test); 
