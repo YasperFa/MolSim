@@ -39,23 +39,24 @@ namespace Calculators {
                 p.setOldF(p.getF());
                 p.setF(sigma);
             }
-            for (auto &pair : particleContainer.getParticlePairs()) {
-                Particle &p1 = pair.first.get();
-                Particle &p2 = pair.second.get();
-                std::array<double, 3> sub = operator-(p2.getX(), p1.getX());
-                double normCubed = ArrayUtils::L2Norm(sub);
-                //prevent division by 0
-                if (normCubed < 1e-8) {
-                    continue;
+            for (auto it1 = particleContainer.begin(); it1 != particleContainer.end(); ++it1) {
+                for (auto it2 = it1 + 1; it2 != particleContainer.end(); ++it2) {
+                    std::array<double, 3> sub = operator-(it2->getX(), it1->getX());
+                    double normCubed = ArrayUtils::L2Norm(sub);
+                    //prevent division by 0
+                    if (normCubed < 1e-8) {
+                        continue;
+                    }
+                    // calculate Force between the current pair of particles
+                    std::array<double, 3> fij = calculateFIJ(sub,it1->getM(),it2->getM(),normCubed);
+                    SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
+                    // add force of this pair to the overall force of particle 1
+                    it1->setF(operator+(it1->getF(), fij));
+                    // make use of Newton's third law and add the negative force calculated above to particle 2
+                    it2->setF(operator-(it2->getF(),fij));
                 }
-                // calculate Force between the current pair of particles
-                std::array<double, 3> fij = calculateFIJ(sub,p1.getM(),p2.getM(),normCubed);
-                SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], p1.getID(), p2.getID());
-                // add force of this pair to the overall force of particle 1
-                p1.setF(operator+(p1.getF(), fij));
-                // make use of Newton's third law and add the negative force calculated above to particle 2
-                p2.setF(operator-(p2.getF(),fij));
             }
+
         }
         /**
         * calculate the force between particle i and j
