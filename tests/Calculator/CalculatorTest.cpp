@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 #include "../../src/Calculator/Calculator.h"
 #include "../../src/Calculator/LennardJonesCalculator.h"
-#include "../../src/Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "../../src/Objects/Particle.h"
 
 /*Checks that calculateX() correctly updates the position of a particle*/

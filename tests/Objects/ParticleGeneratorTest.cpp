@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "../../src/Objects/ParticleGenerator.h"
 #include "../../src/Objects/Cuboid.h"
-#include "../../src/Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "utils/ArrayUtils.h"
 
 /* checks if particle container has the correct number of particles */

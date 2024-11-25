@@ -8,7 +8,7 @@
 #include "Calculator/Calculator.h"
 #include "Calculator/LennardJonesCalculator.h"
 #include "IO/Input/FileReader.h"
-#include "Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "IO/Output//outputWriter/OutputWriter.h"
 #include "IO/Output/outputWriter/VTKWriter.h"
 #include "IO/Output/outputWriter/XYZWriter.h"

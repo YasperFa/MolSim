@@ -2,7 +2,7 @@
 // Created by Yasmine Farah on 01/11/2024.
 //
 #include "gtest/gtest.h"
-#include "../../src/Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "../src/Objects/Particle.h"
 
 /* Checks if sizeParticles() and addParticle() works correctly */

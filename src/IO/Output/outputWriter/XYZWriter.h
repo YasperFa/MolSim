@@ -13,7 +13,7 @@
 #include <fstream>
 #include <list>
 
-#include "../../../Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "../../../Objects/Containers/DirectSum/DirectSumContainer.h"
 
 namespace outputWriters {
     class XYZWriter : public OutputWriter {

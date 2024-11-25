@@ -11,7 +11,7 @@
 
 #include <list>
 
-#include "../../Objects/Containers/Direct Sum/DirectSumContainer.h"
+#include "../../Objects/Containers/DirectSum/DirectSumContainer.h"
 
 class FileReader {
 

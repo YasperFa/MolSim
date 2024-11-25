@@ -6,7 +6,7 @@
 #define CUBOID_H
 #include <array>
 
-#include "Containers/Direct Sum/DirectSumContainer.h"
+#include "Containers/DirectSum/DirectSumContainer.h"
 
 /**
  * a class that defines cuboid parameters
