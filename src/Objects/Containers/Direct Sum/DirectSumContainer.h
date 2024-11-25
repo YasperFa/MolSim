@@ -54,8 +54,6 @@ class DirectSumContainer : public ParticleContainer{
     */
     DirectSumContainer() = default;
 
-    ~DirectSumContainer() override;
-
     /**
     * This method adds the passed particle into the container.
     * No pairs are created. Call initializePairsVector() after adding all particles.

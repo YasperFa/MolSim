@@ -22,8 +22,6 @@
         return particlePairs.end();
     }
 
-    DirectSumContainer::~DirectSumContainer() = default;
-
     void DirectSumContainer::addParticle(const Particle &particle) {
         SPDLOG_TRACE("adding particle to container");
         particles.push_back(particle);
@@ -42,24 +40,38 @@
     void DirectSumContainer::removeParticle(const Particle &particle) {
         SPDLOG_TRACE("removing particle from container");
 
-        particlePairs.erase(
-            std::remove_if(begin_pairs(), end_pairs(), [&particle] (const std::pair<std::reference_wrapper<Particle>, std::reference_wrapper <Particle>> &pair) {
-                    if  ((pair.first.get().getID() == particle.getID())|| (pair.second.get().getID() == particle.getID()) ) {
-                        //SPDLOG_TRACE("removing pair {},{}", pair.first.get().getID(),pair.second.get().getID( ));
-                        return true;
-                    }
-                    return false;
-            }),
-            end_pairs());
+        // Flag to detect if particle exists
+        bool particleFound = false;
 
-        particles.erase(
-            std::remove_if(particles.begin(), particles.end(), [&particle](const Particle &p) {
-                    if (p.getID() == particle.getID()) {
+        // Remove all pairs containing the particle from `particlePairs`
+        particlePairs.erase(
+            std::remove_if(
+                particlePairs.begin(),
+                particlePairs.end(),
+                [&particle, &particleFound](const std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>> &pair) {
+                    if (pair.first.get().getID() == particle.getID() || pair.second.get().getID() == particle.getID()) {
+                        particleFound = true;
                         return true;
                     }
                     return false;
-            }),
-            particles.end());
+                }),
+            particlePairs.end());
+
+        if (!particleFound) {
+            SPDLOG_WARN("Attempted to remove a particle not in any pair: ID {}", particle.getID());
+        }
+
+        // Now remove the particle itself from `particles`
+        auto it = std::remove_if(
+            particles.begin(),
+            particles.end(),
+            [&particle](const Particle &p) { return p.getID() == particle.getID(); });
+
+        if (it != particles.end()) {
+            particles.erase(it, particles.end());
+        } else {
+            SPDLOG_WARN("Attempted to remove a particle not found in container: ID {}", particle.getID());
+        }
     }
 
     Particle& DirectSumContainer::getParticle(int id) {
