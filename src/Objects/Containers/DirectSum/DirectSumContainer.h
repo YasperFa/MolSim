@@ -10,8 +10,8 @@
 #include "../ParticleContainer.h"
 
 /**
- * Container for storing Particle objects and
- * to provide iterators.
+ * @brief Container for storing Particle objects and
+ * to provide iterators implementing the DirectSum algorithm. Extends ParticleContainer.
  */
 class DirectSumContainer : public ParticleContainer{
 
@@ -36,17 +36,6 @@ class DirectSumContainer : public ParticleContainer{
     * @return an iterator to the end of the particles vector.
     */
     std::vector<Particle>::iterator end();
-
-    /**
-    * @return an iterator to the beginning of the
-    * vector storing the particle pairs.
-    */
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator begin_pairs();
-    /**
-    * @return an iterator to the end of the
-    * vector storing the particle pairs.
-    */
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>>::iterator end_pairs();
 
 
     /**
