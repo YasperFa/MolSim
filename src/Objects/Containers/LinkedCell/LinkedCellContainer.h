@@ -9,7 +9,7 @@
  * @brief Container for LinkedCell algorithm for improving the performance of the DirectSum algorithm.
  * Extends ParticleContainer
  */
-class LinkedCell : public ParticleContainer {
+class LinkedCellContainer : public ParticleContainer {
 private:
     /**
      * @brief A vector to store Particle objects.
@@ -79,7 +79,7 @@ public:
      * @param domainSize size of the domain that will be used for the simulation
      * @param cutoff cut off radius for the simulation
      */
-    LinkedCell(const std::array<double, 3> domainSize, const double cutoff);
+    LinkedCellContainer(const std::array<double, 3> domainSize, const double cutoff);
 
     /**
      * @brief Add the particle passed in to the container.
