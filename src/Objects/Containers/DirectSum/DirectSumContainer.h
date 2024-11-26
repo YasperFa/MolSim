@@ -23,6 +23,7 @@ class DirectSumContainer : public ParticleContainer{
 
     /**
     * Vector for storing particle pairs
+    * HAS TO BE REMOVED WHEN REMOVE IS UPDATED!!!
     */
     std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> particlePairs;
 
