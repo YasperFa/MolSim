@@ -11,7 +11,7 @@ namespace Calculators {
 
         GravityCalculator() = default;
 
-        virtual ~GravityCalculator() = default;
+        ~GravityCalculator() override = default;
         /**
         *  function for calculating the force FIJ acting between two particles according to newton's law
         * @param sub: subtraction of positions
