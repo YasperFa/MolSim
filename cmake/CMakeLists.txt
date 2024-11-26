@@ -14,7 +14,6 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/LennardJonesCalculator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/gravityCalculator.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Output/*.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
