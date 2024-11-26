@@ -30,12 +30,12 @@ class DirectSumContainer : public ParticleContainer{
     /**
     * @return an iterator to the beginning of the particles vector.
     */
-    std::vector<Particle>::iterator begin();
+    std::vector<Particle>::iterator begin() override;
 
     /**
     * @return an iterator to the end of the particles vector.
     */
-    std::vector<Particle>::iterator end();
+    std::vector<Particle>::iterator end() override;
 
 
     /**

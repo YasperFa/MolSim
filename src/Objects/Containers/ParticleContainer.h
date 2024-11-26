@@ -43,4 +43,14 @@ class ParticleContainer {
 
     virtual std::vector<Particle> getParticles() const = 0;
 
+    /**
+    * @return an iterator to the beginning of the particles vector.
+    */
+    virtual std::vector<Particle>::iterator begin() = 0;
+
+    /**
+    * @return an iterator to the end of the particles vector.
+    */
+    virtual std::vector<Particle>::iterator end() = 0;
+
 };
