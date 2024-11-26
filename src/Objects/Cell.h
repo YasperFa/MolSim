@@ -28,17 +28,17 @@ private:
     /**
      * @brief A vector containing references to particles that are withing the cell
      */
-    std::vector<std::reference_wrapper<Particle>> ParticlesInCell;
+    std::vector<Particle*> particlesInCell;
 
     /**
      * @brief A vector containing references to the current cell's neighbouring cells
      */
-    std::vector<std::reference_wrapper<Cell>> NeighbourCells;
+    std::vector<Cell*> neighbourCells;
 
     /**
      * @brief A set of Cell object references. The cells in this set have influenced the current cell.
      */
-    std::unordered_set<std::reference_wrapper<Cell>> InfluencedBy;
+    std::unordered_set<Cell*> influencedBy;
 
 public:
     /**
@@ -49,50 +49,56 @@ public:
 
     /**
      *
-     * @return an iterator to the beginning of the vector containing the particle references in the cell
+     * @return an iterator to the beginning of the vector containing raw pointers to particles in the cell
      */
-    std::vector<std::reference_wrapper<Particle>>::iterator beginInCell();
+    std::vector<Particle*>::iterator beginInCell();
 
     /**
      *
-     * @return an iterator to the end of the vector containing the particle references in the cell
+     * @return an iterator to the end of the vector containing raw pointers to particles in the cell
      */
-    std::vector<std::reference_wrapper<Particle>>::iterator endInCell();
+    std::vector<Particle*>::iterator endInCell();
 
    /**
     *
-    * @return an iterator to the beginning of the vector containing the neighbouring cell references
+    * @return an iterator to the beginning of the vector containing pointers to neighbouring cell
     */
-    std::vector<std::reference_wrapper<Cell>>::iterator beginNeighbourCell();
+    std::vector<Cell*>::iterator beginNeighbourCell();
 
    /**
     *
-    * @return an iterator to the end of the vector containing the neighbouring cell references
+    * @return an iterator to the end of the vector containing pointers to neighbouring cell
     */
-    std::vector<std::reference_wrapper<Cell>>::iterator endNeighbourCell();
+    std::vector<Cell*>::iterator endNeighbourCell();
 
     /**
     *
     * @return an iterator to the beginning of the set containing the cells that have already affected the current cell
     */
-    std::unordered_set<std::reference_wrapper<Cell>>::iterator beginInfluencedBy();
+    std::unordered_set<Cell*>::iterator beginInfluencedBy();
 
    /**
     *
     * @return an iterator to the end of the set containing the cells that have already affected the current cell
     */
-    std::unordered_set<std::reference_wrapper<Cell>>::iterator endInfluencedBy();
+    std::unordered_set<Cell*>::iterator endInfluencedBy();
 
     /**
-     * Add a particle reference to the cell
+     * Add a particle reference to the cell.
      * @param particle is the particle to be added
      */
-    void addParticleToCell(Particle& particle);
+    void addParticleToCell(Particle* particle);
 
     /**
-     * Add the passed cell as a reference to the NeighbourCells vector
+     * Add the passed cell as a reference to the NeighbourCells vector.
      * @param cell is the cell to be added as a neighbour
      */
-    void addNeighbourCell(Cell& cell);
+    void addNeighbourCell(Cell* cell);
+
+    /**
+     * Add the passed cell as a reference to the influencedBy vector.
+     * @param cell is the cell to be added as an influencer
+     */
+    void addInfluencedByCell(Cell* cell);
 
 };
