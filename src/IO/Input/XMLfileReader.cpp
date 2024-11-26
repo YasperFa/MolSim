@@ -78,7 +78,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 }
                 else if (calculatorType == "Default")
                 {
-                    calculator = std::make_unique<Calculators::gravityCalculator>();
+                    calculator = std::make_unique<Calculators::GravityCalculator>();
                     SPDLOG_DEBUG("Default calculator is selected from xml");
                 } else {
                     SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! Using default value/value from flag");

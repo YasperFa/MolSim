@@ -3,7 +3,7 @@
 //
 #include "gtest/gtest.h"
 #include "../../src/Calculator/Calculator.h"
-#include "../../src/Calculator/gravityCalculator.h"
+#include "../../src/Calculator/GravityCalculator.h"
 #include "../../src/Calculator/LennardJonesCalculator.h"
 #include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "../../src/Objects/Particle.h"
@@ -17,7 +17,7 @@ TEST(CalculatorTest, correctXcalculations) {
     SPDLOG_DEBUG("created particle");
     p.setF({0.2, 0.2, 0.2});
     test.addParticle(p);
-    Calculators::gravityCalculator calc;
+    Calculators::GravityCalculator calc;
     calc.calculateX(test,0.5); //value different from 1 to check that (delta_t)^2 is calculated correctly
 
     for (auto &t : test) {
@@ -47,7 +47,7 @@ TEST(CalculatorTest, correctFIJcalculations) {
     test.addParticle(k);
 
 
-    Calculators::gravityCalculator calc;
+    Calculators::GravityCalculator calc;
     calc.calculateF(test); 
 
     for (Particle& p: test) {
@@ -68,7 +68,7 @@ TEST(CalculatorTest, correctVcalculations) {
     p.setOldF({2.0, 2.0, 2.0});
     p.setF({3.0, 3.0, 3.0});
     test.addParticle(p);
-    Calculators::gravityCalculator calc;
+    Calculators::GravityCalculator calc;
     calc.calculateV(test,0.5); //value different from 1 to check that (delta_t)^2 is calculated correctly
 
     for (auto &t : test) {
@@ -98,7 +98,7 @@ TEST(CalculatorTest, correctVcalculations) {
     test.addParticle(k);
 
 
-    Calculators::gravityCalculator calc;
+    Calculators::GravityCalculator calc;
     calc.calculateXFV(test, 0.5); 
 
     for (int in = 0; in < 3; in++) {

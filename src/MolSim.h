@@ -14,7 +14,7 @@
 #include "IO/Output/outputWriter/XYZWriter.h"
 #include "spdlog/spdlog.h"
 #include "cxxopts.hpp"
-#include "Calculator/gravityCalculator.h"
+#include "Calculator/GravityCalculator.h"
 
 class MolSim {
 public:
@@ -165,7 +165,7 @@ public:
         deltaT = parseResult["deltaT"].as<double>();
         endTime = parseResult["endTime"].as<double>();
         outputWriter = std::make_unique<outputWriters::VTKWriter>();
-        calculator = std::make_unique<Calculators::gravityCalculator>();
+        calculator = std::make_unique<Calculators::GravityCalculator>();
 
 
         //set the outpit writer
@@ -191,7 +191,7 @@ public:
                 calculator = std::make_unique<Calculators::LennardJonesCalculator>();
                 SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
             } else if (calculatorTemp == "Default") {
-                calculator = std::make_unique<Calculators::gravityCalculator>();
+                calculator = std::make_unique<Calculators::GravityCalculator>();
                 SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
             } else {
                 SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified!");
