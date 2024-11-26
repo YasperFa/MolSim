@@ -11,6 +11,7 @@
 #include "IO/Output/outputWriter/XYZWriter.h"
 #include "Calculator/Calculator.h"
 #include "Calculator/LennardJonesCalculator.h"
+#include "Calculator/gravityCalculator.h"
 #include "Objects/Cuboid.h"
 #include "Objects/ParticleGenerator.h"
 #include <memory>
