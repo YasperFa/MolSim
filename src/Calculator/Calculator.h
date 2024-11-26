@@ -43,10 +43,8 @@ namespace Calculators {
                 for (auto it2 = it1 + 1; it2 != particleContainer.end(); ++it2) {
                     std::array<double, 3> sub = operator-(it2->getX(), it1->getX());
                     double normCubed = ArrayUtils::L2Norm(sub);
-                    //prevent division by 0
-                    if (normCubed < 1e-8) {
-                        continue;
-                    }
+
+
                     // calculate Force between the current pair of particles
                     std::array<double, 3> fij = calculateFIJ(sub,it1->getM(),it2->getM(),normCubed);
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
@@ -58,10 +56,12 @@ namespace Calculators {
             }
 
         }
+
         /**
         * calculate the force between particle i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) = 0;
+
         /**
          * calculate the position for all particles
          */
