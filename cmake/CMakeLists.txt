@@ -13,6 +13,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleGenerator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/LennardJonesCalculator.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/gravityCalculator.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
@@ -25,9 +26,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # create testing executable
-add_executable(Test ${TEST_SRC}
-        ../tests/Objects/CuboidTest.cpp
-        ../tests/Objects/ParticleGeneratorTest.cpp)
+add_executable(Test ${TEST_SRC})
 
 target_include_directories(Test
         PRIVATE

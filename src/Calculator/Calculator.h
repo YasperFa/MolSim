@@ -61,10 +61,7 @@ namespace Calculators {
         /**
         * calculate the force between particle i and j
         */
-        virtual std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) {
-            return operator*(1.0/pow(normCubed, 3), operator*(m1*m2, sub));
-        }
-
+        virtual std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) = 0;
         /**
          * calculate the position for all particles
          */
