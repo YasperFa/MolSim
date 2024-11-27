@@ -101,4 +101,10 @@ public:
      */
     void addInfluencedByCell(Cell* cell);
 
+
+    std::vector<Particle*> getParticlesInCell();
+
+    std::vector<Cell*> getNeighbourCells();
+
+    CType getCellType();
 };

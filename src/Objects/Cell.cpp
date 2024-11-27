@@ -40,5 +40,11 @@ void Cell::addInfluencedByCell(Cell* cell) {
     influencedBy.insert(cell);
 }
 
+std::vector<Particle*> Cell::getParticlesInCell(){return particlesInCell;}
+
+std::vector<Cell*> Cell::getNeighbourCells(){return neighbourCells;}
+
+Cell::CType Cell::getCellType(){ return cellType;}
+
 
 

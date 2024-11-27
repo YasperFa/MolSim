@@ -21,12 +21,6 @@ class DirectSumContainer : public ParticleContainer{
     */
     std::vector<Particle> particles;
 
-    /**
-    * Vector for storing particle pairs
-    * HAS TO BE REMOVED WHEN REMOVE IS UPDATED!!!
-    */
-    std::vector<std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>>> particlePairs;
-
     public:
     /**
     * @return an iterator to the beginning of the particles vector.
@@ -46,21 +40,12 @@ class DirectSumContainer : public ParticleContainer{
 
     /**
     * This method adds the passed particle into the container.
-    * No pairs are created. Call initializePairsVector() after adding all particles.
     * @param particle is the particle to be added.
     */
     void addParticle(const Particle& particle) override;
 
     /**
-    * This method adds the passed particle into the container and creates all new pairs containing this particle.
-    * Equivalent to calling addParticle() and then calling reinitializePairs(), but more efficient.
-    * @param particle is the particle to be added.
-    */
-    void addParticleToPairs(Particle& particle) override;
-
-    /**
     * This method removes the passed particle from the container.
-    * All pairs containing this particle are removed.
     * @param particle is the particle to be removed.
     */
     void removeParticle(const Particle& particle) override;
@@ -73,7 +58,7 @@ class DirectSumContainer : public ParticleContainer{
      * Throws an error if the container does not contain a particle with this id
      */
 
-    Particle& getParticle(int id);
+    const Particle& getParticle(int id);
 
     /**
      * This method returns the particle from the container with the corresponding id
@@ -83,7 +68,7 @@ class DirectSumContainer : public ParticleContainer{
      * Throws an error if the container does not contain a particle with this id
      */
 
-    Particle& getParticle(Particle& p);
+    const Particle& getParticle(Particle& p);
 
 
     /**
