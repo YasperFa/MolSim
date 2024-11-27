@@ -19,41 +19,10 @@
         particles.push_back(particle);
     }
 
-     void DirectSumContainer::addParticleToPairs(Particle& particle) {
-        for ( auto & p : particles) {
-            std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>> pair = std::make_pair(std::ref(p), std::ref(particle));
-            particlePairs.push_back(pair);
-            //SPDLOG_TRACE("Pair created! {},{}" ,p.getID(), particle.getID());
-        }
-        
-        particles.push_back(particle);
-     }
-
     void DirectSumContainer::removeParticle(const Particle &particle) {
         SPDLOG_TRACE("removing particle from container");
 
-        // Flag to detect if particle exists
-        bool particleFound = false;
-
-        // Remove all pairs containing the particle from `particlePairs`
-        particlePairs.erase(
-            std::remove_if(
-                particlePairs.begin(),
-                particlePairs.end(),
-                [&particle, &particleFound](const std::pair<std::reference_wrapper<Particle>, std::reference_wrapper<Particle>> &pair) {
-                    if (pair.first.get().getID() == particle.getID() || pair.second.get().getID() == particle.getID()) {
-                        particleFound = true;
-                        return true;
-                    }
-                    return false;
-                }),
-            particlePairs.end());
-
-        if (!particleFound) {
-            SPDLOG_WARN("Attempted to remove a particle not in any pair: ID {}", particle.getID());
-        }
-
-        // Now remove the particle itself from `particles`
+        // remove the particle itself from `particles`
         auto it = std::remove_if(
             particles.begin(),
             particles.end(),
@@ -66,22 +35,9 @@
         }
     }
 
-    Particle& DirectSumContainer::getParticle(int id) {
-        if ((int)particles.size() < id + 1) { //linear search
-            for (auto &p:particles) {
-                if (p.getID() == id){
-                    return p;
-                }
-            }
-        } else { //jump to pos id and compare, move to left if ids don't match (particle with smaller id has been deleted)
-            int i = id;
-            while (particles.at(i).getID() != id) {
-                i--;
-            }
-            return particles.at(i);
-        }
+    const Particle& DirectSumContainer::getParticle(int id) {
 
-        for (auto &p:particles) { //last resort: linear search in case particles not sorted
+        for (auto &p:particles) { //linear search
                 if (p.getID() == id){
                     return p;
                 }
@@ -91,7 +47,7 @@
         throw std::runtime_error("Particle not found");
     }
 
-    Particle& DirectSumContainer::getParticle(Particle& p) {
+    const Particle& DirectSumContainer::getParticle(Particle& p) {
         return DirectSumContainer::getParticle(p.getID());
     }
 
