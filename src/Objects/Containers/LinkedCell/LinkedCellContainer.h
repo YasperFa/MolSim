@@ -85,7 +85,7 @@ public:
      * @brief Add the particle passed in to the container.
      * @param particle is the particle to be added.
      */
-    void addParticle(const Particle &particle) override;
+    void addParticle(Particle &particle);
 
     /**
      * @brief Remove the passed particle from the container.
@@ -161,7 +161,7 @@ public:
      *
      * @return a vector containing the cells
      */
-    std::vector<Cell> getCells();
+    std::vector<Cell> getCells() const;
 
     /**
      *
@@ -173,19 +173,19 @@ public:
      *
      * @return a vector containing references to the inner cells.
      */
-    std::vector<std::reference_wrapper<Cell> > getInnerCells();
+    std::vector<std::reference_wrapper<Cell>> getInnerCells();
 
     /**
     *
     * @return a vector containing references to the boundary cells.
     */
-    std::vector<std::reference_wrapper<Cell> > getBoundaryCells();
+    std::vector<std::reference_wrapper<Cell>> getBoundaryCells();
 
     /**
      *
      * @return a vector containing references to the halo cells.
      */
-    std::vector<std::reference_wrapper<Cell> > getHaloCells();
+    std::vector<std::reference_wrapper<Cell>> getHaloCells();
 
     /**
      * @brief Getter for the cutoff radius.
@@ -197,26 +197,26 @@ public:
      * @brief Getter for domain size
      * @return an array containing the domain size
      */
-    const std::array<double, 3> getDomainSize() const;
+    std::array<double, 3> getDomainSize() const;
 
     /**
      *
      * @return an array containing the sizes of cells for each dimension.
      */
-    const std::array<double, 3> getCellSizePerDimension() const;
+    std::array<double, 3> getCellSizePerDimension() const;
 
     /**
      *
      * @return an array containing the number of cells for each dimension.
      */
-    const std::array<double, 3> getCellNumPerDimension() const;
+    std::array<double, 3> getCellNumPerDimension() const;
 
     /**
      * @brief Computes which cell the passed particle should be added into based on its position
      * @param particle is the particle to be added
      * @return a reference to the Cell which the particle belongs to
      */
-    std::reference_wrapper<Cell> mapParticleToCell(const Particle &particle);
+    Cell* mapParticleToCell(const Particle &particle);
 
     /**
      * @brief computes the index of the passed cell based on its position
