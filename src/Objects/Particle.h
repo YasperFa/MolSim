@@ -9,6 +9,7 @@
 
 #include <array>
 #include <string>
+#include "ParticleIdInitializer.h"
 
 class Particle {
 
@@ -44,7 +45,10 @@ private:
   */
  int type;
 
- /** Id of the particle. New particles are created with ascending id numbers, every id is unique. */
+ /** Id of the particle. New particles are created with ascending id numbers starting with 1.
+  *  Every id is unique. 
+  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
+ */
 
 int id;
 
@@ -60,6 +64,9 @@ public:
      int type = 0);
 
  virtual ~Particle();
+
+/** Makes this particle a shadow particle by negating the id */
+ void makeShadowParticle();
 
  const std::array<double, 3> &getX() const;
 
