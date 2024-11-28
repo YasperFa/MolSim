@@ -83,6 +83,6 @@ namespace Calculators {
                 particle.setV(newV);
             }
         }
-
+        virtual std::string toString() = 0;
     };
 }

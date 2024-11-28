@@ -13,5 +13,6 @@ namespace outputWriters {
         virtual ~OutputWriter() = default;
 
         virtual void plotParticles(int iteration, DirectSumContainer& particleContainer, const std::string& filename) = 0;
+        virtual std::string toString() = 0;
     };
 }

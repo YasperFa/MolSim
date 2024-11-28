@@ -101,4 +101,8 @@ namespace outputWriters {
         }
         plotter.writeFile(filename, iteration);
     }
+    std::string VTKWriter::toString() {
+        return std::string("VTKWriter");
+    }
+
 } // namespace outputWriter

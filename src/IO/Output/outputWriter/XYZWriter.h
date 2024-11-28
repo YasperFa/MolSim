@@ -38,5 +38,6 @@ namespace outputWriters {
          * @param iteration
          */
         void plotParticles(int iteration, DirectSumContainer &particleContainer, const std::string &filename) override;
+        std::string toString() override;
     };
 } // namespace outputWriter
