@@ -35,6 +35,22 @@ void Cell::addParticleToCell(Particle* particle) {
     particlesInCell.push_back(particle);
 }
 
+void Cell::removeParticleFromCell(const Particle & particle) {
+       SPDLOG_TRACE("removing particle from cell");
+
+        // remove the particle itself from `particles`
+        auto it = std::remove_if(
+            particlesInCell.begin(),
+            particlesInCell.end(),
+            [&particle](Particle * p) { return p->getID() == particle.getID(); });
+
+        if (it != particlesInCell.end()) {
+            particlesInCell.erase(it, particlesInCell.end());
+        } else {
+            SPDLOG_WARN("Attempted to remove a particle not found in cell: ID {}", particle.getID());
+        }
+    }
+
 void Cell::addNeighbourCell(Cell* cell) {
     neighbourCells.push_back(cell);
 }

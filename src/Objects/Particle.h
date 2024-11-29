@@ -87,6 +87,7 @@ public:
  void setX(const std::array<double, 3> &X);
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
+ bool operator==(const Particle &other);
 
  std::string toString() const;
 };
