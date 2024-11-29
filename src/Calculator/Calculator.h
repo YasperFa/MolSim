@@ -127,7 +127,6 @@ namespace Calculators {
                     }
                 }
             }
-            SPDLOG_INFO("All");
             lcCon.deleteHaloParticles();
             lcCon.updateParticlesInCell();
         }

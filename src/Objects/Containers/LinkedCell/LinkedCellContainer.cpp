@@ -64,7 +64,7 @@ namespace ParticleContainers {
             }
         } else {
             SPDLOG_ERROR("Cell does not exist, particle is out of bounds!");
-            throw std::runtime_error("Cell does not exist, particle is out of bounds!");
+            return;
         }
     }
 
@@ -128,6 +128,13 @@ namespace ParticleContainers {
         };
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
         if (cellInd == -1) {
+            auto it = std::find(particles.begin(), particles.end(), particle);
+            if (it == particles.end()) {
+                SPDLOG_ERROR("Particle is not found within the container!");
+            } else {
+                particles.erase(it);
+                SPDLOG_DEBUG("Particle deleted!");
+            }
             SPDLOG_ERROR("The given particle does not belong to any cell!");
             return nullptr;
         }
