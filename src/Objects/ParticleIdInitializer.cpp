@@ -1,3 +1,7 @@
+//
+// Created by Stefanie Blattenberger on 28/11/2024.
+//
+
 #include <mutex>
 #include "ParticleIdInitializer.h"
 

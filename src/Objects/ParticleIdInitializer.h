@@ -1,4 +1,7 @@
 #pragma once
+//
+// Created by Stefanie Blattenberger on 28/11/2024.
+//
 
 /**Namespace that provides functionality for creating unique particle ids */
 namespace ParticleIdInitializer {
