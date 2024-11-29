@@ -66,7 +66,7 @@ TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
 
 }
 
-/** Tests that ids of new particles get initialized correctly */
+/* Tests that ids of new particles get initialized correctly */
 TEST(ParticleIdInitializerTest, testIDsAreUnique) {
     ParticleIdInitializer::reset();
     Particle p(1);

@@ -104,8 +104,6 @@ namespace Calculators {
                             if (neighbourP == nullptr) {
                                 continue;
                             }
-                            std::array<double, 3> neg = neighbourP->getX();
-                            std::array<double, 3> negi = (*itParticle1)->getX();
 
                             std::array<double, 3> sub = operator-((*itParticle1)->getX(), neighbourP->getX());
                             double normL2 = ArrayUtils::L2Norm(sub);

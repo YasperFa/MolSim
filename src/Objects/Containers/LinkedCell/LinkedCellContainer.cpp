@@ -131,7 +131,7 @@ namespace ParticleContainers {
                         Cell nCell(Cell::CType::HALO);
                         cells.push_back(nCell);
                         haloCells.push_back(cells.back());
-                    } else if (x == 0 && y == 0 && z == 0 || x == cellNumPerDimension[0] - 1 || y == cellNumPerDimension[1] - 1 || z == cellNumPerDimension[2] - 1) {
+                    } else if (x == 0 || y == 0 || z == 0 || x == cellNumPerDimension[0] - 1 || y == cellNumPerDimension[1] - 1 || z == cellNumPerDimension[2] - 1) {
                         Cell nCell(Cell::CType::BOUNDARY);
                         cells.push_back(nCell);
                         boundaryCells.push_back(cells.back());
