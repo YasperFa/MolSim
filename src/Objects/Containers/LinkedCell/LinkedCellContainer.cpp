@@ -10,8 +10,8 @@ namespace ParticleContainers {
     LinkedCellContainer::LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff)
         : domainSize(domainSize), cutoff(cutoff) {
 
-        SPDLOG_INFO("DOMAIN SIZE: {} {} {}", domainSize[0], domainSize[1], domainSize[2]);
-        SPDLOG_INFO("CUTOFF: {}", cutoff);
+        SPDLOG_DEBUG("DOMAIN SIZE: {} {} {}", domainSize[0], domainSize[1], domainSize[2]);
+        SPDLOG_DEBUG("CUTOFF: {}", cutoff);
 
         //calculate how many cells in each dimension
         cellNumPerDimension = {
@@ -20,7 +20,7 @@ namespace ParticleContainers {
             std::max(static_cast<int>(std::floor(domainSize[2] / cutoff)), 1)
         };
 
-        SPDLOG_INFO("Cell Number Per Dimension: {} {} {}", cellNumPerDimension[0], cellNumPerDimension[1], cellNumPerDimension[2]);
+        SPDLOG_DEBUG("Cell Number Per Dimension: {} {} {}", cellNumPerDimension[0], cellNumPerDimension[1], cellNumPerDimension[2]);
 
         //calculate the sizes for cells
         cellSizePerDimension = {
@@ -28,19 +28,17 @@ namespace ParticleContainers {
             domainSize[2] / cellNumPerDimension[2]
         };
 
-        SPDLOG_INFO("Cell Size Per Dim {} {} {}", cellSizePerDimension[0], cellSizePerDimension[1], cellSizePerDimension[2]);
+        cells.reserve((cellNumPerDimension[0] + 2) * (cellNumPerDimension[1] + 2) * (cellNumPerDimension[2] + 2));
+        SPDLOG_DEBUG("Cell Size Per Dim {} {} {}", cellSizePerDimension[0], cellSizePerDimension[1], cellSizePerDimension[2]);
 
 
-        SPDLOG_INFO("LinkedCellContainer initialized1");
         //initialize cells with the correct cell types
         initializeCells();
-        SPDLOG_INFO("LinkedCellContainer initialized2");
 
         //initialize the neighbours vectors for the cells
         initializeNeighbours();
-        SPDLOG_INFO("LinkedCellContainer initialized3");
 
-        reserve(3000);
+        //reserve(3000);
 
         SPDLOG_DEBUG("LinkedCellContainer initialized with the domain [{},{},{}] and cutoff-radius", domainSize[0],
                      domainSize[1], domainSize[2], cutoff);
@@ -86,7 +84,9 @@ namespace ParticleContainers {
 
         for (Particle& particle : particles) {
             Cell* cell = mapParticleToCell(particle);
-            cell->addParticleToCell(&particle);
+            if (cell != nullptr) {
+                cell->addParticleToCell(&particle);
+            }
         }
     }
 
@@ -116,7 +116,7 @@ namespace ParticleContainers {
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
         if (cellInd == -1) {
             SPDLOG_ERROR("The given particle does not belong to any cell!");
-            throw std::runtime_error("The given particle is not in the cell!");
+            return nullptr;
         }
 
         return &cells.at(cellInd);
@@ -124,9 +124,9 @@ namespace ParticleContainers {
 
     void LinkedCellContainer::initializeCells() {
         SPDLOG_DEBUG("Initializing cells...");
-        for (int x = -1; x < cellNumPerDimension[0]; ++x) {
-            for (int y = -1; y < cellNumPerDimension[1]; ++y) {
-                for (int z = -1; z < cellNumPerDimension[2]; ++z) {
+        for (int x = -1; x < cellNumPerDimension[0] + 1; ++x) {
+            for (int y = -1; y < cellNumPerDimension[1] + 1 ; ++y) {
+                for (int z = -1; z < cellNumPerDimension[2] + 1; ++z) {
                     if (x < 0 || y < 0 || z < 0 || x >= cellNumPerDimension[0] || y >= cellNumPerDimension[1] || z >= cellNumPerDimension[2]) {
                         Cell nCell(Cell::CType::HALO);
                         cells.push_back(nCell);

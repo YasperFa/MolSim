@@ -250,21 +250,14 @@ public:
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                        std::unique_ptr<Calculators::Calculator> &calculator) {            
 
-
-        SPDLOG_INFO("REACHED 1");
         const std::string outName = "MD";
 
         double currentTime = 0.0;
         int iteration = 0;
 
-        SPDLOG_INFO("REACHED 2");
-
         while (currentTime < endTime) {
-            SPDLOG_INFO("REACHED 3");
 
             calculator->calculateXFV(particleContainer, deltaT);
-
-            SPDLOG_INFO("REACHED 4");
 
             iteration++;
 

@@ -90,17 +90,18 @@ namespace Calculators {
                         (*itParticle2)->setF(operator-((*itParticle2)->getF(), fij));
                     }
 
-                    for (Cell *neighbourCell: itCell->getNeighbourCells()) {
-                        if (neighbourCell == nullptr) {
-                            continue;
-                        }
+                }
+                for (Cell *neighbourCell: itCell->getNeighbourCells()) {
+                    if (neighbourCell == nullptr) {
+                        continue;
+                    }
 
-                        if (itCell->getInfluencedByCells().find(neighbourCell) != itCell->endInfluencedBy()) {
-                            continue;
-                        }
-
+                    if (itCell->getInfluencedByCells().find(neighbourCell) != itCell->endInfluencedBy()) {
+                        continue;
+                    }
+                    for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
                         for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
-                            //SPDLOG_INFO("PASSED 2.1");
+                         //   SPDLOG_INFO("PASSED 2.1");
                             if (neighbourP == nullptr) {
                                 continue;
                             }
@@ -121,11 +122,12 @@ namespace Calculators {
                             // make use of Newton's third law and add the negative force calculated above to particle 2
                             neighbourP->setF(operator-(neighbourP->getF(), fij));
                         }
-
                         neighbourCell->addInfluencedByCell(&(*itCell));
+                       // SPDLOG_INFO("PASSED 2.2");
                     }
                 }
             }
+            SPDLOG_INFO("All");
             lcCon.deleteHaloParticles();
             lcCon.updateParticlesInCell();
         }
