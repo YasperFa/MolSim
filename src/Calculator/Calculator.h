@@ -52,10 +52,10 @@ namespace Calculators {
             for (auto it1 = particleContainer.begin(); it1 != particleContainer.end(); ++it1) {
                 for (auto it2 = it1 + 1; it2 != particleContainer.end(); ++it2) {
                     std::array<double, 3> sub = operator-(it2->getX(), it1->getX());
-                    double normCubed = ArrayUtils::L2Norm(sub);
+                    double norm = ArrayUtils::L2Norm(sub);
 
                     // calculate Force between the current pair of particles
-                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), normCubed);
+                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm);
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
                     it1->setF(operator+(it1->getF(), fij));
@@ -106,7 +106,7 @@ namespace Calculators {
                                 continue;
                             }
 
-                            std::array<double, 3> sub = operator-((*itParticle1)->getX(), neighbourP->getX());
+                            std::array<double, 3> sub = operator-(neighbourP->getX(),(*itParticle1)->getX());
                             double normL2 = ArrayUtils::L2Norm(sub);
                             if (normL2 > lcCon.getCutoff()) {
                                 continue;
