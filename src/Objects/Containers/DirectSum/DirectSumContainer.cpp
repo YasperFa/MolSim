@@ -7,6 +7,7 @@
     #include <algorithm>
     #include <exception>
 
+namespace ParticleContainers {
     std::vector<Particle>::iterator DirectSumContainer::begin() {
         return particles.begin();
     }
@@ -38,10 +39,10 @@
     const Particle& DirectSumContainer::getParticle(int id) {
 
         for (auto &p:particles) { //linear search
-                if (p.getID() == id){
-                    return p;
-                }
+            if (p.getID() == id){
+                return p;
             }
+        }
         
         SPDLOG_WARN("Particle not found");
         throw std::runtime_error("Particle not found");
@@ -59,7 +60,4 @@
     std::vector<Particle> DirectSumContainer::getParticles() const {
         return particles;
     }
-
-
-
-
+}

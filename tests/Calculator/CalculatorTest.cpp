@@ -11,7 +11,7 @@
 /*Checks that calculateX() correctly updates the position of a particle*/
 TEST(CalculatorTest, correctXcalculations) {
     SPDLOG_DEBUG("running test");
-    DirectSumContainer test;
+    ParticleContainers::DirectSumContainer test;
     SPDLOG_DEBUG("created container");
     Particle p({0.0, 0.0, 0.0},{0.1, 0.1, 0.1},1.0,0);
     SPDLOG_DEBUG("created particle");
@@ -31,7 +31,7 @@ TEST(CalculatorTest, correctXcalculations) {
 
 /*Checks that calculateF() correctly updates the force between particles*/
 TEST(CalculatorTest, correctFIJcalculations) {
-    DirectSumContainer test;
+    ParticleContainers::DirectSumContainer test;
     std::array<double,3> old = {1.0, 2.0, 3.0};
 
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
@@ -63,7 +63,7 @@ TEST(CalculatorTest, correctFIJcalculations) {
 
 /**Checks that calculateV() correctly updates the velocity of a particle*/
 TEST(CalculatorTest, correctVcalculations) {
-    DirectSumContainer test;
+    ParticleContainers::DirectSumContainer test;
     Particle p({0.0, 0.0, 0.0},{1.0, 1.0, 1.0}, 4.0 ,0);
     p.setOldF({2.0, 2.0, 2.0});
     p.setF({3.0, 3.0, 3.0});
@@ -79,7 +79,7 @@ TEST(CalculatorTest, correctVcalculations) {
 }
 
     TEST(CalculatorTest, correctXFVcalculations) {
-    DirectSumContainer test;
+    ParticleContainers::DirectSumContainer test;
 
     std::array<double, 3> a = {4.0, 4.0, 4.0};
     std::array<double, 3> b = {8.0, 8.0, 8.0};
@@ -123,7 +123,7 @@ TEST(CalculatorTest, correctVcalculations) {
 
     /*Checks that calculateF() of LJC correctly updates the force between particles*/
 TEST(CalculatorTest, correctLJcalculations) {
-    DirectSumContainer test;
+    ParticleContainers::DirectSumContainer test;
 
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
     test.addParticle(i);

@@ -19,7 +19,7 @@ FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
 
-void FileReader::readFile(DirectSumContainer &particles, const std::string& filename) {
+void FileReader::readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename) {
     SPDLOG_DEBUG("reading file {}", filename);
 
     std::ifstream input_file(filename);
@@ -55,7 +55,7 @@ void FileReader::readFile(DirectSumContainer &particles, const std::string& file
 }
 
 
-void FileReader::readParticles(DirectSumContainer &particles, std::ifstream &input_file) {
+void FileReader::readParticles(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file) {
     SPDLOG_DEBUG("reading particles from file");
     std::array<double, 3> x;
     std::array<double, 3> v;
@@ -91,7 +91,7 @@ void FileReader::readParticles(DirectSumContainer &particles, std::ifstream &inp
     }
 }
 
-void FileReader::readCuboids(DirectSumContainer &particles, std::ifstream &input_file) {
+void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file) {
     SPDLOG_DEBUG("reading cuboids from file");
     // define all Cuboid parameters
     std::array<double, 3> x;
@@ -150,7 +150,7 @@ void FileReader::readCuboids(DirectSumContainer &particles, std::ifstream &input
         SPDLOG_DEBUG("Read line: {}", tmp_string);
     }
 }
-void FileReader::readDiscs(DirectSumContainer &particles, std::ifstream &input_file) {
+void FileReader::readDiscs(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file) {
     SPDLOG_DEBUG("reading discs from file");
     // define all Cuboid parameters
     std::array<double, 3> centerCoord;

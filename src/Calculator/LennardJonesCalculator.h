@@ -15,7 +15,7 @@ namespace Calculators{
 
           LennardJonesCalculator() = default;
 
-          virtual ~LennardJonesCalculator() = default;
+          ~LennardJonesCalculator() override = default;
           /**
           *  function for calculating the force FIJ acting between two particles according to lennard jones
           * @param sub: subtraction of positions

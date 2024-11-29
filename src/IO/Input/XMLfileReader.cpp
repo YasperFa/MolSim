@@ -13,7 +13,7 @@
 
 int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                      std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                                     std::unique_ptr<Calculators::Calculator> &calculator, DirectSumContainer &particleContainer) {
+                                     std::unique_ptr<Calculators::Calculator> &calculator, ParticleContainers::ParticleContainer &particleContainer) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");

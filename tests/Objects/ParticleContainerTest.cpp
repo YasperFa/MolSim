@@ -6,8 +6,8 @@
 #include "../src/Objects/Particle.h"
 
 /* Checks if sizeParticles() and addParticle() works correctly */
-TEST(ParticleContainerTest, StrctureAfterAddParticle) {
-    DirectSumContainer test;
+TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
+    ParticleContainers::DirectSumContainer test;
     Particle p(0);
     
     EXPECT_EQ(test.sizeParticles(), 0);

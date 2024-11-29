@@ -3,12 +3,15 @@
 //
 
 #include "Cell.h"
+
+#include "spdlog/spdlog.h"
 Cell::Cell(CType cellType) : cellType(cellType) {}
 
-std::vector<Particle*>::iterator Cell::beginInCell() {
+std::vector<Particle*>::iterator Cell::beginParticle() {
     return particlesInCell.begin();
 }
-std::vector<Particle*>::iterator Cell::endInCell() {
+
+std::vector<Particle*>::iterator Cell::endParticle() {
     return particlesInCell.end();
 }
 
@@ -37,6 +40,10 @@ void Cell::addNeighbourCell(Cell* cell) {
 }
 
 void Cell::addInfluencedByCell(Cell* cell) {
+    if (cell == nullptr) {
+        SPDLOG_DEBUG("Cell::addInfluencedByCell(): cell is null");
+        return;
+    }
     influencedBy.insert(cell);
 }
 
@@ -45,6 +52,16 @@ std::vector<Particle*> Cell::getParticlesInCell(){return particlesInCell;}
 std::vector<Cell*> Cell::getNeighbourCells(){return neighbourCells;}
 
 Cell::CType Cell::getCellType(){ return cellType;}
+
+std::unordered_set<Cell *> Cell::getInfluencedByCells() {
+    return influencedBy;
+}
+
+void Cell::clearParticlesInCell() {
+    particlesInCell.clear();
+}
+
+
 
 
 

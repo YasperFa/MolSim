@@ -15,6 +15,7 @@
 #include "spdlog/spdlog.h"
 #include "cxxopts.hpp"
 #include "Calculator/GravityCalculator.h"
+#include "Objects/Containers/LinkedCell/LinkedCellContainer.h"
 
 class MolSim {
 public:
@@ -72,7 +73,8 @@ public:
 
     static bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                               std::unique_ptr<Calculators::Calculator> &calculator) {
+                               std::unique_ptr<Calculators::Calculator> &calculator,
+                               std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
         cxxopts::Options options("MolSim", "Molecular Simulation Of Group G WS24");
 
         options.add_options()
@@ -82,7 +84,14 @@ public:
                 ("e,endTime", "Set endTime", cxxopts::value<double>()->default_value("1000"))
                 ("o,output", "Set Outputwriter (VTK or XYZ)", cxxopts::value<std::string>())
                 ("c,calculator", "Set Calculator", cxxopts::value<std::string>())
-                ("l,logLevel", "Set log level", cxxopts::value<std::string>());
+                ("l,logLevel", "Set log level", cxxopts::value<std::string>())
+                ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
+                ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
+                ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
+
+        ;
+
+
 
 
         auto parseResult = options.parse(argc, argv);
@@ -147,6 +156,38 @@ public:
         }
         file.close();
 
+        auto domainSize = parseResult["domainSize"].as<std::vector<double>>();
+        if (domainSize.size() != 3) {
+            SPDLOG_ERROR("Invalid domain size. Domain size must be 3. For a 2d simulation please set the last dimension to 1");
+            printHelp();
+            return false;
+        }
+        //SPDLOG_DEBUG("Domain size array is: {}", domainSize);
+        std::array<double,3> domainSizeArray = {domainSize[0], domainSize[1], domainSize[2]};
+
+        if (parseResult["cutoffRadius"].as<double>() <= 0) {
+            SPDLOG_ERROR("Cutoff radius must be greater than zero");
+            printHelp();
+            return false;
+        }
+
+        double cutoffRadius = parseResult["cutoffRadius"].as<double>();
+        SPDLOG_DEBUG("Cutoff radius is: {}", cutoffRadius);
+
+
+        if (parseResult.count("particleContainer")) {
+            std::string containerType = parseResult["particleContainer"].as<std::string>();
+            if (containerType == "DSC") {
+                particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
+            } else if (containerType == "LCC") {
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            } else {
+                SPDLOG_ERROR("Invalid container type!");
+                printHelp();
+                return false;
+            }
+        }
+
 
 
         //set deltaT and endTime
@@ -168,7 +209,7 @@ public:
         calculator = std::make_unique<Calculators::GravityCalculator>();
 
 
-        //set the outpit writer
+        //set the output writer
         if (parseResult.count("output")) {
             std::string outputWriterTemp = parseResult["output"].as<std::string>();
             if (outputWriterTemp == "VTK") {
@@ -205,17 +246,25 @@ public:
     }
 
 
-    static void runSim(DirectSumContainer &particleContainer, double &deltaT, double &endTime, int &freq,
+    static void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                        std::unique_ptr<Calculators::Calculator> &calculator) {            
-        
+
+
+        SPDLOG_INFO("REACHED 1");
         const std::string outName = "MD";
 
         double currentTime = 0.0;
         int iteration = 0;
 
+        SPDLOG_INFO("REACHED 2");
+
         while (currentTime < endTime) {
+            SPDLOG_INFO("REACHED 3");
+
             calculator->calculateXFV(particleContainer, deltaT);
+
+            SPDLOG_INFO("REACHED 4");
 
             iteration++;
 

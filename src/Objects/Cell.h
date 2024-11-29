@@ -16,7 +16,7 @@ public:
     enum class CType {
      INNER,
      HALO,
-     BORDER
+     BOUNDARY
     };
 
 private:
@@ -51,13 +51,13 @@ public:
      *
      * @return an iterator to the beginning of the vector containing raw pointers to particles in the cell
      */
-    std::vector<Particle*>::iterator beginInCell();
+    std::vector<Particle*>::iterator beginParticle();
 
     /**
      *
      * @return an iterator to the end of the vector containing raw pointers to particles in the cell
      */
-    std::vector<Particle*>::iterator endInCell();
+    std::vector<Particle*>::iterator endParticle();
 
    /**
     *
@@ -101,10 +101,16 @@ public:
      */
     void addInfluencedByCell(Cell* cell);
 
+    /**
+     * @brief clear the particlesInCell vector for the current cell.
+     */
+    void clearParticlesInCell();
 
     std::vector<Particle*> getParticlesInCell();
 
     std::vector<Cell*> getNeighbourCells();
+
+    std::unordered_set<Cell*> getInfluencedByCells();
 
     CType getCellType();
 };

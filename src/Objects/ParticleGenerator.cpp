@@ -8,7 +8,7 @@
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 
-void ParticleGenerator::generateCuboid(DirectSumContainer &particles, Cuboid &cuboid) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
@@ -37,14 +37,12 @@ void ParticleGenerator::generateCuboid(DirectSumContainer &particles, Cuboid &cu
                 Particle nParticle(particle_pos,vel,m,0);
                 // add new particle to container
                 particles.addParticle(nParticle);
-
-
             }
         }
     }
 }
 
-void ParticleGenerator::generateDisc(DirectSumContainer &particles, Disc &disc) {
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc) {
     const std::array<double, 3> center = disc.getCenterCoordinate();
     const  std::array<double, 3> initVel = disc.getInitVelocity();
     const int r = disc.getRadius();
