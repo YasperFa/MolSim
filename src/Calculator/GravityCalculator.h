@@ -21,7 +21,7 @@ namespace Calculators {
         * @return force fij between the particle i and j
         */
         std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) override;
-
+        std::string toString() override;
 
     };
 };

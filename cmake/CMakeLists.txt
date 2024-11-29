@@ -6,6 +6,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Calculator/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/ParticleGeneratorTest.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/IO/XMLfileReaderTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cell.cpp"
@@ -13,9 +14,13 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/DirectSumContainer.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/LinkedCellContainer.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleGenerator.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ParticleIdInitializer.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/LennardJonesCalculator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/GravityCalculator.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/XMLfileReader.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/schema.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Output/*.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
@@ -30,13 +35,19 @@ FetchContent_MakeAvailable(googletest)
 # create testing executable
 add_executable(Test ${TEST_SRC})
 
+
 target_include_directories(Test
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/libs/libxsd
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/tests
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(Test PRIVATE
+target_link_libraries(Test
+        PUBLIC
+        xerces-c
+        PRIVATE
         gtest
         gtest_main
         spdlog

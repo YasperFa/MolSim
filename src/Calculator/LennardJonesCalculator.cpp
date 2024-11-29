@@ -17,6 +17,9 @@ namespace Calculators {
         const std::array<double,3> fij = operator*(potential_dirivative, operator*(-1,sub));
         return fij;
     }
+    std::string LennardJonesCalculator::toString() {
+        return "LJC";
+    }
 }
 
 

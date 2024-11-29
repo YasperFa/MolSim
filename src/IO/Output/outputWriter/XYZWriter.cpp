@@ -36,4 +36,8 @@ namespace outputWriters {
         }
         file.close();
     }
+    std::string XYZWriter::toString() {
+        return std::string("XYZWriter");
+    }
+
 } // namespace outputWriter
