@@ -89,6 +89,13 @@ public:
      */
     void addParticleToCell(Particle* particle);
 
+
+    /**
+     * Remove a particle from the cell
+     * @param particle is the particle to be removed
+     */
+    void removeParticleFromCell(const Particle & particle);
+
     /**
      * Add the passed cell as a reference to the NeighbourCells vector.
      * @param cell is the cell to be added as a neighbour
