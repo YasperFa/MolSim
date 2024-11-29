@@ -2,7 +2,7 @@
 #include <list>
 #include <functional>
 
-#include "MolSim.h"
+#include "MolSimFunctions.h"
 
 #include "IO/Input/XMLfileReader.h"
 

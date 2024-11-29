@@ -3,7 +3,7 @@
 // Adapted from MolSim.h on 29.11.24.
 //
 
-#include "MolSim.h"
+#include "MolSimFunctions.h"
 
 void MolSim::printHelp() {
     std::cout << R"(
