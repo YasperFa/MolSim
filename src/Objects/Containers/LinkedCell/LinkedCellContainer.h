@@ -85,6 +85,15 @@ namespace ParticleContainers {
    */
   void addParticle(const Particle &particle) override;
 
+  /**
+   * @brief Remove the particle passed from the container.
+   * @param particle is the particle to be removed
+  */
+  void removeParticle(const Particle &particle);
+
+  /**
+   * TODO: missing documentation
+   */
   void reserve(size_t numParticles);
 
 
