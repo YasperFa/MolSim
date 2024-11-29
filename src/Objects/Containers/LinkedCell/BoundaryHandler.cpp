@@ -1,11 +1,16 @@
-/*#include "BoundaryHandler.h"
+//
+// Created by Stefanie Blattenberger on 27/11/2024.
+//
+
+#include "BoundaryHandler.h"
 #include <math.h>
 #include <exception>
 #include <iostream>
 #include <algorithm>
 
-BoundaryHandler::BoundaryHandler(double s, bool t, LinkedCellContainer& container) : //TODO: add boundaries initialization
-sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, boundaries {(1, 2, 3, 4, 5, 6)} {};
+BoundaryHandler::BoundaryHandler(double s, bool t, ParticleContainers::LinkedCellContainer& container) :
+sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, 
+boundaries {{0, 0, 0, container.getDomainSize()[0], container.getDomainSize()[1], container.getDomainSize()[2]}} {};
 
 void BoundaryHandler::handleBoundaries(){
     if (type == 0) {
@@ -52,7 +57,7 @@ void BoundaryHandler::handleReflecting(){
                     }
 
                     //if not already has shadow particle
-                    if (hasShadowParticle) {
+                    if (!hasShadowParticle) {
                         //create shadow particle 
                         Particle shadow = createShadowParticle (*p, i, dist); //shadow particle has negated id
                         //add particle to shadow area
@@ -78,7 +83,6 @@ void BoundaryHandler::handleReflecting(){
 
             if (canBeDeleted) {
                 container.removeParticle(*shadowP);
-                delete(shadowP);
             }
         }
     }
@@ -86,12 +90,12 @@ void BoundaryHandler::handleReflecting(){
 
 double BoundaryHandler::calculateDistance(Particle p, int i) { //passing by value on purpose
      switch (i) {
-        case 0: return std::sqrt(std::pow((p.getX()[0] - boundaries[0]), 2)); //left
-        case 1: return std::sqrt(std::pow((p.getX()[0] - boundaries[1]), 2)); //right
-        case 2: return std::sqrt(std::pow((p.getX()[1] - boundaries[2]), 2)); //top
-        case 3: return std::sqrt(std::pow((p.getX()[1] - boundaries[3]), 2)); //bottom
-        case 4: return std::sqrt(std::pow((p.getX()[2] - boundaries[4]), 2)); //front
-        case 5: return std::sqrt(std::pow((p.getX()[2] - boundaries[5]), 2)); //back
+        case 0: return std::abs(p.getX()[0] - boundaries[0]); //left
+        case 1: return std::abs(p.getX()[0] - boundaries[1]); //right
+        case 2: return std::abs(p.getX()[1] - boundaries[2]); //top
+        case 3: return std::abs(p.getX()[1] - boundaries[3]); //bottom
+        case 4: return std::abs(p.getX()[2] - boundaries[4]); //front
+        case 5: return std::abs(p.getX()[2] - boundaries[5]); //back
         default: throw std::runtime_error("Error calculating distance");
      }
 }
@@ -161,4 +165,3 @@ Particle BoundaryHandler::createShadowParticle(Particle p, int i, double dist){/
     newParticle.makeShadowParticle();
     return newParticle;
 }
-*/
