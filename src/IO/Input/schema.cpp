@@ -138,6 +138,88 @@ calculatorForce (::std::unique_ptr< calculatorForce_type > x)
 }
 
 
+// ContainerType
+// 
+
+const ContainerType::containerType_type& ContainerType::
+containerType () const
+{
+  return this->containerType_.get ();
+}
+
+ContainerType::containerType_type& ContainerType::
+containerType ()
+{
+  return this->containerType_.get ();
+}
+
+void ContainerType::
+containerType (const containerType_type& x)
+{
+  this->containerType_.set (x);
+}
+
+void ContainerType::
+containerType (::std::unique_ptr< containerType_type > x)
+{
+  this->containerType_.set (std::move (x));
+}
+
+const ContainerType::cutoffRadius_optional& ContainerType::
+cutoffRadius () const
+{
+  return this->cutoffRadius_;
+}
+
+ContainerType::cutoffRadius_optional& ContainerType::
+cutoffRadius ()
+{
+  return this->cutoffRadius_;
+}
+
+void ContainerType::
+cutoffRadius (const cutoffRadius_type& x)
+{
+  this->cutoffRadius_.set (x);
+}
+
+void ContainerType::
+cutoffRadius (const cutoffRadius_optional& x)
+{
+  this->cutoffRadius_ = x;
+}
+
+const ContainerType::domainSize_optional& ContainerType::
+domainSize () const
+{
+  return this->domainSize_;
+}
+
+ContainerType::domainSize_optional& ContainerType::
+domainSize ()
+{
+  return this->domainSize_;
+}
+
+void ContainerType::
+domainSize (const domainSize_type& x)
+{
+  this->domainSize_.set (x);
+}
+
+void ContainerType::
+domainSize (const domainSize_optional& x)
+{
+  this->domainSize_ = x;
+}
+
+void ContainerType::
+domainSize (::std::unique_ptr< domainSize_type > x)
+{
+  this->domainSize_.set (std::move (x));
+}
+
+
 // ParametersType
 // 
 
@@ -721,6 +803,30 @@ calculator (::std::unique_ptr< calculator_type > x)
   this->calculator_.set (std::move (x));
 }
 
+const simulation::container_type& simulation::
+container () const
+{
+  return this->container_.get ();
+}
+
+simulation::container_type& simulation::
+container ()
+{
+  return this->container_.get ();
+}
+
+void simulation::
+container (const container_type& x)
+{
+  this->container_.set (x);
+}
+
+void simulation::
+container (::std::unique_ptr< container_type > x)
+{
+  this->container_.set (std::move (x));
+}
+
 const simulation::parameters_type& simulation::
 parameters () const
 {
@@ -954,6 +1060,131 @@ operator= (const CalculatorType& x)
 
 CalculatorType::
 ~CalculatorType ()
+{
+}
+
+// ContainerType
+//
+
+ContainerType::
+ContainerType (const containerType_type& containerType)
+: ::xml_schema::type (),
+  containerType_ (containerType, this),
+  cutoffRadius_ (this),
+  domainSize_ (this)
+{
+}
+
+ContainerType::
+ContainerType (const ContainerType& x,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  containerType_ (x.containerType_, f, this),
+  cutoffRadius_ (x.cutoffRadius_, f, this),
+  domainSize_ (x.domainSize_, f, this)
+{
+}
+
+ContainerType::
+ContainerType (const ::xercesc::DOMElement& e,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  containerType_ (this),
+  cutoffRadius_ (this),
+  domainSize_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void ContainerType::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // containerType
+    //
+    if (n.name () == "containerType" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< containerType_type > r (
+        containerType_traits::create (i, f, this));
+
+      if (!containerType_.present ())
+      {
+        this->containerType_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    // cutoffRadius
+    //
+    if (n.name () == "cutoffRadius" && n.namespace_ ().empty ())
+    {
+      if (!this->cutoffRadius_)
+      {
+        this->cutoffRadius_.set (cutoffRadius_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // domainSize
+    //
+    if (n.name () == "domainSize" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< domainSize_type > r (
+        domainSize_traits::create (i, f, this));
+
+      if (!this->domainSize_)
+      {
+        this->domainSize_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!containerType_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "containerType",
+      "");
+  }
+}
+
+ContainerType* ContainerType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class ContainerType (*this, f, c);
+}
+
+ContainerType& ContainerType::
+operator= (const ContainerType& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->containerType_ = x.containerType_;
+    this->cutoffRadius_ = x.cutoffRadius_;
+    this->domainSize_ = x.domainSize_;
+  }
+
+  return *this;
+}
+
+ContainerType::
+~ContainerType ()
 {
 }
 
@@ -2026,11 +2257,13 @@ DimensionsType::
 simulation::
 simulation (const output_type& output,
             const calculator_type& calculator,
+            const container_type& container,
             const parameters_type& parameters,
             const shapes_type& shapes)
 : ::xml_schema::type (),
   output_ (output, this),
   calculator_ (calculator, this),
+  container_ (container, this),
   parameters_ (parameters, this),
   shapes_ (shapes, this)
 {
@@ -2039,11 +2272,13 @@ simulation (const output_type& output,
 simulation::
 simulation (::std::unique_ptr< output_type > output,
             ::std::unique_ptr< calculator_type > calculator,
+            ::std::unique_ptr< container_type > container,
             ::std::unique_ptr< parameters_type > parameters,
             ::std::unique_ptr< shapes_type > shapes)
 : ::xml_schema::type (),
   output_ (std::move (output), this),
   calculator_ (std::move (calculator), this),
+  container_ (std::move (container), this),
   parameters_ (std::move (parameters), this),
   shapes_ (std::move (shapes), this)
 {
@@ -2056,6 +2291,7 @@ simulation (const simulation& x,
 : ::xml_schema::type (x, f, c),
   output_ (x.output_, f, this),
   calculator_ (x.calculator_, f, this),
+  container_ (x.container_, f, this),
   parameters_ (x.parameters_, f, this),
   shapes_ (x.shapes_, f, this)
 {
@@ -2068,6 +2304,7 @@ simulation (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   output_ (this),
   calculator_ (this),
+  container_ (this),
   parameters_ (this),
   shapes_ (this)
 {
@@ -2112,6 +2349,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!calculator_.present ())
       {
         this->calculator_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    // container
+    //
+    if (n.name () == "container" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< container_type > r (
+        container_traits::create (i, f, this));
+
+      if (!container_.present ())
+      {
+        this->container_.set (::std::move (r));
         continue;
       }
     }
@@ -2161,6 +2412,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "");
   }
 
+  if (!container_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "container",
+      "");
+  }
+
   if (!parameters_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -2191,6 +2449,7 @@ operator= (const simulation& x)
     static_cast< ::xml_schema::type& > (*this) = x;
     this->output_ = x.output_;
     this->calculator_ = x.calculator_;
+    this->container_ = x.container_;
     this->parameters_ = x.parameters_;
     this->shapes_ = x.shapes_;
   }

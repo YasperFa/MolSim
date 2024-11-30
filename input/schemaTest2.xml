@@ -8,6 +8,9 @@
     <calculator>
         <calculatorForce>Default</calculatorForce>
     </calculator>
+    <container>
+        <containerType>LCC</containerType>
+    </container>
     <parameters>
     </parameters>
     <shapes>

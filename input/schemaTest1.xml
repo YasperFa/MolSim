@@ -8,6 +8,9 @@
     <calculator>
         <calculatorForce>LJC</calculatorForce>
     </calculator>
+    <container>
+        <containerType>LCC</containerType>
+    </container>
     <parameters>
         <tEnd>3.0</tEnd>
         <deltaT>0.0001</deltaT>

@@ -11,14 +11,14 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
-    ParticleContainers::DirectSumContainer particleContainer;
+    std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer);
     EXPECT_EQ("XYZWriter",outputWriter->toString());
     EXPECT_EQ("LJC",calculator->toString());
     EXPECT_EQ(10, freq);
     EXPECT_NEAR(0.0001, deltaT, 0.00001);
     EXPECT_NEAR(3.0, endTime, 0.00001);
-    for (Particle p : particleContainer) {
+    for (Particle p : *particleContainer) {
         // check for correct position
         EXPECT_NEAR(1.0, p.getX()[0], 0.00001);
         EXPECT_NEAR(2.0, p.getX()[1], 0.00001);
@@ -39,7 +39,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
-    ParticleContainers::DirectSumContainer particleContainer;
+    std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer);
     EXPECT_EQ("VTKWriter",outputWriter->toString());
    EXPECT_EQ("Default",calculator->toString());

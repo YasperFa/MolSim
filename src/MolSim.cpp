@@ -46,7 +46,7 @@ int main(int argc, char *argsv[]) {
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, freq, outputWriter,calculator, *particleContainer))
+        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, freq, outputWriter,calculator, particleContainer))
             return 1;
     }
     else{

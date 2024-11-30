@@ -2,31 +2,59 @@
 <simulation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
-        <baseName>XYZ</baseName>
+        <baseName>VTK</baseName>
         <writeFrequency>1</writeFrequency>
     </output>
     <calculator>
-         <calculatorForce>Default</calculatorForce>
+         <calculatorForce>LJC</calculatorForce>
     </calculator>
+    <container>
+        <containerType>DSC</containerType>
+    </container>
     <parameters>
-        <tEnd>0.01</tEnd>
-        <deltaT>0.0003</deltaT>
+        <tEnd>5</tEnd>
+        <deltaT>0.0002</deltaT>
     </parameters>
     <shapes>
-        <disc>
-            <center>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-            </center>
-            <radius>2</radius>
+        <cuboid>
+            <position>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+            </position>
+            <dimensions>
+                <x>40</x>
+                <y>8</y>
+                <z>1</z>
+            </dimensions>
             <initialVelocity>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
             </initialVelocity>
-            <distance>1.0</distance>
-            <mass>1.0</mass>
-        </disc>
+            <distance>1.1225</distance>
+            <meanVelocity>0.1</meanVelocity>
+            <mass>1</mass>
+        </cuboid>
+        <cuboid>
+            <position>
+                <x>15</x>
+                <y>15</y>
+                <z>0</z>
+            </position>
+            <dimensions>
+                <x>8</x>
+                <y>8</y>
+                <z>1</z>
+            </dimensions>
+            <initialVelocity>
+                <x>0</x>
+                <y>-10</y>
+                <z>0</z>
+            </initialVelocity>
+            <distance>1.1225</distance>
+            <meanVelocity>0.1</meanVelocity>
+            <mass>1</mass>
+        </cuboid>
     </shapes>
 </simulation>

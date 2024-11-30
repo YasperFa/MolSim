@@ -13,7 +13,7 @@
 
 int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                      std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                                     std::unique_ptr<Calculators::Calculator> &calculator, ParticleContainers::ParticleContainer &particleContainer) {
+                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");
@@ -33,6 +33,27 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     SPDLOG_ERROR("Invalid Frequency, Frequency should be positive!, using default value");
                     freq = 10;
                 }
+            }
+            SPDLOG_DEBUG("Reading container from file");
+            if(sim-> container().containerType() == "DSC") {
+                SPDLOG_DEBUG("DSC selected from xml file");
+                particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
+            } else if(sim-> container().containerType() == "LCC") {
+                SPDLOG_DEBUG("LCC selected from xml file");
+                std::array<double,3> domainSizeArray = {180.0,90.0,1.0};
+                double cutoffRadius = 3.0;
+                if(sim-> container().cutoffRadius().present()) {
+                    cutoffRadius = sim-> container().cutoffRadius().get();
+                }
+                if(sim ->container().domainSize().present()) {
+                    domainSizeArray[0] = sim->container().domainSize().get().x();
+                    domainSizeArray[1] = sim->container().domainSize().get().y();
+                    domainSizeArray[2] = sim->container().domainSize().get().z();
+                }
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            }
+            else {
+                SPDLOG_ERROR("Invalid container type!");
             }
             if(sim->parameters().deltaT().present()){
 
@@ -98,7 +119,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 v[2] = sim->shapes().particle().at(i).velocity().z();
                 double m = sim->shapes().particle().at(i).mass();
                 Particle newParticle(x,v,m,0);
-                particleContainer.addParticle(newParticle);
+                (particleContainer) -> addParticle(newParticle);
             }
             for (int i=0; i < (int) sim->shapes().cuboid().size();i++){
                 SPDLOG_DEBUG("reading cuboids from xml file");
@@ -119,7 +140,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(particleContainer, cuboid);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid);
             }
             for (int i=0; i < (int) sim->shapes().disc().size();i++){
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -137,7 +158,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double radius = sim->shapes().disc().at(i).radius();
 
                 Disc disc(x,v,radius,h,m);
-                ParticleGenerator::generateDisc(particleContainer, disc);
+                ParticleGenerator::generateDisc(*particleContainer, disc);
             }
 
 

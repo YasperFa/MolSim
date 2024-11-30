@@ -565,6 +565,7 @@ namespace xml_schema
 //
 class OutputType;
 class CalculatorType;
+class ContainerType;
 class ParametersType;
 class ShapeType;
 class CuboidType;
@@ -998,6 +999,301 @@ class CalculatorType: public ::xml_schema::type
 
   protected:
   calculatorForce_optional calculatorForce_;
+
+  //@endcond
+};
+
+/**
+ * @brief Class corresponding to the %ContainerType schema type.
+ *
+ * @nosubgrouping
+ */
+class ContainerType: public ::xml_schema::type
+{
+  public:
+  /**
+   * @name containerType
+   *
+   * @brief Accessor and modifier functions for the %containerType
+   * required element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::string containerType_type;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< containerType_type, char > containerType_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element.
+   *
+   * @return A constant reference to the element.
+   */
+  const containerType_type&
+  containerType () const;
+
+  /**
+   * @brief Return a read-write reference to the element.
+   *
+   * @return A reference to the element.
+   */
+  containerType_type&
+  containerType ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  containerType (const containerType_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  containerType (::std::unique_ptr< containerType_type > p);
+
+  //@}
+
+  /**
+   * @name cutoffRadius
+   *
+   * @brief Accessor and modifier functions for the %cutoffRadius
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ cutoffRadius_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< cutoffRadius_type > cutoffRadius_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< cutoffRadius_type, char, ::xsd::cxx::tree::schema_type::double_ > cutoffRadius_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const cutoffRadius_optional&
+  cutoffRadius () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  cutoffRadius_optional&
+  cutoffRadius ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  cutoffRadius (const cutoffRadius_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  cutoffRadius (const cutoffRadius_optional& x);
+
+  //@}
+
+  /**
+   * @name domainSize
+   *
+   * @brief Accessor and modifier functions for the %domainSize
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::DoubleVectorType domainSize_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< domainSize_type > domainSize_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< domainSize_type, char > domainSize_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const domainSize_optional&
+  domainSize () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  domainSize_optional&
+  domainSize ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  domainSize (const domainSize_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  domainSize (const domainSize_optional& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly instead
+   * of making a copy.
+   */
+  void
+  domainSize (::std::unique_ptr< domainSize_type > p);
+
+  //@}
+
+  /**
+   * @name Constructors
+   */
+  //@{
+
+  /**
+   * @brief Create an instance from the ultimate base and
+   * initializers for required elements and attributes.
+   */
+  ContainerType (const containerType_type&);
+
+  /**
+   * @brief Create an instance from a DOM element.
+   *
+   * @param e A DOM element to extract the data from.
+   * @param f Flags to create the new instance with.
+   * @param c A pointer to the object that will contain the new
+   * instance.
+   */
+  ContainerType (const ::xercesc::DOMElement& e,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Copy constructor.
+   *
+   * @param x An instance to make a copy of.
+   * @param f Flags to create the copy with.
+   * @param c A pointer to the object that will contain the copy.
+   *
+   * For polymorphic object models use the @c _clone function instead.
+   */
+  ContainerType (const ContainerType& x,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Copy the instance polymorphically.
+   *
+   * @param f Flags to create the copy with.
+   * @param c A pointer to the object that will contain the copy.
+   * @return A pointer to the dynamically allocated copy.
+   *
+   * This function ensures that the dynamic type of the instance is
+   * used for copying and should be used for polymorphic object
+   * models instead of the copy constructor.
+   */
+  virtual ContainerType*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  /**
+   * @brief Copy assignment operator.
+   *
+   * @param x An instance to make a copy of.
+   * @return A reference to itself.
+   *
+   * For polymorphic object models use the @c _clone function instead.
+   */
+  ContainerType&
+  operator= (const ContainerType& x);
+
+  //@}
+
+  /**
+   * @brief Destructor.
+   */
+  virtual 
+  ~ContainerType ();
+
+  // Implementation.
+  //
+
+  //@cond
+
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< containerType_type > containerType_;
+  cutoffRadius_optional cutoffRadius_;
+  domainSize_optional domainSize_;
 
   //@endcond
 };
@@ -3198,6 +3494,64 @@ class simulation: public ::xml_schema::type
   //@}
 
   /**
+   * @name container
+   *
+   * @brief Accessor and modifier functions for the %container
+   * required element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::ContainerType container_type;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< container_type, char > container_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element.
+   *
+   * @return A constant reference to the element.
+   */
+  const container_type&
+  container () const;
+
+  /**
+   * @brief Return a read-write reference to the element.
+   *
+   * @return A reference to the element.
+   */
+  container_type&
+  container ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  container (const container_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  container (::std::unique_ptr< container_type > p);
+
+  //@}
+
+  /**
    * @name parameters
    *
    * @brief Accessor and modifier functions for the %parameters
@@ -3324,6 +3678,7 @@ class simulation: public ::xml_schema::type
    */
   simulation (const output_type&,
               const calculator_type&,
+              const container_type&,
               const parameters_type&,
               const shapes_type&);
 
@@ -3337,6 +3692,7 @@ class simulation: public ::xml_schema::type
    */
   simulation (::std::unique_ptr< output_type >,
               ::std::unique_ptr< calculator_type >,
+              ::std::unique_ptr< container_type >,
               ::std::unique_ptr< parameters_type >,
               ::std::unique_ptr< shapes_type >);
 
@@ -3412,6 +3768,7 @@ class simulation: public ::xml_schema::type
   protected:
   ::xsd::cxx::tree::one< output_type > output_;
   ::xsd::cxx::tree::one< calculator_type > calculator_;
+  ::xsd::cxx::tree::one< container_type > container_;
   ::xsd::cxx::tree::one< parameters_type > parameters_;
   ::xsd::cxx::tree::one< shapes_type > shapes_;
 

@@ -4,6 +4,7 @@
             <xs:sequence>
                 <xs:element name="output" type="OutputType"/>
                 <xs:element name="calculator" type="CalculatorType" />
+                <xs:element name="container" type="ContainerType"/>
                 <xs:element name="parameters" type="ParametersType"/>
                 <xs:element name="shapes" type="ShapeType"/>
             </xs:sequence>
@@ -23,6 +24,13 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="ContainerType">
+        <xs:sequence>
+            <xs:element name="containerType" type="xs:string"/>
+            <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
+            <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="ParametersType">
         <xs:sequence>
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
