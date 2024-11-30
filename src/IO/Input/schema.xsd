@@ -29,6 +29,7 @@
             <xs:element name="containerType" type="xs:string"/>
             <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
             <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
+            <xs:element name="BoundaryType" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParametersType">

@@ -219,6 +219,36 @@ domainSize (::std::unique_ptr< domainSize_type > x)
   this->domainSize_.set (std::move (x));
 }
 
+const ContainerType::BoundaryType_optional& ContainerType::
+BoundaryType () const
+{
+  return this->BoundaryType_;
+}
+
+ContainerType::BoundaryType_optional& ContainerType::
+BoundaryType ()
+{
+  return this->BoundaryType_;
+}
+
+void ContainerType::
+BoundaryType (const BoundaryType_type& x)
+{
+  this->BoundaryType_.set (x);
+}
+
+void ContainerType::
+BoundaryType (const BoundaryType_optional& x)
+{
+  this->BoundaryType_ = x;
+}
+
+void ContainerType::
+BoundaryType (::std::unique_ptr< BoundaryType_type > x)
+{
+  this->BoundaryType_.set (std::move (x));
+}
+
 
 // ParametersType
 // 
@@ -1071,7 +1101,8 @@ ContainerType (const containerType_type& containerType)
 : ::xml_schema::type (),
   containerType_ (containerType, this),
   cutoffRadius_ (this),
-  domainSize_ (this)
+  domainSize_ (this),
+  BoundaryType_ (this)
 {
 }
 
@@ -1082,7 +1113,8 @@ ContainerType (const ContainerType& x,
 : ::xml_schema::type (x, f, c),
   containerType_ (x.containerType_, f, this),
   cutoffRadius_ (x.cutoffRadius_, f, this),
-  domainSize_ (x.domainSize_, f, this)
+  domainSize_ (x.domainSize_, f, this),
+  BoundaryType_ (x.BoundaryType_, f, this)
 {
 }
 
@@ -1093,7 +1125,8 @@ ContainerType (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   containerType_ (this),
   cutoffRadius_ (this),
-  domainSize_ (this)
+  domainSize_ (this),
+  BoundaryType_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1151,6 +1184,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // BoundaryType
+    //
+    if (n.name () == "BoundaryType" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< BoundaryType_type > r (
+        BoundaryType_traits::create (i, f, this));
+
+      if (!this->BoundaryType_)
+      {
+        this->BoundaryType_.set (::std::move (r));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -1178,6 +1225,7 @@ operator= (const ContainerType& x)
     this->containerType_ = x.containerType_;
     this->cutoffRadius_ = x.cutoffRadius_;
     this->domainSize_ = x.domainSize_;
+    this->BoundaryType_ = x.BoundaryType_;
   }
 
   return *this;

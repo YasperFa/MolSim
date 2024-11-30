@@ -13,7 +13,7 @@
 
 int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                      std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
+                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");
@@ -49,6 +49,17 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     domainSizeArray[0] = sim->container().domainSize().get().x();
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
+                }
+                if(sim -> container().BoundaryType().present()) {
+                    std::string condition = sim ->container().BoundaryType().get();
+                    if(condition == "outflow") {
+                        boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+                    } else if (condition == "reflecting"){
+                        boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                    } else {
+                        SPDLOG_ERROR("Boundary condition is not set correctly");
+                        return false;
+                    }
                 }
                 particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
             }

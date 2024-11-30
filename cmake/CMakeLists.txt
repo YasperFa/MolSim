@@ -21,6 +21,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/XMLfileReader.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/schema.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Output/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Containers/LinkedCell/BoundaryHandler.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
@@ -46,7 +47,7 @@ target_include_directories(Test
 
 target_link_libraries(Test
         PUBLIC
-        xerces-c
+       xerces-c
         PRIVATE
         gtest
         gtest_main

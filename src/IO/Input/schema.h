@@ -1211,6 +1211,82 @@ class ContainerType: public ::xml_schema::type
   //@}
 
   /**
+   * @name BoundaryType
+   *
+   * @brief Accessor and modifier functions for the %BoundaryType
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::string BoundaryType_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< BoundaryType_type > BoundaryType_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< BoundaryType_type, char > BoundaryType_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const BoundaryType_optional&
+  BoundaryType () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  BoundaryType_optional&
+  BoundaryType ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  BoundaryType (const BoundaryType_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  BoundaryType (const BoundaryType_optional& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly instead
+   * of making a copy.
+   */
+  void
+  BoundaryType (::std::unique_ptr< BoundaryType_type > p);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -1294,6 +1370,7 @@ class ContainerType: public ::xml_schema::type
   ::xsd::cxx::tree::one< containerType_type > containerType_;
   cutoffRadius_optional cutoffRadius_;
   domainSize_optional domainSize_;
+  BoundaryType_optional BoundaryType_;
 
   //@endcond
 };
