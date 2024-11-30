@@ -28,15 +28,6 @@ namespace Calculators {
             calculateV(particleContainer, delta_t);
         }
 
-        void calculateXFV(ParticleContainers::LinkedCellContainer &particleContainer, double delta_t, BoundaryHandler& handler) {
-            SPDLOG_TRACE("executing calculateXFV");
-            calculateX(particleContainer, delta_t);
-            calculateF(particleContainer);
-            calculateV(particleContainer, delta_t);
-            particleContainer.updateParticlesInCell();
-            handler.handleBoundaries();
-        }
-
         /**
         * calculate the force for all particles
         */
@@ -54,6 +45,7 @@ namespace Calculators {
                 calculateFDirectSum(*dsCont);
             } else if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 calculateFLinkedCell(*lcCont);
+                lcCont->updateParticlesInCell();
             }
         }
 

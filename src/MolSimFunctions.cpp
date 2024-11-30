@@ -273,10 +273,10 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     int iteration = 0;
 
     while (currentTime < endTime) {
-        if (boundaryHandler == nullptr){
-            calculator->calculateXFV(particleContainer, deltaT);
-        } else {
-             calculator->calculateXFV(*(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(particleContainer))), deltaT, *boundaryHandler);
+        calculator->calculateXFV(particleContainer, deltaT);
+        if (boundaryHandler != nullptr){
+            SPDLOG_INFO("handling boundaries");
+            boundaryHandler->handleBoundaries();
         }
 
         iteration++;
@@ -285,7 +285,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-        SPDLOG_INFO("Iteration {} finished.", iteration);
+        SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");
