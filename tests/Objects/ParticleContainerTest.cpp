@@ -81,6 +81,6 @@ TEST(ParticleIdInitializerTest, testIDsAreUnique) {
     Particle s(1); //creating particles from copy should not influence new ids
     EXPECT_EQ(s.getID(), 3);
 
-    s.makeShadowParticle();
-    EXPECT_EQ(s.getID(), -3);
+    s.makeShadowParticle(r);
+    EXPECT_EQ(s.getID(), -1);
 }

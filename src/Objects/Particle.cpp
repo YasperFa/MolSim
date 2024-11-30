@@ -40,14 +40,14 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
 
 Particle::~Particle() {SPDLOG_DEBUG("Particle destructed!");}
 
-void Particle::makeShadowParticle() {
+void Particle::makeShadowParticle(Particle p) {
 
-  if(id < 1){
+  if(p.getID() < 1){
           SPDLOG_WARN("Particle is already a shadow particle!");
           throw std::runtime_error("Tried to make shadow particle a shadow particle");
       }
 
-  id = -id;    
+  id = -p.getID();   
   
  }
 
@@ -85,7 +85,7 @@ void Particle::setV(const std::array<double, 3> &V) {
 std::string Particle::toString() const {
   std::stringstream stream;
   stream << "Particle: X:" << x << " v: " << v << " f: " << f
-         << " old_f: " << old_f << " type: " << type;
+         << " old_f: " << old_f << " type: " << type << " id: " << id;
   return stream.str();
 }
 
