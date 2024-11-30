@@ -7,6 +7,7 @@
 #include <exception>
 #include <iostream>
 #include <algorithm>
+#include "spdlog/spdlog.h"
 
 BoundaryHandler::BoundaryHandler(double s, bool t, ParticleContainers::LinkedCellContainer& container) :
 sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, 
@@ -24,6 +25,7 @@ void BoundaryHandler::handleOutflow(){
             container.removeParticle(*p);
         }
     }
+   //container.deleteHaloParticles();
 };
 
 void BoundaryHandler::handleReflecting(){
@@ -43,7 +45,7 @@ void BoundaryHandler::handleReflecting(){
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
 
-                if (dist <= minDist/2) {
+                if (dist < minDist/2) { //must be closer
                     
                     //test if shadow particle exists
                     bool hasShadowParticle = false;
@@ -76,7 +78,7 @@ void BoundaryHandler::handleReflecting(){
             bool canBeDeleted = false;
 
             for (int i = 0; i < 4; i++) {
-                if (calculateDistance(*shadowP, i) > minDist/2) {
+                if (calculateDistance(*shadowP, i) >= minDist/2) {
                     canBeDeleted = true;
                 }
             }
@@ -115,42 +117,42 @@ Particle BoundaryHandler::createShadowParticle(Particle p, int i, double dist){/
     std::array<double,3> mirrorOldF = p.getOldF();
 
     switch (i) {
-        case 1: { //mirror along left border
+        case 0: { //mirror along left border
             mirrorX[0] = (mirrorX[0] - 2 * dist);
             mirrorV[0] = -mirrorV[0];
             mirrorF[0] = -mirrorF[0];
             mirrorOldF[0] = -mirrorOldF[0];
             break;
         }
-        case 2: { //mirror along right border
+        case 1: { //mirror along right border
             mirrorX[0] = (mirrorX[0] + 2 * dist);
             mirrorV[0] = -mirrorV[0];
             mirrorF[0] = -mirrorF[0];
             mirrorOldF[0] = -mirrorOldF[0];
             break;
         }
-        case 3: { //mirror along top border
+        case 2: { //mirror along top border
             mirrorX[1] = (mirrorX[1] + 2 * dist);
             mirrorV[1] = -mirrorV[1];
             mirrorF[1] = -mirrorF[1];
             mirrorOldF[1] = -mirrorOldF[1];
             break;
         }
-        case 4: { //mirror along bottom border
+        case 3: { //mirror along bottom border
             mirrorX[1] = (mirrorX[1] - 2 * dist);
             mirrorV[1] = -mirrorV[1];
             mirrorF[1] = -mirrorF[1];
             mirrorOldF[1] = -mirrorOldF[1];
             break;
         }
-        case 5: { //mirror along front border
+        case 4: { //mirror along front border
             mirrorX[2] = (mirrorX[2] + 2 * dist); //not sure yet if (0|0|0) is front bottom left or back bottom left corner
             mirrorV[2] = -mirrorV[2];
             mirrorF[2] = -mirrorF[2];
             mirrorOldF[2] = -mirrorOldF[2];
             break;
         }
-        case 6: { //mirror along back border
+        case 5: { //mirror along back border
             mirrorX[2] = (mirrorX[2] - 2 * dist);
             mirrorV[2] = -mirrorV[2];
             mirrorF[2] = -mirrorF[2];
@@ -160,8 +162,9 @@ Particle BoundaryHandler::createShadowParticle(Particle p, int i, double dist){/
     }
 
     Particle newParticle = Particle (mirrorX, mirrorV, p.getM(), p.getType());
+    SPDLOG_INFO("creating shadow particle");
     newParticle.setF(mirrorF);
     newParticle.setOldF(mirrorOldF);
-    newParticle.makeShadowParticle();
+    newParticle.makeShadowParticle(p);
     return newParticle;
 }

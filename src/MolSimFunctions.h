@@ -16,6 +16,7 @@
 #include "cxxopts.hpp"
 #include "Calculator/GravityCalculator.h"
 #include "Objects/Containers/LinkedCell/LinkedCellContainer.h"
+#include "Objects/Containers/LinkedCell/BoundaryHandler.h"
 
 /**Provides utility functions for running the simulation */
 namespace MolSim {
@@ -36,7 +37,8 @@ void printHelp();
 bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
-                            std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer);
+                            std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
+                            std::unique_ptr<BoundaryHandler> &boundaryHandler);
 
 /**Runs the simulation using the specified parameters 
  * @particleContainer initialized ParticleContainer
@@ -47,5 +49,6 @@ bool parseArguments(int argc, char *argv[], std::string &inputFile, double &delt
 */
 void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                    std::unique_ptr<Calculators::Calculator> &calculator);                            
+                    std::unique_ptr<Calculators::Calculator> &calculator,
+                    std::unique_ptr<BoundaryHandler> &boundaryHandler);                            
 }

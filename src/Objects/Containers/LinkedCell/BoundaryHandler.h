@@ -1,6 +1,7 @@
 //
 // Created by Stefanie Blattenberger on 27/11/2024.
 //
+#pragma once
 
 #include "LinkedCellContainer.h"
 #include <list>

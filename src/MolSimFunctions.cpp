@@ -4,6 +4,7 @@
 //
 
 #include "MolSimFunctions.h"
+#include <memory>
 
 void MolSim::printHelp() {
     std::cout << R"(
@@ -60,7 +61,8 @@ Optional arguments:
 bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
-                            std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
+                            std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
+                            std::unique_ptr<BoundaryHandler> &boundaryHandler) {
     cxxopts::Options options("MolSim", "Molecular Simulation Of Group G WS24");
 
     options.add_options()
@@ -74,6 +76,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::string>())
 
     ;
 
@@ -160,15 +163,41 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     double cutoffRadius = parseResult["cutoffRadius"].as<double>();
     SPDLOG_DEBUG("Cutoff radius is: {}", cutoffRadius);
 
-
+    bool LCCset = false;
     if (parseResult.count("particleContainer")) {
         std::string containerType = parseResult["particleContainer"].as<std::string>();
         if (containerType == "DSC") {
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default: outflow
+            LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
+            printHelp();
+            return false;
+        }
+    } else {
+        SPDLOG_ERROR("ParticleContainer is not set");
+        printHelp();
+        return false;
+    }
+
+    if(parseResult.count("boundaryCondition")){
+
+        if (LCCset == false){
+            SPDLOG_ERROR("Boundary condition can only be set in combination with LCC");
+            printHelp();
+            return false;
+        }
+
+        std::string condition = parseResult["boundaryCondition"].as<std::string>();
+        if(condition == "outflow") {
+            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+        } else if (condition == "reflecting"){
+            boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+        } else {
+            SPDLOG_ERROR("Boundary condition is not set correctly");
             printHelp();
             return false;
         }
@@ -234,7 +263,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 
 void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                    std::unique_ptr<Calculators::Calculator> &calculator) {            
+                    std::unique_ptr<Calculators::Calculator> &calculator,
+                    std::unique_ptr<BoundaryHandler> &boundaryHandler) {            
 
 
     const std::string outName = "MD";
@@ -243,7 +273,11 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     int iteration = 0;
 
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT);
+        if (boundaryHandler == nullptr){
+            calculator->calculateXFV(particleContainer, deltaT);
+        } else {
+             calculator->calculateXFV(*(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(particleContainer))), deltaT, *boundaryHandler);
+        }
 
         iteration++;
 
@@ -251,7 +285,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-        SPDLOG_DEBUG("Iteration {} finished.", iteration);
+        SPDLOG_INFO("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");

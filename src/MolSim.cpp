@@ -37,8 +37,9 @@ int main(int argc, char *argsv[]) {
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
+    std::unique_ptr<BoundaryHandler> boundaryHandler;
     //parses and sets arguments from the command line
-    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator, particleContainer)) {
+    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator, particleContainer, boundaryHandler)) {
         return 1;
        }
 
@@ -57,7 +58,7 @@ int main(int argc, char *argsv[]) {
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(*particleContainer, deltaT, endTime, freq, outputWriter, calculator);
+    MolSim::runSim(*particleContainer, deltaT, endTime, freq, outputWriter, calculator, boundaryHandler);
 
     SPDLOG_DEBUG("Simulation finished!");
 

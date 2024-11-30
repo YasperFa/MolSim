@@ -11,6 +11,7 @@ class Particle;
 #include <functional>
 #include "spdlog/spdlog.h"
 #include "utils/ArrayUtils.h"
+#include "../Objects/Containers/LinkedCell/BoundaryHandler.h"
 
 
 namespace Calculators {
@@ -27,6 +28,14 @@ namespace Calculators {
             calculateV(particleContainer, delta_t);
         }
 
+        void calculateXFV(ParticleContainers::LinkedCellContainer &particleContainer, double delta_t, BoundaryHandler& handler) {
+            SPDLOG_TRACE("executing calculateXFV");
+            calculateX(particleContainer, delta_t);
+            calculateF(particleContainer);
+            calculateV(particleContainer, delta_t);
+            particleContainer.updateParticlesInCell();
+            handler.handleBoundaries();
+        }
 
         /**
         * calculate the force for all particles
@@ -127,8 +136,8 @@ namespace Calculators {
                     }
                 }
             }
-            lcCon.deleteHaloParticles();
-            lcCon.updateParticlesInCell();
+            //lcCon.deleteHaloParticles();
+            //lcCon.updateParticlesInCell();
         }
 
         /**
