@@ -26,6 +26,9 @@ namespace Calculators {
             calculateX(particleContainer, delta_t);
             calculateF(particleContainer);
             calculateV(particleContainer, delta_t);
+            if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
+                lcCont->updateParticlesInCell();
+            }
         }
 
         /**
@@ -45,7 +48,6 @@ namespace Calculators {
                 calculateFDirectSum(*dsCont);
             } else if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 calculateFLinkedCell(*lcCont);
-                lcCont->updateParticlesInCell();
             }
         }
 

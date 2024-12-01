@@ -112,7 +112,7 @@ namespace ParticleContainers {
         const int numCellsInZDim = cellNumPerDimension[2];
         //SPDLOG_INFO("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
 
-        if (x < -1 || y < -1 || z < -1 || x > (numCellsInXDim) || y > (numCellsInYDim) || z > (numCellsInZDim)) { //flying out too far 
+        if (x < -1 || y < -1 || z < -1 || x > (numCellsInXDim) || y > (numCellsInYDim) || z > (numCellsInZDim)) { //flying out too far
             //SPDLOG_ERROR("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
             return -1;
         }
@@ -196,9 +196,9 @@ namespace ParticleContainers {
                 for (int z = -1; z < numCellsInZDim + 1; ++z) {
                     Cell& cell = cells.at(cellIndex(x, y, z));
 
-                    for (int neighbourX = -1; neighbourX <= 2; ++neighbourX) {
-                        for (int neighbourY = -1; neighbourY <= 2; ++neighbourY) {
-                            for (int neighbourZ = -1; neighbourZ <= 2; ++neighbourZ) {
+                    for (int neighbourX = -1; neighbourX <= 1; ++neighbourX) {
+                        for (int neighbourY = -1; neighbourY <= 1; ++neighbourY) {
+                            for (int neighbourZ = -1; neighbourZ <= 1; ++neighbourZ) {
                                 if (neighbourX == 0 && neighbourY == 0 && neighbourZ == 0) {
                                     continue;
                                 }

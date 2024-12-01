@@ -238,6 +238,21 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
     }
+    //set the calculator
+    if (parseResult.count("calculator")) {
+        std::string calculatorTemp = parseResult["calculator"].as<std::string>();
+        if (calculatorTemp == "LJC") {
+            calculator = std::make_unique<Calculators::LennardJonesCalculator>();
+            SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
+        } else if (calculatorTemp == "Default") {
+            calculator = std::make_unique<Calculators::GravityCalculator>();
+            SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
+        } else {
+            SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified!");
+            printHelp();
+            return false;
+        }
+    }
 
 
 
@@ -260,8 +275,8 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT);
         if (boundaryHandler != nullptr){
-            SPDLOG_INFO("handling boundaries");
-            boundaryHandler->handleBoundaries();
+          //  SPDLOG_INFO("handling boundaries");
+           // boundaryHandler->handleBoundaries();
         }
 
         iteration++;
@@ -270,7 +285,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-        SPDLOG_INFO("Iteration {} finished.", iteration);
+       //SPDLOG_INFO("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");
