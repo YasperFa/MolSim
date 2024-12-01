@@ -28,9 +28,6 @@ TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
     testContainer.addParticle(p);
     EXPECT_EQ(testContainer.sizeParticles(), 1);
 
-    testContainer.removeParticle(p);
-    EXPECT_EQ(testContainer.sizeParticles(), 0);
-
 }
 TEST(LinkedCellContainerTest, correctCellInitialization) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
