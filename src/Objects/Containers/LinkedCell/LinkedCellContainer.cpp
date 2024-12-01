@@ -74,7 +74,6 @@ namespace ParticleContainers {
 
             particles.erase(std::find(particles.begin(), particles.end(), particle));
 
-            cellOfParticle -> removeParticleFromCell(particle);
         } else {
             SPDLOG_ERROR("Cell does not exist, particle to be removed is out of bounds!");
             throw std::runtime_error("Cell does not exist, particle to be removed is out of bounds!");
@@ -131,13 +130,6 @@ namespace ParticleContainers {
         //SPDLOG_INFO("{} {}", particlePosition[0], cellSizePerDimension[0] );
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
         if (cellInd == -1) {
-            auto it = std::find(particles.begin(), particles.end(), particle);
-            if (it == particles.end()) {
-                SPDLOG_WARN("Particle is not found within the container!");
-            } else {
-                particles.erase(it);
-                SPDLOG_DEBUG("Particle deleted!");
-            }
             SPDLOG_WARN("The given particle does not belong to any cell!");
             return nullptr;
         }
@@ -181,6 +173,7 @@ namespace ParticleContainers {
         };
 
         particles.erase(std::remove_if(particles.begin(), particles.end(), isInDelete), particles.end());
+        updateParticlesInCell();
     }
 
     void LinkedCellContainer::initializeNeighbours() {

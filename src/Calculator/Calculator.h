@@ -130,8 +130,6 @@ namespace Calculators {
                     }
                 }
             }
-            //lcCon.deleteHaloParticles();
-            //lcCon.updateParticlesInCell();
         }
 
         /**
