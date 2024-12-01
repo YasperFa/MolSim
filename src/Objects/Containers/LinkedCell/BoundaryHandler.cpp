@@ -8,10 +8,16 @@
 #include <iostream>
 #include <algorithm>
 #include "spdlog/spdlog.h"
+#include "utils/ArrayUtils.h"
+
+#include "../../../Calculator/Calculator.h"
+#include "../../../Calculator/LennardJonesCalculator.h" //only include in .cpp to avoid circular dependency
+
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
 BoundaryHandler::BoundaryHandler(double s, bool t, ParticleContainers::LinkedCellContainer& container) :
 sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, 
-boundaries {{0, 0, 0, container.getDomainSize()[0], container.getDomainSize()[1], container.getDomainSize()[2]}} {};
+boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {};
 
 void BoundaryHandler::handleBoundaries(){
     if (type == 0) {
@@ -20,6 +26,7 @@ void BoundaryHandler::handleBoundaries(){
 };
 
 void BoundaryHandler::handleOutflow(){
+    //SPDLOG_INFO("handle outflow");
     for (auto c : container.getHaloCells()) { 
         for (auto p : c.get().getParticlesInCell()){
             container.removeParticle(*p);
@@ -29,6 +36,36 @@ void BoundaryHandler::handleOutflow(){
 };
 
 void BoundaryHandler::handleReflecting(){
+
+    //SPDLOG_INFO("handle reflecting");
+   
+    for (auto cell : container.getBoundaryCells()){
+        
+        for (Particle * p : cell.get().getParticlesInCell()) {
+  
+            for (int i = 0; i < 4; i++) {//0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 2 dimensions only for now
+
+                //calculate distance from boundary
+                double dist = calculateDistance(*p, i);
+                //SPDLOG_INFO("{}", dist);
+                if (dist < minDist/2) { //must be closer
+                    std::array<double, 3> sub = operator-(ghostParticleLocation(*p, i, dist), p->getX());
+                    double norm = ArrayUtils::L2Norm(sub);
+                    //SPDLOG_INFO("F {} {} {}", p->getF()[0], p->getF()[1], p->getF()[2]);
+                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm);
+                    p->setF(operator+(p -> getF(), force));
+                    //SPDLOG_INFO("F {} {} {}", p->getF()[0], p->getF()[1], p->getF()[2]);
+                    //SPDLOG_INFO("X {} {} {}", p->getX()[0], p->getX()[1], p->getX()[2]);
+                    //SPDLOG_INFO("Ghost {} {} {} {} {}", ghostParticleLocation(*p, i, dist)[0], ghostParticleLocation(*p, i, dist)[1], ghostParticleLocation(*p, i, dist)[2], i, dist);
+                   
+            }}
+        }
+    }
+        
+     
+};
+
+/*void BoundaryHandler::handleReflecting(){
    
  std::list<Cell*> haloNeighbors;
 
@@ -88,7 +125,7 @@ void BoundaryHandler::handleReflecting(){
             }
         }
     }
-};
+};*/
 
 double BoundaryHandler::calculateDistance(Particle p, int i) { //passing by value on purpose
      switch (i) {
@@ -102,69 +139,35 @@ double BoundaryHandler::calculateDistance(Particle p, int i) { //passing by valu
      }
 }
 
-void BoundaryHandler::getHaloNeighbors(Cell& c, std::list<Cell*> list){
-    for (auto neighbor : c.getNeighbourCells()) {
-        if (neighbor->getCellType() == Cell::CType::HALO) {
-            list.push_back(neighbor);
-        }
-    }
-}
-
-Particle BoundaryHandler::createShadowParticle(Particle p, int i, double dist){//pass by value
+std::array<double, 3L> BoundaryHandler::ghostParticleLocation(Particle p, int i, double dist){//pass by value
     std::array<double,3> mirrorX = p.getX();
-    std::array<double,3> mirrorV = p.getV();
-    std::array<double,3> mirrorF = p.getF();
-    std::array<double,3> mirrorOldF = p.getOldF();
 
     switch (i) {
         case 0: { //mirror along left border
             mirrorX[0] = (mirrorX[0] - 2 * dist);
-            mirrorV[0] = -mirrorV[0];
-            mirrorF[0] = -mirrorF[0];
-            mirrorOldF[0] = -mirrorOldF[0];
             break;
         }
         case 1: { //mirror along right border
-            mirrorX[0] = (mirrorX[0] + 2 * dist);
-            mirrorV[0] = -mirrorV[0];
-            mirrorF[0] = -mirrorF[0];
-            mirrorOldF[0] = -mirrorOldF[0];
+            mirrorX[0] = (mirrorX[0] + 2 * dist);   
             break;
         }
         case 2: { //mirror along top border
             mirrorX[1] = (mirrorX[1] + 2 * dist);
-            mirrorV[1] = -mirrorV[1];
-            mirrorF[1] = -mirrorF[1];
-            mirrorOldF[1] = -mirrorOldF[1];
             break;
         }
         case 3: { //mirror along bottom border
             mirrorX[1] = (mirrorX[1] - 2 * dist);
-            mirrorV[1] = -mirrorV[1];
-            mirrorF[1] = -mirrorF[1];
-            mirrorOldF[1] = -mirrorOldF[1];
             break;
         }
         case 4: { //mirror along front border
             mirrorX[2] = (mirrorX[2] + 2 * dist); //not sure yet if (0|0|0) is front bottom left or back bottom left corner
-            mirrorV[2] = -mirrorV[2];
-            mirrorF[2] = -mirrorF[2];
-            mirrorOldF[2] = -mirrorOldF[2];
             break;
         }
         case 5: { //mirror along back border
             mirrorX[2] = (mirrorX[2] - 2 * dist);
-            mirrorV[2] = -mirrorV[2];
-            mirrorF[2] = -mirrorF[2];
-            mirrorOldF[2] = -mirrorOldF[2];
             break;
         }
     }
 
-    Particle newParticle = Particle (mirrorX, mirrorV, p.getM(), p.getType());
-    SPDLOG_INFO("creating shadow particle");
-    newParticle.setF(mirrorF);
-    newParticle.setOldF(mirrorOldF);
-    newParticle.makeShadowParticle(p);
-    return newParticle;
+    return mirrorX;
 }

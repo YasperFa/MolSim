@@ -170,7 +170,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default: outflow
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -240,21 +239,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         }
     }
 
-    //set the calculator
-    if (parseResult.count("calculator")) {
-        std::string calculatorTemp = parseResult["calculator"].as<std::string>();
-        if (calculatorTemp == "LJC") {
-            calculator = std::make_unique<Calculators::LennardJonesCalculator>();
-            SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
-        } else if (calculatorTemp == "Default") {
-            calculator = std::make_unique<Calculators::GravityCalculator>();
-            SPDLOG_INFO("{} is selected as the calculator", calculatorTemp);
-        } else {
-            SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified!");
-            printHelp();
-            return false;
-        }
-    }
+
 
     
     return true;
@@ -285,7 +270,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-        SPDLOG_DEBUG("Iteration {} finished.", iteration);
+        SPDLOG_INFO("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");

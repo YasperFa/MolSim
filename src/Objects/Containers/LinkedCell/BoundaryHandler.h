@@ -5,6 +5,8 @@
 
 #include "LinkedCellContainer.h"
 #include <list>
+#include <memory>
+
 
 class BoundaryHandler{
 
@@ -47,18 +49,11 @@ class BoundaryHandler{
      */
     double calculateDistance(Particle p, int i);
 
-    /**Inserts all neighboring halo cells of the current Cell into a list 
-     * @param list an empty list of Cell pointers
-     * @param c the current Cell
-    */
-    void getHaloNeighbors(Cell& c, std::list<Cell*> list);
-
-    /**Creates a shadow particle for a particle mirrored along a boundary
-     * @param p the Particle for whom a shadow particle will be generated
-     * @param i int that signifies the boundary along which should be mirrored: 1 -> left, 2 -> right, 3 -> top, 4 -> bottom, 5 -> front, 6 -> back
-     * @param dist the absolute distance of the partice to the boundary
-     * @returns a new shadow particle with mirrored values
+    /**Calculates the location of the ghost particle belonging to the current particle
+     * @param particle
+     * @param i int that signifies the currently observed boundary: 1 -> left, 2 -> right, 3 -> top, 4 -> bottom, 5 -> front, 6 -> back
+     * @returns position array of ghost particle
      */
-    Particle createShadowParticle(Particle p, int i, double dist);
 
+    std::array<double, 3UL> ghostParticleLocation(Particle p, int i, double dist);
 };
