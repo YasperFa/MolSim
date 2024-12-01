@@ -51,6 +51,7 @@ namespace ParticleContainers {
     }
 
     void LinkedCellContainer::addParticle(const Particle &particle) {
+        //SPDLOG_INFO(particle.toString());
         Cell *cellOfParticle = mapParticleToCell(particle);
         if (cellOfParticle != nullptr) {
 
@@ -63,12 +64,13 @@ namespace ParticleContainers {
                 cellOfParticle->addParticleToCell(&particles.back());
             }
         } else {
-            SPDLOG_ERROR("Cell does not exist, particle is out of bounds!");
+            SPDLOG_WARN("Cell does not exist, particle is out of bounds!");
             return;
         }
     }
 
     void LinkedCellContainer::removeParticle(const Particle &particle) {
+        SPDLOG_DEBUG("removing {}", particle.toString());
         Cell *cellOfParticle = mapParticleToCell(particle);
         if (cellOfParticle != nullptr) {
 
@@ -108,8 +110,10 @@ namespace ParticleContainers {
         const int numCellsInXDim = cellNumPerDimension[0];
         const int numCellsInYDim = cellNumPerDimension[1];
         const int numCellsInZDim = cellNumPerDimension[2];
+        //SPDLOG_INFO("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
 
-        if (x < -1 || y < -1 || z < -1 || x > numCellsInXDim || y > numCellsInYDim || z > numCellsInZDim) {
+        if (x < -1 || y < -1 || z < -1 || x > (numCellsInXDim) || y > (numCellsInYDim) || z > (numCellsInZDim)) { //flying out too far 
+            //SPDLOG_ERROR("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
             return -1;
         }
 
@@ -126,16 +130,17 @@ namespace ParticleContainers {
             static_cast<int>(std::floor(particlePosition[1] / cellSizePerDimension[1])),
             static_cast<int>(std::floor(particlePosition[2] / cellSizePerDimension[2]))
         };
+        //SPDLOG_INFO("{} {}", particlePosition[0], cellSizePerDimension[0] );
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
         if (cellInd == -1) {
             auto it = std::find(particles.begin(), particles.end(), particle);
             if (it == particles.end()) {
-                SPDLOG_ERROR("Particle is not found within the container!");
+                SPDLOG_WARN("Particle is not found within the container!");
             } else {
                 particles.erase(it);
                 SPDLOG_DEBUG("Particle deleted!");
             }
-            SPDLOG_ERROR("The given particle does not belong to any cell!");
+            SPDLOG_WARN("The given particle does not belong to any cell!");
             return nullptr;
         }
 
