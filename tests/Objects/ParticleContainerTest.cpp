@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "../src/Objects/Particle.h"
+#include "Objects/Containers/LinkedCell/LinkedCellContainer.h"
 
 /* Checks if sizeParticles() and addParticle() works correctly */
 TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
@@ -20,50 +21,29 @@ TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
 
 }
 
-
-/* Checks if addParticleToPairs() and removeParticle() work correctly*/
-/*TEST(ParticleContainerTest, addParticleToPairs) {
-    ParticleContainer test;
-    
+TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
     Particle p(0);
+    EXPECT_EQ(testContainer.sizeParticles(), 0);
     testContainer.addParticle(p);
-
-    EXPECT_EQ(testContainer.getParticles().size(), 1);
-    EXPECT_NO_THROW(testContainer.getParticle(p));
-
-    Particle q(0);
-    testContainer.addParticle(q);
-    EXPECT_EQ(testContainer.getParticles().size(), 2);
-    EXPECT_NO_THROW(testContainer.getParticle(q));
-
-    Particle r(0);
-    testContainer.addParticle(r);
-    EXPECT_EQ(testContainer.getParticles().size(), 3);
-    EXPECT_NO_THROW(testContainer.getParticle(r));
-
-    Particle s(0);
-    testContainer.addParticle(s);
-    EXPECT_EQ(testContainer.getParticles().size(), 4);
-    EXPECT_NO_THROW(testContainer.getParticle(s));
-
-    testContainer.removeParticle(r);
-    EXPECT_EQ(testContainer.getParticles().size(), 3);
-    EXPECT_ANY_THROW(testContainer.getParticle(r));
+    EXPECT_EQ(testContainer.sizeParticles(), 1);
 
     testContainer.removeParticle(p);
-    EXPECT_EQ(testContainer.getParticles().size(), 2);
-    EXPECT_ANY_THROW(testContainer.getParticle(p));
+    EXPECT_EQ(testContainer.sizeParticles(), 0);
 
-    testContainer.removeParticle(s);
-
-    EXPECT_EQ(testContainer.getParticles().size(), 1);
-    EXPECT_ANY_THROW(testContainer.getParticle(s));
-
-    testContainer.removeParticle(q);
-
-    EXPECT_EQ(testContainer.getParticles().size(), 0);
-    EXPECT_ANY_THROW(testContainer.getParticle(q));
-
+}
+TEST(LinkedCellContainerTest, correctCellInitialization) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 60);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 30);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[2], 1);
+    // 62*32*1 = 1984
+    EXPECT_EQ(testContainer.getCells().size(), 1984);
+    // 2*60 + 2*30 - 4
+    EXPECT_EQ(testContainer.getBoundaryCells().size(), 176);
+    // 60*30
+    EXPECT_EQ(testContainer.getInnerCells().size(), 1800);
+    EXPECT_EQ(testContainer.getHaloCells().size(), 184);
 }
 
 /* Tests that ids of new particles get initialized correctly */
