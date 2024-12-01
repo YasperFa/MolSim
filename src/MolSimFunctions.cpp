@@ -276,7 +276,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         calculator->calculateXFV(particleContainer, deltaT);
         if (boundaryHandler != nullptr){
           //  SPDLOG_INFO("handling boundaries");
-           // boundaryHandler->handleBoundaries();
+            boundaryHandler->handleBoundaries();
         }
 
         iteration++;

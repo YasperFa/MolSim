@@ -17,7 +17,7 @@ namespace ParticleContainers {
         cellNumPerDimension = {
             std::max(static_cast<int>(std::floor(domainSize[0] / cutoff)), 1),
             std::max(static_cast<int>(std::floor(domainSize[1] / cutoff)), 1),
-            std::max(static_cast<int>(std::floor(domainSize[2] / cutoff)), 1)
+            1 // for now 2d
         };
 
         SPDLOG_DEBUG("Cell Number Per Dimension: {} {} {}", cellNumPerDimension[0], cellNumPerDimension[1], cellNumPerDimension[2]);
@@ -28,7 +28,7 @@ namespace ParticleContainers {
             domainSize[2] / cellNumPerDimension[2]
         };
 
-        cells.reserve((cellNumPerDimension[0] + 2) * (cellNumPerDimension[1] + 2) * (cellNumPerDimension[2] + 2));
+        cells.reserve((cellNumPerDimension[0] + 2) * (cellNumPerDimension[1] + 2)); //
         SPDLOG_DEBUG("Cell Size Per Dim {} {} {}", cellSizePerDimension[0], cellSizePerDimension[1], cellSizePerDimension[2]);
 
 
@@ -37,8 +37,6 @@ namespace ParticleContainers {
 
         //initialize the neighbours vectors for the cells
         initializeNeighbours();
-
-        //reserve(3000);
 
         SPDLOG_DEBUG("LinkedCellContainer initialized with the domain [{},{},{}] and cutoff-radius", domainSize[0],
                      domainSize[1], domainSize[2], cutoff);
@@ -109,17 +107,17 @@ namespace ParticleContainers {
 
         const int numCellsInXDim = cellNumPerDimension[0];
         const int numCellsInYDim = cellNumPerDimension[1];
-        const int numCellsInZDim = cellNumPerDimension[2];
-        //SPDLOG_INFO("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
+        const int numCellsInZDim = 1;
+        SPDLOG_DEBUG("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
 
         if (x < -1 || y < -1 || z < -1 || x > (numCellsInXDim) || y > (numCellsInYDim) || z > (numCellsInZDim)) { //flying out too far
             //SPDLOG_ERROR("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
             return -1;
         }
 
-        const int strideYZ = (numCellsInYDim + 2) * (numCellsInZDim + 2);
-        const int strideZ = (numCellsInZDim + 2);
-        return (x + 1) * strideYZ + (y + 1) * strideZ + (z + 1);
+        const int strideYZ = (numCellsInYDim + 2)*1;
+        const int strideZ = 1; // for 2d
+        return (x + 1) * strideYZ + (y + 1) * strideZ; // for 2d
     }
 
 
@@ -151,12 +149,11 @@ namespace ParticleContainers {
         SPDLOG_DEBUG("Initializing cells...");
         for (int x = -1; x < cellNumPerDimension[0] + 1; ++x) {
             for (int y = -1; y < cellNumPerDimension[1] + 1 ; ++y) {
-                for (int z = -1; z < cellNumPerDimension[2] + 1; ++z) {
-                    if (x < 0 || y < 0 || z < 0 || x >= cellNumPerDimension[0] || y >= cellNumPerDimension[1] || z >= cellNumPerDimension[2]) {
+                    if (x < 0 || y < 0 ||  x >= cellNumPerDimension[0] || y >= cellNumPerDimension[1]) {
                         Cell nCell(Cell::CType::HALO);
                         cells.push_back(nCell);
                         haloCells.push_back(cells.back());
-                    } else if (x == 0 || y == 0 || z == 0 || x == cellNumPerDimension[0] - 1 || y == cellNumPerDimension[1] - 1 || z == cellNumPerDimension[2] - 1) {
+                    } else if (x == 0 || y == 0 || x == cellNumPerDimension[0] - 1 || y == cellNumPerDimension[1] - 1) {
                         Cell nCell(Cell::CType::BOUNDARY);
                         cells.push_back(nCell);
                         boundaryCells.push_back(cells.back());
@@ -166,7 +163,7 @@ namespace ParticleContainers {
                         cells.push_back(nCell);
                         innerCells.push_back(cells.back());
                     }
-                }
+
             }
         }
     }
@@ -187,32 +184,26 @@ namespace ParticleContainers {
     }
 
     void LinkedCellContainer::initializeNeighbours() {
+         SPDLOG_DEBUG("Initializing neighbours...");
         const int numCellsInXDim = cellNumPerDimension[0];
         const int numCellsInYDim = cellNumPerDimension[1];
-        const int numCellsInZDim = cellNumPerDimension[2];
-
         for (int x = -1; x < numCellsInXDim + 1; ++x) {
             for (int y = -1; y < numCellsInYDim + 1; ++y) {
-                for (int z = -1; z < numCellsInZDim + 1; ++z) {
+                    int z = 0; // for 2d
                     Cell& cell = cells.at(cellIndex(x, y, z));
-
                     for (int neighbourX = -1; neighbourX <= 1; ++neighbourX) {
                         for (int neighbourY = -1; neighbourY <= 1; ++neighbourY) {
-                            for (int neighbourZ = -1; neighbourZ <= 1; ++neighbourZ) {
-                                if (neighbourX == 0 && neighbourY == 0 && neighbourZ == 0) {
+                                if (neighbourX == 0 && neighbourY == 0) {
                                     continue;
                                 }
-
-                                int neighbourIndex = cellIndex(x + neighbourX, y + neighbourY, z + neighbourZ);
+                                int neighbourIndex = cellIndex(x + neighbourX, y + neighbourY, z);
                                 if (neighbourIndex == -1) {
                                     continue;
                                 }
-
                                 cell.addNeighbourCell(&cells.at(neighbourIndex));
-                            }
+
                         }
                     }
-                }
             }
         }
     }
