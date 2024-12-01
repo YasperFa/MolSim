@@ -170,6 +170,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -181,7 +182,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         printHelp();
         return false;
     }
-
     if(parseResult.count("boundaryCondition")){
 
         if (LCCset == false){
@@ -275,7 +275,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT);
         if (boundaryHandler != nullptr){
-          //  SPDLOG_INFO("handling boundaries");
+            SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();
         }
 
@@ -285,7 +285,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-       //SPDLOG_INFO("Iteration {} finished.", iteration);
+       SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");
