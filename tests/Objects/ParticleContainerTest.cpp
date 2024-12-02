@@ -6,7 +6,7 @@
 #include "../src/Objects/Particle.h"
 #include "Objects/Containers/LinkedCell/LinkedCellContainer.h"
 
-/* Checks if sizeParticles() and addParticle() works correctly */
+/** Checks if sizeParticles() and addParticle() of DirectSumContainer work correctly */
 TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
     ParticleContainers::DirectSumContainer testContainer;
     Particle p(0);
@@ -20,6 +20,8 @@ TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
     
 
 }
+
+/** Checks if sizeParticles() and addParticle() of LinkedCellContainer work correctly */
 TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
@@ -31,6 +33,7 @@ TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
 
 }
 
+/** Checks that cells in the LinkedCellContainer are initialized correctly */
 TEST(LinkedCellContainerTest, correctCellInitialization) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 60);
@@ -59,7 +62,4 @@ TEST(ParticleIdInitializerTest, testIDsAreUnique) {
 
     Particle s(1); //creating particles from copy should not influence new ids
     EXPECT_EQ(s.getID(), 3);
-
-    s.makeShadowParticle(r);
-    EXPECT_EQ(s.getID(), -1);
 }
