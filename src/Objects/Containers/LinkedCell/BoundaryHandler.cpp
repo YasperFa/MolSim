@@ -26,7 +26,7 @@ boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, c
 
 void BoundaryHandler::handleBoundaries(){
             handleReflecting();
-            //handleOutflow();
+            handleOutflow();
     }
 
 void BoundaryHandler::handleOutflow(){
