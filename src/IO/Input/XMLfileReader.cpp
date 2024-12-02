@@ -53,9 +53,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 if(sim -> container().BoundaryType().present()) {
                     std::string condition = sim ->container().BoundaryType().get();
                     if(condition == "outflow") {
-                        boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+                        //boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
                     } else if (condition == "reflecting"){
-                        boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                        //boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
                     } else {
                         SPDLOG_ERROR("Boundary condition is not set correctly");
                         return false;

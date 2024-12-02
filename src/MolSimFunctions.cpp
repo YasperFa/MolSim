@@ -5,6 +5,8 @@
 
 #include "MolSimFunctions.h"
 #include <memory>
+#include <stdexcept>
+#include <exception>
 
 void MolSim::printHelp() {
     std::cout << R"(
@@ -76,7 +78,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::string>())
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<bool>>())
 
     ;
 
@@ -170,7 +172,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
+            std::array<bool, 6> cond = {0,0,0,0,0,0};
+            boundaryHandler = std::make_unique<BoundaryHandler>(1, cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -183,23 +186,31 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         return false;
     }
     if(parseResult.count("boundaryCondition")){
-
+        SPDLOG_INFO("boundary set");
         if (LCCset == false){
             SPDLOG_ERROR("Boundary condition can only be set in combination with LCC");
             printHelp();
             return false;
         }
 
-        std::string condition = parseResult["boundaryCondition"].as<std::string>();
-        if(condition == "outflow") {
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
-        } else if (condition == "reflecting"){
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
-        } else {
+        try{
+        std::vector<bool> condition = parseResult["boundaryCondition"].as<std::vector<bool>>();
+
+        if (condition.size() != 6) {
+            throw std::runtime_error("");
+        }
+        
+        std::array<bool, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+        
+        boundaryHandler = std::make_unique<BoundaryHandler>(1, conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+
+         } catch (const std::exception& e) {
+        
             SPDLOG_ERROR("Boundary condition is not set correctly");
             printHelp();
             return false;
         }
+        
     }
 
 
