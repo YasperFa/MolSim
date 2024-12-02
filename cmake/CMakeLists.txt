@@ -6,6 +6,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Calculator/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/ParticleGeneratorTest.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/BoundaryHandlerTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/IO/XMLfileReaderTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
@@ -70,9 +71,15 @@ else()
         set (LOG_LEVEL SPDLOG_LEVEL_INFO)
 endif()
 
+target_link_options(Test
+PRIVATE
+-fsanitize=address)
+
+
 target_compile_options(Test
         PRIVATE
-        $<$<CXX_COMPILER_ID:GNU>: -Wall -g -D SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL}>)
+        $<$<CXX_COMPILER_ID:GNU>: -Wall -g -fsanitize=address -D SPDLOG_ACTIVE_LEVEL=${LOG_LEVEL}>)
+
 
 include(GoogleTest)
 gtest_discover_tests(Test)
