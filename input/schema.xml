@@ -3,7 +3,7 @@
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
-        <writeFrequency>10</writeFrequency>
+        <writeFrequency>20</writeFrequency>
     </output>
     <calculator>
         <calculatorForce>LJC</calculatorForce>
