@@ -182,7 +182,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         }
     }
     if(parseResult.count("boundaryCondition")){
-        SPDLOG_INFO("boundary set");
+        SPDLOG_DEBUG("boundary set");
         if (LCCset == false){
             SPDLOG_ERROR("Boundary condition can only be set in combination with LCC");
             printHelp();

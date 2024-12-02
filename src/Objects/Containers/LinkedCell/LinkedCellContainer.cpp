@@ -44,7 +44,7 @@ namespace ParticleContainers {
                      cellNumPerDimension[2]);
         SPDLOG_DEBUG("Cell size per dimension: x: {}, y: {}, z: {}", cellSizePerDimension[0], cellSizePerDimension[1],
                      cellSizePerDimension[2]);
-        SPDLOG_INFO("{} inner cells, {} boundary cells and {} halo cells", innerCells.size(), boundaryCells.size(),
+        SPDLOG_DEBUG("{} inner cells, {} boundary cells and {} halo cells", innerCells.size(), boundaryCells.size(),
                      haloCells.size());
     }
 
@@ -104,7 +104,7 @@ namespace ParticleContainers {
                     particles.erase(it);
                     //to prevent address sanitizer from failing, since we are modifying vector while iterating
                     particle = particle - 1;
-                    SPDLOG_INFO("Particle erased successfully.");
+                    SPDLOG_DEBUG("Particle erased successfully.");
                 } else {
                     SPDLOG_WARN("Particle not found in container.");
                 }
@@ -140,7 +140,7 @@ namespace ParticleContainers {
         };
         //SPDLOG_INFO("{} {}", particlePosition[0], cellSizePerDimension[0] );
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
-        if (cellInd >= cells.size() || cellInd < 0) {
+        if (cellInd >= (int)cells.size() || cellInd < 0) {
             SPDLOG_WARN("The given particle does not belong to any cell!");
             return nullptr;
         }
