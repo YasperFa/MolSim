@@ -4,7 +4,6 @@
 #pragma once
 
 #include "LinkedCellContainer.h"
-#include <list>
 #include <memory>
 
 
@@ -13,10 +12,13 @@ class BoundaryHandler{
     private:
     /** the sigma value used for calculating the Lennard-Jones Potential */
     double sigma;
-    /** type 0: Outflow
+    /** determines what condition is used on what border
+     * boundaries of the simulation: left, right, top, bottom(, front, back)
+     *  type 0: Outflow
      *  type 1: Reflecting
      */
-    const bool type; 
+    const std::array<bool, 6> type; 
+
     /** ParticleContainer that the BoundaryHandler operates on */
     ParticleContainers::LinkedCellContainer & container;
 
@@ -26,15 +28,17 @@ class BoundaryHandler{
     /**boundaries of the simulation: left, right, top, bottom(, front, back) */
     const std::array<double, 6> boundaries;
 
-    /**Deletes particles that have left the boundaries of the simulation */
+    /**Deletes particles that have left the boundaries of the simulation 
+    */
     void handleOutflow();
 
-    /**Creates shadow particles to repel particles that are about to leave the boundaries of the simulation and deletes unnecessary shadow particles */
+    /**Reflects particles that are about to leave the boundaries of the simulation using ghost particles 
+    */
     void handleReflecting();
 
     public:
 
-    BoundaryHandler(double s, bool t, ParticleContainers::LinkedCellContainer& pc);
+    BoundaryHandler(double s, std::array<bool, 6> t, ParticleContainers::LinkedCellContainer& pc);
     ~BoundaryHandler() = default;
 
     /**Handles particles that have left/are about to leave the boundaries of the simulation
@@ -56,4 +60,5 @@ class BoundaryHandler{
      */
 
     std::array<double, 3UL> ghostParticleLocation(Particle p, int i, double dist);
+    //void initializeBoundaries();
 };

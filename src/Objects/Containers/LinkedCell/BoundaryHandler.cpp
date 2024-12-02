@@ -11,28 +11,43 @@
 #include "utils/ArrayUtils.h"
 
 #include "../../../Calculator/Calculator.h"
-#include "../../../Calculator/LennardJonesCalculator.h" //only include in .cpp to avoid circular dependency
+#include "../../../Calculator/LennardJonesCalculator.h"
 
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
-BoundaryHandler::BoundaryHandler(double s, bool t, ParticleContainers::LinkedCellContainer& container) :
+BoundaryHandler::BoundaryHandler(double s, std::array<bool, 6> t, ParticleContainers::LinkedCellContainer& container) :
 sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, 
-boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {};
+boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
+//initializeBoundaries();
+//SPDLOG_INFO("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
+
+};
+
 
 void BoundaryHandler::handleBoundaries(){
-    if (type == 0) {
-        handleOutflow();
-    } else handleReflecting();
-};
+            handleReflecting();
+            //handleOutflow();
+    }
 
 void BoundaryHandler::handleOutflow(){
     //SPDLOG_INFO("handle outflow");
-    for (auto c : container.getHaloCells()) { 
-        for (auto p : c.get().getParticlesInCell()){
-            container.removeParticle(*p);
+    for (auto cell : container.getHaloCells()) {
+        for (auto p : cell.get().getParticlesInCell()) {
+            for (int i = 0; i < 4; i++) { //FOR 3D: 6
+
+                if (type[i] == 1) {
+                    continue;
+                }
+
+                double dist = calculateDistance(*p, i);
+
+                if (dist <= container.getCellSizePerDimension()[i/2]) { //this is a cell at the border that we are looking at
+                    container.removeParticle(*p);
+                }
+            }
         }
     }
-   //container.deleteHaloParticles();
+   container.updateParticlesInCell();
 };
 
 void BoundaryHandler::handleReflecting(){
@@ -44,6 +59,10 @@ void BoundaryHandler::handleReflecting(){
         for (Particle * p : cell.get().getParticlesInCell()) {
   
             for (int i = 0; i < 4; i++) {//0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 2 dimensions only for now
+
+               if (type [i] == 0) {
+                    continue;
+                }
 
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
@@ -63,69 +82,7 @@ void BoundaryHandler::handleReflecting(){
     }
         
      
-};
-
-/*void BoundaryHandler::handleReflecting(){
-   
- std::list<Cell*> haloNeighbors;
-
-    for (auto cell : container.getBoundaryCells()){
-     
-        //get corresponding shadow fields
-        haloNeighbors.clear();
-        getHaloNeighbors(cell, haloNeighbors);//max 2 halo neighbors
-
-        for (Particle * p : cell.get().getParticlesInCell()) {
-  
-            for (int i = 0; i < 4; i++) {//0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 2 dimensions only for now
-
-                //calculate distance from boundary
-                double dist = calculateDistance(*p, i);
-
-                if (dist < minDist/2) { //must be closer
-                    
-                    //test if shadow particle exists
-                    bool hasShadowParticle = false;
-                    for (auto neighborCell : haloNeighbors) {
-                        for(auto particle : neighborCell->getParticlesInCell()) {
-                            if (particle->getID() == -p->getID()) { //shadow particle has negated id
-                                hasShadowParticle = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    //if not already has shadow particle
-                    if (!hasShadowParticle) {
-                        //create shadow particle 
-                        Particle shadow = createShadowParticle (*p, i, dist); //shadow particle has negated id
-                        //add particle to shadow area
-                        container.addParticle(shadow);
-                    }   
-                }
-            }
-        }
-    }
-        
-        //delete unneeded shadow particles
-
-    for (auto c : container.getHaloCells()) {
-        //if dist is greater then delete particle
-        for (auto shadowP : c.get().getParticlesInCell()) {
-            bool canBeDeleted = false;
-
-            for (int i = 0; i < 4; i++) {
-                if (calculateDistance(*shadowP, i) >= minDist/2) {
-                    canBeDeleted = true;
-                }
-            }
-
-            if (canBeDeleted) {
-                container.removeParticle(*shadowP);
-            }
-        }
-    }
-};*/
+}
 
 double BoundaryHandler::calculateDistance(Particle p, int i) { //passing by value on purpose
      switch (i) {
