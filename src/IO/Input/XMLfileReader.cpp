@@ -50,18 +50,18 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
                 }
-                if(sim -> container().BoundaryType().present()) {
-                    std::string condition = sim ->container().BoundaryType().get();
-                    if(condition == "outflow") {
-                        //boundaryHandler = std::make_unique<BoundaryHandler>(1, 0, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
-                    } else if (condition == "reflecting"){
-                        //boundaryHandler = std::make_unique<BoundaryHandler>(1, 1, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
-                    } else {
-                        SPDLOG_ERROR("Boundary condition is not set correctly");
-                        return false;
-                    }
-                }
                 particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+                if(sim -> container().BoundaryType().present()) {
+                   std::array<bool, 6> condition;
+                    condition[0] = sim ->container().BoundaryType().get().x();
+                    condition[1] = sim ->container().BoundaryType().get().y();
+                    condition[2] = sim ->container().BoundaryType().get().z();
+                    condition[3] = sim ->container().BoundaryType().get().l();
+                    condition[4] = sim ->container().BoundaryType().get().m();
+                    condition[5] = sim ->container().BoundaryType().get().k();
+                    boundaryHandler = std::make_unique<BoundaryHandler>(1, condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                }
+
             }
             else {
                 SPDLOG_ERROR("Invalid container type!");

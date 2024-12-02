@@ -724,6 +724,118 @@ z (const z_type& x)
 }
 
 
+// BoolVector
+// 
+
+const BoolVector::x_type& BoolVector::
+x () const
+{
+  return this->x_.get ();
+}
+
+BoolVector::x_type& BoolVector::
+x ()
+{
+  return this->x_.get ();
+}
+
+void BoolVector::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const BoolVector::y_type& BoolVector::
+y () const
+{
+  return this->y_.get ();
+}
+
+BoolVector::y_type& BoolVector::
+y ()
+{
+  return this->y_.get ();
+}
+
+void BoolVector::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const BoolVector::z_type& BoolVector::
+z () const
+{
+  return this->z_.get ();
+}
+
+BoolVector::z_type& BoolVector::
+z ()
+{
+  return this->z_.get ();
+}
+
+void BoolVector::
+z (const z_type& x)
+{
+  this->z_.set (x);
+}
+
+const BoolVector::l_type& BoolVector::
+l () const
+{
+  return this->l_.get ();
+}
+
+BoolVector::l_type& BoolVector::
+l ()
+{
+  return this->l_.get ();
+}
+
+void BoolVector::
+l (const l_type& x)
+{
+  this->l_.set (x);
+}
+
+const BoolVector::m_type& BoolVector::
+m () const
+{
+  return this->m_.get ();
+}
+
+BoolVector::m_type& BoolVector::
+m ()
+{
+  return this->m_.get ();
+}
+
+void BoolVector::
+m (const m_type& x)
+{
+  this->m_.set (x);
+}
+
+const BoolVector::k_type& BoolVector::
+k () const
+{
+  return this->k_.get ();
+}
+
+BoolVector::k_type& BoolVector::
+k ()
+{
+  return this->k_.get ();
+}
+
+void BoolVector::
+k (const k_type& x)
+{
+  this->k_.set (x);
+}
+
+
 // DimensionsType
 // 
 
@@ -2161,6 +2273,210 @@ operator= (const DoubleVectorType& x)
 
 DoubleVectorType::
 ~DoubleVectorType ()
+{
+}
+
+// BoolVector
+//
+
+BoolVector::
+BoolVector (const x_type& x,
+            const y_type& y,
+            const z_type& z,
+            const l_type& l,
+            const m_type& m,
+            const k_type& k)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this),
+  l_ (l, this),
+  m_ (m, this),
+  k_ (k, this)
+{
+}
+
+BoolVector::
+BoolVector (const BoolVector& x,
+            ::xml_schema::flags f,
+            ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this),
+  l_ (x.l_, f, this),
+  m_ (x.m_, f, this),
+  k_ (x.k_, f, this)
+{
+}
+
+BoolVector::
+BoolVector (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f,
+            ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this),
+  l_ (this),
+  m_ (this),
+  k_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void BoolVector::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // l
+    //
+    if (n.name () == "l" && n.namespace_ ().empty ())
+    {
+      if (!l_.present ())
+      {
+        this->l_.set (l_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // m
+    //
+    if (n.name () == "m" && n.namespace_ ().empty ())
+    {
+      if (!m_.present ())
+      {
+        this->m_.set (m_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // k
+    //
+    if (n.name () == "k" && n.namespace_ ().empty ())
+    {
+      if (!k_.present ())
+      {
+        this->k_.set (k_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+
+  if (!l_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "l",
+      "");
+  }
+
+  if (!m_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "m",
+      "");
+  }
+
+  if (!k_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "k",
+      "");
+  }
+}
+
+BoolVector* BoolVector::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class BoolVector (*this, f, c);
+}
+
+BoolVector& BoolVector::
+operator= (const BoolVector& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+    this->l_ = x.l_;
+    this->m_ = x.m_;
+    this->k_ = x.k_;
+  }
+
+  return *this;
+}
+
+BoolVector::
+~BoolVector ()
 {
 }
 

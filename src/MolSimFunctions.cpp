@@ -164,7 +164,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 
     double cutoffRadius = parseResult["cutoffRadius"].as<double>();
     SPDLOG_DEBUG("Cutoff radius is: {}", cutoffRadius);
-
+    particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>(); //default
     bool LCCset = false;
     if (parseResult.count("particleContainer")) {
         std::string containerType = parseResult["particleContainer"].as<std::string>();
@@ -180,10 +180,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             printHelp();
             return false;
         }
-    } else {
-        SPDLOG_ERROR("ParticleContainer is not set");
-        printHelp();
-        return false;
     }
     if(parseResult.count("boundaryCondition")){
         SPDLOG_INFO("boundary set");

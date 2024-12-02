@@ -29,7 +29,7 @@
             <xs:element name="containerType" type="xs:string"/>
             <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
             <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
-            <xs:element name="BoundaryType" type="xs:string" minOccurs="0"/>
+            <xs:element name="BoundaryType" type="BoolVector" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParametersType">
@@ -77,6 +77,16 @@
             <xs:element name="x" type="xs:double"/>
             <xs:element name="y" type="xs:double"/>
             <xs:element name="z" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="BoolVector">
+        <xs:sequence>
+            <xs:element name="x" type="xs:boolean"/>
+            <xs:element name="y" type="xs:boolean"/>
+            <xs:element name="z" type="xs:boolean"/>
+            <xs:element name="l" type="xs:boolean"/>
+            <xs:element name="m" type="xs:boolean"/>
+            <xs:element name="k" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
 

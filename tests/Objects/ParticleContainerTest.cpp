@@ -22,11 +22,12 @@ TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
 }
 TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
-    Particle p(0);
+    Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
     EXPECT_EQ(testContainer.sizeParticles(), 0);
-    testContainer.addParticle(p);
+    testContainer.addParticle(i);
     EXPECT_EQ(testContainer.sizeParticles(), 1);
-    testContainer.removeParticle(p);
+    testContainer.removeParticle(i);
+    EXPECT_EQ(testContainer.sizeParticles(), 0);
 
 }
 

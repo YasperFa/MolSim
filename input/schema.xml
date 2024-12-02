@@ -3,58 +3,47 @@
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
-        <writeFrequency>1</writeFrequency>
+        <writeFrequency>10</writeFrequency>
     </output>
     <calculator>
-         <calculatorForce>LJC</calculatorForce>
+        <calculatorForce>LJC</calculatorForce>
     </calculator>
     <container>
-        <containerType>DSC</containerType>
+        <containerType>LCC</containerType>
+        <cutoffRadius>3.0</cutoffRadius>
+        <domainSize>
+            <x>120</x>
+            <y>50</y>
+            <z>1</z>
+        </domainSize>
+        <BoundaryType>
+            <x>false</x>
+            <y>false</y>
+            <z>false</z>
+            <l>false</l>
+            <m>false</m>
+            <k>false</k>
+        </BoundaryType>
     </container>
     <parameters>
-        <tEnd>5</tEnd>
-        <deltaT>0.0002</deltaT>
+        <tEnd>10</tEnd>
+        <deltaT>0.00005</deltaT>
     </parameters>
     <shapes>
-        <cuboid>
-            <position>
-                <x>0</x>
-                <y>0</y>
+        <disc>
+            <center>
+                <x>60</x>
+                <y>25</y>
                 <z>0</z>
-            </position>
-            <dimensions>
-                <x>40</x>
-                <y>8</y>
-                <z>1</z>
-            </dimensions>
-            <initialVelocity>
-                <x>0</x>
-                <y>0</y>
-                <z>0</z>
-            </initialVelocity>
-            <distance>1.1225</distance>
-            <meanVelocity>0.1</meanVelocity>
-            <mass>1</mass>
-        </cuboid>
-        <cuboid>
-            <position>
-                <x>15</x>
-                <y>15</y>
-                <z>0</z>
-            </position>
-            <dimensions>
-                <x>8</x>
-                <y>8</y>
-                <z>1</z>
-            </dimensions>
+            </center>
+            <radius>15</radius>
             <initialVelocity>
                 <x>0</x>
                 <y>-10</y>
                 <z>0</z>
             </initialVelocity>
             <distance>1.1225</distance>
-            <meanVelocity>0.1</meanVelocity>
-            <mass>1</mass>
-        </cuboid>
+            <mass>1.0</mass>
+        </disc>
     </shapes>
 </simulation>
