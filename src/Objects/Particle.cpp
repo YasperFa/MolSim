@@ -40,17 +40,6 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
 
 Particle::~Particle() {SPDLOG_DEBUG("Particle destructed!");}
 
-void Particle::makeShadowParticle(Particle p) {
-
-  if(p.getID() < 1){
-          SPDLOG_WARN("Particle is already a shadow particle!");
-          throw std::runtime_error("Tried to make shadow particle a shadow particle");
-      }
-
-  id = -p.getID();   
-  
- }
-
 const std::array<double, 3> &Particle::getX() const { return x; }
 
 const std::array<double, 3> &Particle::getV() const { return v; }

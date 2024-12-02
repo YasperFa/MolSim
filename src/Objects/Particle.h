@@ -65,9 +65,6 @@ public:
 
  virtual ~Particle();
 
-/** Makes this particle a shadow particle by negating the id */
- void makeShadowParticle(Particle p);
-
  const std::array<double, 3> &getX() const;
 
  const std::array<double, 3> &getV() const;
