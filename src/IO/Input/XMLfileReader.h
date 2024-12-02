@@ -15,6 +15,8 @@
 #include "Objects/Cuboid.h"
 #include "Objects/ParticleGenerator.h"
 #include <memory>
+
+/**Class for parsing xml input from a file */
 class XMLfileReader {
    public:
     /**Parses data from an xml file

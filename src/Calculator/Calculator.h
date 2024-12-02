@@ -21,6 +21,11 @@ namespace Calculators {
 
         virtual ~Calculator() = default;
 
+        /**
+        * Updates all particle values for one iteration and updates the container if necessary
+        * @param particleContainer the container that is operated on
+        * @param delta_t timestep between iterations
+        */
         void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
@@ -33,6 +38,7 @@ namespace Calculators {
 
         /**
         * calculate the force for all particles
+        * @param particleContainer the container that is operated on
         */
         void calculateF(ParticleContainers::ParticleContainer &particleContainer) {
             SPDLOG_TRACE("executing calculateF");
@@ -51,6 +57,10 @@ namespace Calculators {
             }
         }
 
+        /**Calculates the force for all particles in a DirectSumContainer 
+         * @param particleContainer the DirectSumContainer that is operated on
+        */
+        
         void calculateFDirectSum(ParticleContainers::DirectSumContainer &particleContainer) {
             for (auto it1 = particleContainer.begin(); it1 != particleContainer.end(); ++it1) {
                 for (auto it2 = it1 + 1; it2 != particleContainer.end(); ++it2) {
@@ -68,6 +78,9 @@ namespace Calculators {
             }
         }
 
+         /**Calculates the force for all particles in a LinkedCellContainer 
+         * @param particleContainer the LinkedCellContainer that is operated on
+         */
         void calculateFLinkedCell(ParticleContainers::LinkedCellContainer &lcCon) {
             for (auto itCell = lcCon.beginCells(); itCell != lcCon.endCells(); ++itCell) {
                 for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
@@ -133,13 +146,20 @@ namespace Calculators {
         }
 
         /**
-        * calculate the force between particle i and j
+        * calculate the force between particle i and j 
+        * @param sub difference of the positions of j and i
+        * @param m1 mass of i
+        * @param m2 mass of j
+        * @param normCubed norm of sub
+        * @return force between i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
                                                    double normCubed) = 0;
 
         /**
          * calculate the position for all particles
+         * @param particleContainer the container that is operated on
+         * @param delta_t timestep between iterations
          */
         void calculateX(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
@@ -153,6 +173,8 @@ namespace Calculators {
 
         /**
          * calculate the position for all particles
+         * @param particleContainer the container that is operated on
+         * @param delta_t timestep between iterations
          */
         void calculateV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateV");

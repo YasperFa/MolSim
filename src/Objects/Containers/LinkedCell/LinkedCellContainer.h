@@ -92,7 +92,8 @@ namespace ParticleContainers {
   void removeParticle(const Particle &particle);
 
   /**
-   * TODO: missing documentation
+   * @brief allocates memory for the given number of particles
+   * @param numParticles number of particles
    */
   void reserve(size_t numParticles);
 
@@ -222,14 +223,17 @@ namespace ParticleContainers {
    */
   Cell* mapParticleToCell(const Particle &particle);
 
+
+  /**
+   * @brief Updates all cells according to changed particle positions*/
   void updateParticlesInCell();
 
   /**
-   * @brief computes the index of the passed cell based on its position.
+   * @brief computes the index of the passed cell based on its position in the cells grid.
    * @param x
    * @param y
    * @param z
-   * @return
+   * @returns index of the cell in the cells vector
    */
   int cellIndex(int x, int y, int z) const;
 

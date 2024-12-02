@@ -8,6 +8,7 @@
 
 #include "Particle.h"
 
+/**Class for indicidual Cell in a LinkedCellContainer*/
 class Cell {
 public:
     /**

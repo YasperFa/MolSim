@@ -8,6 +8,7 @@
 #include "../../src/Objects/ParticleIdInitializer.h"
 #include "../../src/Calculator/LennardJonesCalculator.h"
 
+/**Test the function handleOutflow() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionOutflow) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 BoundaryHandler handler = BoundaryHandler(1, {0, 0, 0, 0, 0, 0}, testContainer);
@@ -82,7 +83,7 @@ for (auto cell: testContainer.getCells()) {
 EXPECT_EQ(testContainer.getParticles().size(), 0);
 }
 
-
+/**Test the function handleReflecting() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionReflecting) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 BoundaryHandler handler = BoundaryHandler(1, {1, 1, 1, 1, 1, 1}, testContainer);
@@ -122,6 +123,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 4);
 }
 }
 
+/**Test the functionionality to set different conditions for diffeent boundaries */
 TEST(BoundaryHandlerTest, conditionCombine) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 BoundaryHandler handler = BoundaryHandler(1, {1, 1, 0, 0, 1, 1}, testContainer);
@@ -148,11 +150,6 @@ do {
      calculator.calculateXFV(testContainer, 0.01); 
      handler.handleBoundaries();
 } while (testContainer.getParticles().at(0).getV()[0] > 0);
-
-for (auto p : testContainer.getParticles()){
-     (p.toString());
-}
-
 
 
 EXPECT_TRUE(testContainer.getParticles().at(0).getV()[0] < 0);
