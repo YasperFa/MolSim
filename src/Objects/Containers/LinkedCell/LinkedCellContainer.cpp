@@ -98,7 +98,8 @@ namespace ParticleContainers {
             Cell* cell = mapParticleToCell(particle);
             if (cell != nullptr) {
                 cell->addParticleToCell(&particle);
-            }
+            } else {particles.erase(std::find(particles.begin(), particles.end(), particle));
+            SPDLOG_DEBUG("removed particle out of bounds");} 
         }
     }
 
