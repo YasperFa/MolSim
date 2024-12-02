@@ -94,14 +94,16 @@ namespace ParticleContainers {
             cell.clearParticlesInCell();
         }
 
-        for (Particle& particle : particles) {
-            Cell* cell = mapParticleToCell(particle);
+        for (auto particle = begin(); particle!= end(); ++particle) {
+            Cell* cell = mapParticleToCell(*particle);
             if (cell != nullptr) {
-                cell->addParticleToCell(&particle);
+                cell->addParticleToCell(&(*particle));
             } else {
-                auto it = std::find(particles.begin(), particles.end(), particle); // causes container overflow on address sanitizer
+                auto it = std::find(particles.begin(), particles.end(), *particle);
                 if (it != particles.end()) {
                     particles.erase(it);
+                    //to prevent address sanitizer from failing, since we are modifying vector while iterating
+                    particle = particle - 1;
                     SPDLOG_INFO("Particle erased successfully.");
                 } else {
                     SPDLOG_WARN("Particle not found in container.");
