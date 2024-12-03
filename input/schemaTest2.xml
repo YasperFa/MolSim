@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
+    <output>
+        <baseName>VTK</baseName>
+        <writeFrequency>1</writeFrequency>
+    </output>
+    <calculator>
+        <calculatorForce>Default</calculatorForce>
+    </calculator>
+    <container>
+        <containerType>LCC</containerType>
+    </container>
+    <parameters>
+    </parameters>
+    <shapes>
+    </shapes>
+</simulation>
+

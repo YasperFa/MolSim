@@ -1,0 +1,100 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="simulation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="output" type="OutputType"/>
+                <xs:element name="calculator" type="CalculatorType" />
+                <xs:element name="container" type="ContainerType"/>
+                <xs:element name="parameters" type="ParametersType"/>
+                <xs:element name="shapes" type="ShapeType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="OutputType">
+        <xs:sequence>
+            <xs:element name="baseName" type="xs:string" minOccurs="0"/>
+            <xs:element name="writeFrequency" type="xs:int" minOccurs="0" default="10"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CalculatorType">
+        <xs:sequence>
+            <xs:element name="calculatorForce" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ContainerType">
+        <xs:sequence>
+            <xs:element name="containerType" type="xs:string"/>
+            <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
+            <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
+            <xs:element name="BoundaryType" type="BoolVector" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ParametersType">
+        <xs:sequence>
+            <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
+            <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ShapeType">
+        <xs:sequence>
+            <xs:element name="cuboid" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="disc" type="DiscType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="particle" type="ParticleType" minOccurs="0" maxOccurs="unbounded"/>
+
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CuboidType">
+        <xs:sequence>
+            <xs:element name="position" type="DoubleVectorType"/>
+            <xs:element name="dimensions" type="DimensionsType"/>
+            <xs:element name="initialVelocity" type="DoubleVectorType"/>
+            <xs:element name="distance" type="xs:double"/>
+            <xs:element name="meanVelocity" type="xs:double"/>
+            <xs:element name="mass" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DiscType">
+        <xs:sequence>
+            <xs:element name="center" type="DoubleVectorType"/>
+            <xs:element name="radius" type="xs:int"/>
+            <xs:element name="initialVelocity" type="DoubleVectorType"/>
+            <xs:element name="distance" type="xs:double"/>
+            <xs:element name="mass" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ParticleType">
+        <xs:sequence>
+            <xs:element name="position" type="DoubleVectorType"/>
+            <xs:element name="velocity" type="DoubleVectorType"/>
+            <xs:element name="mass" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DoubleVectorType">
+        <xs:sequence>
+            <xs:element name="x" type="xs:double"/>
+            <xs:element name="y" type="xs:double"/>
+            <xs:element name="z" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="BoolVector">
+        <xs:sequence>
+            <xs:element name="x" type="xs:boolean"/>
+            <xs:element name="y" type="xs:boolean"/>
+            <xs:element name="z" type="xs:boolean"/>
+            <xs:element name="l" type="xs:boolean"/>
+            <xs:element name="m" type="xs:boolean"/>
+            <xs:element name="k" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DimensionsType">
+        <xs:sequence>
+            <xs:element name="x" type="xs:int"/>
+            <xs:element name="y" type="xs:int"/>
+            <xs:element name="z" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
