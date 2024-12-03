@@ -46,6 +46,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     EXPECT_EQ("VTKWriter",outputWriter->toString());
    EXPECT_EQ("Default",calculator->toString());
     EXPECT_EQ(1, freq);
+    SPDLOG_INFO("{}", deltaT);
     EXPECT_NEAR(0.0, deltaT, 0.00001);
     EXPECT_NEAR(0.0, endTime, 0.00001);
 }
