@@ -39,8 +39,6 @@ public:
 */
  void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
-   const double kineticEnergy = getContainerKineticEnergy(particleContainer);
-   const double dimension = is3D ? 3.0 : 2.0;
    const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
    const double scale  = getScale(currentTemperature, averageVelocity);
      for (auto &particle: particleContainer) {
