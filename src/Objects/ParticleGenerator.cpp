@@ -15,7 +15,6 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     std::array<double,3> x = cuboid.getLowerFrontCorner();
     std::array<double,3> v = cuboid.getInitVelocity();
     double h = cuboid.getDistBetweenParticles();
-    double mv = cuboid.getMeanVelocity();
     double m = cuboid.getMass();
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
