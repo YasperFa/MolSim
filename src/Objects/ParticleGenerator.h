@@ -3,8 +3,10 @@
 //
 
 #pragma once
-#include "Cuboid.h"
-#include "Disc.h"
+#include "Shapes/Cuboid.h"
+#include "Shapes/Disc.h"
+#include "Containers/ParticleContainer.h"
+
 /**class that generates particles from a given cuboid or disc */
 class ParticleGenerator {
 

@@ -3,7 +3,7 @@
 //
 #include <gtest/gtest.h>
 
-#include "../../src/Objects/Cuboid.h"
+#include "../../src/Objects/Shapes/Cuboid.h"
 
 /* tests if getters and constructor work correctly */
 TEST(CuboidTest, testGettersAndConstructor) {

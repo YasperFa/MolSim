@@ -43,11 +43,12 @@ void BoundaryHandler::handleOutflow(){
 
                 if (dist <= container.getCellSizePerDimension()[i/2]) { //this is a cell at the border that we are looking at
                     container.removeParticle(*p);
+                    container.updateParticlesInCell();
                     break;
                 }
             }
         }
-        container.updateParticlesInCell();
+
     } 
   
 };
