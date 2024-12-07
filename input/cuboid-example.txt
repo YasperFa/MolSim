@@ -7,7 +7,7 @@
 # The second line not being a comment has to be one integer, indicating the number of
 # object data sets.
 #
-# Molecule data consists of
+# Molecule data consists of 
 # * xyz-coordinates (3 double values)
 # * velocities (2 or 3 double values)
 # * mass (1 double value)
@@ -28,13 +28,10 @@
 # * mass (1 double values)
 # xyz-coord      velocity        mass
 # left-coord     NumParticles     initial_velocity    distance    mass    mean_velocity
-0
-4
-0.0 0.0 0.0      0.0 0.0 0.0     1.0
-0.0 1.0 0.0     -1.0 0.0 0.0     3.0e-6
-0.0 5.36 0.0    -0.425 0.0 0.0   9.55e-4
-34.75 0.0 0.0    0.0 0.0296 0.0  1.0e-14
-
+1
+2
+0.0 0.0 0.0      40.0 8.0 1.0          0.0 0.0 0.0             1.1225         1.0      0.1
+15.0 15.0 0.0      8.0 8.0 1.0          0.0 -10.0 0.0             1.1225         1.0      0.1
 
 
 

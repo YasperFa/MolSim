@@ -9,6 +9,7 @@
 
 #include <array>
 #include <string>
+#include "ParticleIdInitializer.h"
 
 class Particle {
 
@@ -44,6 +45,13 @@ private:
   */
  int type;
 
+ /** Id of the particle. New particles are created with ascending id numbers starting with 1.
+  *  Every id is unique. 
+  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
+ */
+
+int id;
+
 public:
  explicit Particle(int type = 0);
 
@@ -65,6 +73,8 @@ public:
 
  const std::array<double, 3> &getOldF() const;
 
+ int getID() const;
+
  double getM() const;
 
  int getType() const;
@@ -74,6 +84,7 @@ public:
  void setX(const std::array<double, 3> &X);
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
+ bool operator==(const Particle &other);
 
  std::string toString() const;
 };
