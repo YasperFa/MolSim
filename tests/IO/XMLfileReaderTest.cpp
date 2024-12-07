@@ -13,7 +13,8 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler);
+    std::unique_ptr<Thermostat> thermostat;
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("XYZWriter",outputWriter->toString());
     EXPECT_EQ("LJC",calculator->toString());
     EXPECT_EQ(10, freq);
@@ -35,14 +36,15 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
 }
 TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     std::ifstream file("../input/schemaTest2.xml");
-    double deltaT;
-    double endTime;
+    double deltaT = 0.0;
+    double endTime = 0.0;
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler);
+    std::unique_ptr<Thermostat> thermostat;
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("VTKWriter",outputWriter->toString());
    EXPECT_EQ("Default",calculator->toString());
     EXPECT_EQ(1, freq);

@@ -666,6 +666,118 @@ mass (const mass_type& x)
 }
 
 
+// TempType
+// 
+
+const TempType::thermostatType_type& TempType::
+thermostatType () const
+{
+  return this->thermostatType_.get ();
+}
+
+TempType::thermostatType_type& TempType::
+thermostatType ()
+{
+  return this->thermostatType_.get ();
+}
+
+void TempType::
+thermostatType (const thermostatType_type& x)
+{
+  this->thermostatType_.set (x);
+}
+
+void TempType::
+thermostatType (::std::unique_ptr< thermostatType_type > x)
+{
+  this->thermostatType_.set (std::move (x));
+}
+
+const TempType::initialTemperature_type& TempType::
+initialTemperature () const
+{
+  return this->initialTemperature_.get ();
+}
+
+TempType::initialTemperature_type& TempType::
+initialTemperature ()
+{
+  return this->initialTemperature_.get ();
+}
+
+void TempType::
+initialTemperature (const initialTemperature_type& x)
+{
+  this->initialTemperature_.set (x);
+}
+
+const TempType::timeSteps_type& TempType::
+timeSteps () const
+{
+  return this->timeSteps_.get ();
+}
+
+TempType::timeSteps_type& TempType::
+timeSteps ()
+{
+  return this->timeSteps_.get ();
+}
+
+void TempType::
+timeSteps (const timeSteps_type& x)
+{
+  this->timeSteps_.set (x);
+}
+
+const TempType::targetTemperature_optional& TempType::
+targetTemperature () const
+{
+  return this->targetTemperature_;
+}
+
+TempType::targetTemperature_optional& TempType::
+targetTemperature ()
+{
+  return this->targetTemperature_;
+}
+
+void TempType::
+targetTemperature (const targetTemperature_type& x)
+{
+  this->targetTemperature_.set (x);
+}
+
+void TempType::
+targetTemperature (const targetTemperature_optional& x)
+{
+  this->targetTemperature_ = x;
+}
+
+const TempType::maxDeltaTemperature_optional& TempType::
+maxDeltaTemperature () const
+{
+  return this->maxDeltaTemperature_;
+}
+
+TempType::maxDeltaTemperature_optional& TempType::
+maxDeltaTemperature ()
+{
+  return this->maxDeltaTemperature_;
+}
+
+void TempType::
+maxDeltaTemperature (const maxDeltaTemperature_type& x)
+{
+  this->maxDeltaTemperature_.set (x);
+}
+
+void TempType::
+maxDeltaTemperature (const maxDeltaTemperature_optional& x)
+{
+  this->maxDeltaTemperature_ = x;
+}
+
+
 // DoubleVectorType
 // 
 
@@ -1015,6 +1127,36 @@ void simulation::
 shapes (::std::unique_ptr< shapes_type > x)
 {
   this->shapes_.set (std::move (x));
+}
+
+const simulation::temperature_optional& simulation::
+temperature () const
+{
+  return this->temperature_;
+}
+
+simulation::temperature_optional& simulation::
+temperature ()
+{
+  return this->temperature_;
+}
+
+void simulation::
+temperature (const temperature_type& x)
+{
+  this->temperature_.set (x);
+}
+
+void simulation::
+temperature (const temperature_optional& x)
+{
+  this->temperature_ = x;
+}
+
+void simulation::
+temperature (::std::unique_ptr< temperature_type > x)
+{
+  this->temperature_.set (std::move (x));
 }
 
 
@@ -2141,6 +2283,174 @@ ParticleType::
 {
 }
 
+// TempType
+//
+
+TempType::
+TempType (const thermostatType_type& thermostatType,
+          const initialTemperature_type& initialTemperature,
+          const timeSteps_type& timeSteps)
+: ::xml_schema::type (),
+  thermostatType_ (thermostatType, this),
+  initialTemperature_ (initialTemperature, this),
+  timeSteps_ (timeSteps, this),
+  targetTemperature_ (this),
+  maxDeltaTemperature_ (this)
+{
+}
+
+TempType::
+TempType (const TempType& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  thermostatType_ (x.thermostatType_, f, this),
+  initialTemperature_ (x.initialTemperature_, f, this),
+  timeSteps_ (x.timeSteps_, f, this),
+  targetTemperature_ (x.targetTemperature_, f, this),
+  maxDeltaTemperature_ (x.maxDeltaTemperature_, f, this)
+{
+}
+
+TempType::
+TempType (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  thermostatType_ (this),
+  initialTemperature_ (this),
+  timeSteps_ (this),
+  targetTemperature_ (this),
+  maxDeltaTemperature_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void TempType::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // thermostatType
+    //
+    if (n.name () == "thermostatType" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< thermostatType_type > r (
+        thermostatType_traits::create (i, f, this));
+
+      if (!thermostatType_.present ())
+      {
+        this->thermostatType_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    // initialTemperature
+    //
+    if (n.name () == "initialTemperature" && n.namespace_ ().empty ())
+    {
+      if (!initialTemperature_.present ())
+      {
+        this->initialTemperature_.set (initialTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // timeSteps
+    //
+    if (n.name () == "timeSteps" && n.namespace_ ().empty ())
+    {
+      if (!timeSteps_.present ())
+      {
+        this->timeSteps_.set (timeSteps_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // targetTemperature
+    //
+    if (n.name () == "targetTemperature" && n.namespace_ ().empty ())
+    {
+      if (!this->targetTemperature_)
+      {
+        this->targetTemperature_.set (targetTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // maxDeltaTemperature
+    //
+    if (n.name () == "maxDeltaTemperature" && n.namespace_ ().empty ())
+    {
+      if (!this->maxDeltaTemperature_)
+      {
+        this->maxDeltaTemperature_.set (maxDeltaTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!thermostatType_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "thermostatType",
+      "");
+  }
+
+  if (!initialTemperature_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "initialTemperature",
+      "");
+  }
+
+  if (!timeSteps_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "timeSteps",
+      "");
+  }
+}
+
+TempType* TempType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class TempType (*this, f, c);
+}
+
+TempType& TempType::
+operator= (const TempType& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->thermostatType_ = x.thermostatType_;
+    this->initialTemperature_ = x.initialTemperature_;
+    this->timeSteps_ = x.timeSteps_;
+    this->targetTemperature_ = x.targetTemperature_;
+    this->maxDeltaTemperature_ = x.maxDeltaTemperature_;
+  }
+
+  return *this;
+}
+
+TempType::
+~TempType ()
+{
+}
+
 // DoubleVectorType
 //
 
@@ -2629,7 +2939,8 @@ simulation (const output_type& output,
   calculator_ (calculator, this),
   container_ (container, this),
   parameters_ (parameters, this),
-  shapes_ (shapes, this)
+  shapes_ (shapes, this),
+  temperature_ (this)
 {
 }
 
@@ -2644,7 +2955,8 @@ simulation (::std::unique_ptr< output_type > output,
   calculator_ (std::move (calculator), this),
   container_ (std::move (container), this),
   parameters_ (std::move (parameters), this),
-  shapes_ (std::move (shapes), this)
+  shapes_ (std::move (shapes), this),
+  temperature_ (this)
 {
 }
 
@@ -2657,7 +2969,8 @@ simulation (const simulation& x,
   calculator_ (x.calculator_, f, this),
   container_ (x.container_, f, this),
   parameters_ (x.parameters_, f, this),
-  shapes_ (x.shapes_, f, this)
+  shapes_ (x.shapes_, f, this),
+  temperature_ (x.temperature_, f, this)
 {
 }
 
@@ -2670,7 +2983,8 @@ simulation (const ::xercesc::DOMElement& e,
   calculator_ (this),
   container_ (this),
   parameters_ (this),
-  shapes_ (this)
+  shapes_ (this),
+  temperature_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2759,6 +3073,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // temperature
+    //
+    if (n.name () == "temperature" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< temperature_type > r (
+        temperature_traits::create (i, f, this));
+
+      if (!this->temperature_)
+      {
+        this->temperature_.set (::std::move (r));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2816,6 +3144,7 @@ operator= (const simulation& x)
     this->container_ = x.container_;
     this->parameters_ = x.parameters_;
     this->shapes_ = x.shapes_;
+    this->temperature_ = x.temperature_;
   }
 
   return *this;
