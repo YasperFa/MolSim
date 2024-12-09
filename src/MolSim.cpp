@@ -60,7 +60,7 @@ int main(int argc, char *argsv[]) {
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(*particleContainer, deltaT, endTime, freq, outputWriter, calculator, boundaryHandler, thermostat);
+    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, freq, outputWriter, calculator, boundaryHandler, thermostat);
 
     SPDLOG_DEBUG("Simulation finished!");
 

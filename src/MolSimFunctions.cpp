@@ -297,7 +297,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 }
 
 
-void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
+void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, double& gravity, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
                     std::unique_ptr<BoundaryHandler> &boundaryHandler,  std::unique_ptr<Thermostat> &thermostat) {
@@ -310,7 +310,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
 
     boundaryHandler -> handleBoundaries();
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT);
+        calculator->calculateXFV(particleContainer, deltaT, gravity);
         if (boundaryHandler != nullptr){
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();

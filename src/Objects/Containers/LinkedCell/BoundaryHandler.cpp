@@ -71,7 +71,7 @@ void BoundaryHandler::handleReflecting(){
                 if (dist < minDist/2) { //must be closer
                     std::array<double, 3> sub = operator-(ghostParticleLocation(*p, i, dist), p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
-                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm);
+                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
                     p->setF(operator+(p -> getF(), force));
                     
                 }

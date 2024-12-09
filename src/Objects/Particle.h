@@ -86,6 +86,10 @@ public:
 
  const std::array<double, 3> &getOldX() const;
 
+ double getEpsilon();
+
+ double getSigma();
+
  int getID() const;
 
  double getM() const;

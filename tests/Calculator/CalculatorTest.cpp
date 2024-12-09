@@ -135,7 +135,7 @@ TEST(CalculatorTest, correctLJcalculations) {
     testContainer.addParticle(k);
 
     Calculators::LennardJonesCalculator calc;
-    calc.calculateF(testContainer); 
+    calc.calculateF(testContainer, 0); 
 
     for (int in = 0; in < 3; in++) {
         EXPECT_NEAR(0.01165109898, (testContainer.getParticle(i).getF())[in], 0.00001);

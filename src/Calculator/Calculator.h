@@ -25,11 +25,12 @@ namespace Calculators {
         * Updates all particle values for one iteration and updates the container if necessary
         * @param particleContainer the container that is operated on
         * @param delta_t timestep between iterations
+        * @param gravity the gravitational acceleration
         */
-        void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
+        void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t, double gravity = 0.0) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
-            calculateF(particleContainer);
+            calculateF(particleContainer, gravity);
             calculateV(particleContainer, delta_t);
             if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 lcCont->updateParticlesInCell();
@@ -40,13 +41,14 @@ namespace Calculators {
         * calculate the force for all particles
         * @param particleContainer the container that is operated on
         */
-        void calculateF(ParticleContainers::ParticleContainer &particleContainer) {
+        void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0, 0.0, 0.0};
 
             for (auto &p: particleContainer) {
                 p.setOldF(p.getF());
+                sigma[1] = p.getM() * gravity; //add gravitaional force in y direction
                 p.setF(sigma);
             }
 
@@ -68,7 +70,7 @@ namespace Calculators {
                     double norm = ArrayUtils::L2Norm(sub);
 
                     // calculate Force between the current pair of particles
-                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm);
+                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1-> getEpsilon(), it2->getEpsilon(), it1 -> getSigma(), it2-> getSigma());
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
                     it1->setF(operator+(it1->getF(), fij));
@@ -97,7 +99,7 @@ namespace Calculators {
 
                         // calculate Force between the current pair of particles
                         std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), (*itParticle2)->getM(),
-                                                                 normCubed);
+                                                                 normCubed, (*itParticle1)->getEpsilon(), (*itParticle2)->getEpsilon(), (*itParticle1)->getSigma(), (*itParticle2)->getSigma());
                         SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                      (*itParticle2)->getID());
                         // add force of this pair to the overall force of particle 1
@@ -130,7 +132,7 @@ namespace Calculators {
 
 
                             std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), neighbourP->getM(),
-                                                                     normL2);
+                                                                     normL2, (*itParticle1)->getEpsilon(), neighbourP->getEpsilon(), (*itParticle1)->getSigma(), neighbourP->getSigma());
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
@@ -151,10 +153,14 @@ namespace Calculators {
         * @param m1 mass of i
         * @param m2 mass of j
         * @param normCubed norm of sub
+        * @param epsilon1 the Lennard-Jones parameter epsilon of i
+        * @param epsilon2 the Lennard-Jones parameter epsilon of j
+        * @param sigma1 the Lennard-Jones parameter sigma of i
+        * @param sigma2 the Lennard-Jones parameter sigma of j
         * @return force between i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
-                                                   double normCubed) = 0;
+                                                   double normCubed, double epsilon1, double epsilon2, double sigma1, double sigma2) = 0;
 
         /**
          * calculate the position for all particles
