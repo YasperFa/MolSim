@@ -97,7 +97,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<bool>>())
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int>>())
 
     ;
 
@@ -191,7 +191,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            std::array<bool, 6> cond = {0,0,0,0,0,0};
+            std::array<int, 6> cond = {0,0,0,0,0,0};
             boundaryHandler = std::make_unique<BoundaryHandler>(1, cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
@@ -200,6 +200,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
     }
+
     if(parseResult.count("boundaryCondition")){
         SPDLOG_DEBUG("boundary set");
         if (LCCset == false){
@@ -209,13 +210,22 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         }
 
         try{
-        std::vector<bool> condition = parseResult["boundaryCondition"].as<std::vector<bool>>();
+        std::vector<int> condition = parseResult["boundaryCondition"].as<std::vector<int>>();
 
         if (condition.size() != 6) {
             throw std::runtime_error("");
         }
         
-        std::array<bool, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+        std::array<int, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+
+        for (int i = 0; i < 6; i++){
+        int t = conditionArray[i];
+        if (t > 2 || t < 0){
+        SPDLOG_ERROR("invalid boundary parameter!");
+        printHelp();
+        return false;
+     }
+}
         
         boundaryHandler = std::make_unique<BoundaryHandler>(1, conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
 
@@ -298,6 +308,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     double currentTime = 0.0;
     int iteration = 0;
 
+    boundaryHandler -> handleBoundaries();
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT);
         if (boundaryHandler != nullptr){
