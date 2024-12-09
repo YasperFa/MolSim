@@ -9,6 +9,7 @@
 
 #include <array>
 #include <string>
+#include "ParticleIdInitializer.h"
 
 class Particle {
 
@@ -17,6 +18,11 @@ private:
   * Position of the particle
   */
  std::array<double, 3> x;
+
+  /**
+  * former position of the particle
+  */
+ std::array<double, 3> old_x;
 
  /**
   * Velocity of the particle
@@ -44,6 +50,19 @@ private:
   */
  int type;
 
+ /** Id of the particle. New particles are created with ascending id numbers starting with 1.
+  *  Every id is unique. 
+  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
+ */
+
+int id;
+
+/**Lennard-Jones parameter epsilon */
+double epsilon;
+
+/**Lennard-Jones parameter sigma */
+double sigma;
+
 public:
  explicit Particle(int type = 0);
 
@@ -53,7 +72,7 @@ public:
      // for visualization, we need always 3 coordinates
      // -> in case of 2d, we use only the first and the second
      std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-     int type = 0);
+     int type = 0, double epsilon_arg = 5, double sigma_arg = 1);
 
  virtual ~Particle();
 
@@ -65,6 +84,14 @@ public:
 
  const std::array<double, 3> &getOldF() const;
 
+ const std::array<double, 3> &getOldX() const;
+
+ double getEpsilon();
+
+ double getSigma();
+
+ int getID() const;
+
  double getM() const;
 
  int getType() const;
@@ -72,8 +99,10 @@ public:
  void setF(const std::array<double, 3> &newF);
  void setOldF(const std::array<double, 3> &newOldF);
  void setX(const std::array<double, 3> &X);
+ void setOldX(const std::array<double, 3> &newOldX);
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
+ bool operator==(const Particle &other);
 
  std::string toString() const;
 };
