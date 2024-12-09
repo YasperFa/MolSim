@@ -8,7 +8,7 @@
 #include "spdlog/spdlog.h"
 
 
-void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
@@ -25,7 +25,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                 double z_coor = x[2] + k*h;
                 std::array<double, 3> particle_pos = {x_coor,y_coor,z_coor};
                 // create new particle
-                Particle nParticle(particle_pos,v,m,0);
+                Particle nParticle(particle_pos,v,m, type, epsilon, sigma);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }
@@ -33,7 +33,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     }
 }
 
-void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc) {
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type, double epsilon, double sigma) {
     const std::array<double, 3> center = disc.getCenterCoordinate();
     const  std::array<double, 3> initVel = disc.getInitVelocity();
     const int r = disc.getRadius();
@@ -49,7 +49,7 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
                 SPDLOG_DEBUG("line {}", j);
                 const std::array<double, 3> particlePosition = {center[0] + j*h, center[1] + i*h, center[2]};
                 // create new particle
-                Particle nParticle(particlePosition,initVel, mass,0);
+                Particle nParticle(particlePosition,initVel, mass, type, epsilon, sigma);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }
