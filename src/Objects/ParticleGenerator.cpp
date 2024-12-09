@@ -4,8 +4,8 @@
 
 #include "ParticleGenerator.h"
 
+#include "Containers/ParticleContainer.h"
 #include "spdlog/spdlog.h"
-#include "utils/MaxwellBoltzmannDistribution.h"
 
 
 void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid) {
@@ -15,7 +15,6 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     std::array<double,3> x = cuboid.getLowerFrontCorner();
     std::array<double,3> v = cuboid.getInitVelocity();
     double h = cuboid.getDistBetweenParticles();
-    double mv = cuboid.getMeanVelocity();
     double m = cuboid.getMass();
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
@@ -25,16 +24,8 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                 double y_coor = x[1] + j*h;
                 double z_coor = x[2] + k*h;
                 std::array<double, 3> particle_pos = {x_coor,y_coor,z_coor};
-                // get the maxwell velocity
-                std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(mv,2);
-                // get the initial velocity
-                std::array<double, 3> vel = v;
-                // add maxwell velocity to initial velocity? --> I don't know if this is what we are supposed
-                for (int m = 0; m < 3; ++m) {
-                    vel[m] += maxwell_vel[m];
-                }
                 // create new particle
-                Particle nParticle(particle_pos,vel,m,0);
+                Particle nParticle(particle_pos,v,m,0);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }

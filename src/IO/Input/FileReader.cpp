@@ -12,8 +12,8 @@
 #include <iostream>
 #include <sstream>
 #include "spdlog/spdlog.h"
-#include "Objects/Cuboid.h"
-#include "Objects/Disc.h"
+#include "Objects/Shapes/Cuboid.h"
+#include "Objects/Shapes/Disc.h"
 #include "Objects/ParticleGenerator.h"
 FileReader::FileReader() = default;
 

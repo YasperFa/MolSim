@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "../../src/Objects/ParticleGenerator.h"
-#include "../../src/Objects/Cuboid.h"
+#include "../../src/Objects/Shapes/Cuboid.h"
 #include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "utils/ArrayUtils.h"
 

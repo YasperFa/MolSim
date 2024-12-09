@@ -8,12 +8,14 @@
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 #include "schema.h"
 #include "spdlog/spdlog.h"
-
+#include <float.h>
+#include "utils/MaxwellBoltzmannDistribution.h"
+#include "Objects/Temperature/GradualThermostat.h"
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
-                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler) {
+                                    std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                                    std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");
@@ -64,7 +66,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
 
             }
             else {
-                SPDLOG_ERROR("Invalid container type!");
+                SPDLOG_ERROR("Invalid container type! choose one of the following: DSC / LCC");
             }
             if(sim->parameters().deltaT().present()){
 
@@ -96,7 +98,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     outputWriter = std::make_unique<outputWriters::XYZWriter>();
                     SPDLOG_DEBUG("xyz is selected from xml as the output writer");
                 } else {
-                    SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified! Using default value/value from flag");
+                    SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified! Output should be XYZ / VTK");
                     return 1;
                 }
             }
@@ -113,8 +115,33 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     calculator = std::make_unique<Calculators::GravityCalculator>();
                     SPDLOG_DEBUG("Default calculator is selected from xml");
                 } else {
-                    SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! Using default value/value from flag");
+                    SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! calculator should be Default / LJC.");
                     return 1;
+                }
+            }
+            //use it later for initial velocities (see shapes parsing)
+            double initialTemperature = -1;
+            if(sim->temperature().present()) {
+                initialTemperature = sim->temperature().get().initialTemperature();
+                int timeSteps = sim->temperature().get().timeSteps();
+                double targetTemperature = initialTemperature;
+                double maxDeltaT = DBL_MAX;
+                if (sim->temperature().get().targetTemperature().present()) {
+                    targetTemperature = sim->temperature().get().targetTemperature().get();
+                }
+                if (sim->temperature().get().maxDeltaTemperature().present()) {
+                    maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
+                }
+                if (sim->temperature().get().thermostatType() == "direct") {
+                    thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                    SPDLOG_DEBUG("Direct thermostat is selected from xml");
+                }
+                else if (sim->temperature().get().thermostatType() == "gradual") {
+                    thermostat = std::make_unique<GradualThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                    SPDLOG_DEBUG("Gradual thermostat is selected from xml");
+                }
+                else {
+                    SPDLOG_ERROR("Erroneous programme call! Invalid thermostat type specified! thermostat should be direct / gradual");
                 }
             }
             for (int i=0; i < (int) sim->shapes().particle().size(); i++) {
@@ -150,6 +177,13 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double h = sim->shapes().cuboid().at(i).distance();
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
+                if(v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
+                    v = maxwellBoltzmannDistributedVelocity(mv,2);
+                    if (initialTemperature != -1) {
+                        double scale = std::sqrt(initialTemperature/m);
+                        v = operator*(scale, v);
+                    }
+                }
                 Cuboid cuboid(x,N,h,m,v,mv);
                 ParticleGenerator::generateCuboid(*particleContainer, cuboid);
             }
@@ -171,6 +205,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 Disc disc(x,v,radius,h,m);
                 ParticleGenerator::generateDisc(*particleContainer, disc);
             }
+
 
 
         return 0;

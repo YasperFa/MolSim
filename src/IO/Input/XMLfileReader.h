@@ -12,9 +12,13 @@
 #include "Calculator/Calculator.h"
 #include "Calculator/LennardJonesCalculator.h"
 #include "Calculator/GravityCalculator.h"
-#include "Objects/Cuboid.h"
+#include "Objects/Shapes/Cuboid.h"
 #include "Objects/ParticleGenerator.h"
+#include "../../Objects/Temperature/Thermostat.h"
+#include "../../Objects/Temperature/DirectThermostat.h"
 #include <memory>
+
+#include "Objects/Temperature/Thermostat.h"
 
 /**Class for parsing xml input from a file */
 class XMLfileReader {
@@ -27,10 +31,12 @@ class XMLfileReader {
    * @param outputWriter: outputWriter vtk/xyz
    * @param calculator: calculator LJC/Default
    * @param particleContainer: particle container
+   * @param thermostat: thermostat
    */
    static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                               std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer, std::unique_ptr<BoundaryHandler> &boundaryHandler);
+                               std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer, std::unique_ptr<BoundaryHandler> &boundaryHandler,
+                               std::unique_ptr<Thermostat> &thermostat);
 };
 
 

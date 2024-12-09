@@ -300,7 +300,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
-                    std::unique_ptr<BoundaryHandler> &boundaryHandler) {            
+                    std::unique_ptr<BoundaryHandler> &boundaryHandler,  std::unique_ptr<Thermostat> &thermostat) {
 
 
     const std::string outName = "MD";
@@ -321,8 +321,11 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         if (iteration % freq == 0) {
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
+        if (iteration % thermostat->getNtimeSteps() == 0) {
+            thermostat->applyThermostat(particleContainer);
+        }
 
-       SPDLOG_DEBUG("Iteration {} finished.", iteration);
+      // SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");
