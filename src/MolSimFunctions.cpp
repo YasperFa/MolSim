@@ -252,12 +252,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         return false;
     }
 
-     if (parseResult["gravity"].as<double>() <= 0.0) {
-        SPDLOG_ERROR("Invalid gravity value. EndTime has to be positive");
-        printHelp();
-        return false;
-    }
-
     deltaT = parseResult["deltaT"].as<double>();
     endTime = parseResult["endTime"].as<double>();
     gravity = parseResult["gravity"].as<double>();

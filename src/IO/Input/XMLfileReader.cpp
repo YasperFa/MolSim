@@ -88,10 +88,6 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
             if(sim->parameters().gravity().present()){
                 gravity = sim->parameters().gravity().get();
                 SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
-                if (gravity < 0){
-                    SPDLOG_ERROR("Invalid gravity, gravity should be >= 0 !, using default value");
-                    gravity = 0;
-                }
             } else {
                 gravity = 0;
             }
