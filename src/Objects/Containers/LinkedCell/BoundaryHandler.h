@@ -10,8 +10,7 @@
 class BoundaryHandler{
 
     private:
-    /** the sigma value used for calculating the Lennard-Jones Potential */
-    double sigma;
+
     /** determines what condition is used on what border
      * boundaries of the simulation: left, right, top, bottom(, front, back)
      *  type 0: Outflow
@@ -22,9 +21,6 @@ class BoundaryHandler{
 
     /** ParticleContainer that the BoundaryHandler operates on */
     ParticleContainers::LinkedCellContainer & container;
-
-    /**minimal distance between two particles to be repulsing each other*/
-    const double minDist;
 
     /**boundaries of the simulation: left, right, top, bottom(, front, back) */
     const std::array<double, 6> boundaries;
@@ -42,7 +38,7 @@ class BoundaryHandler{
 
     public:
 
-    BoundaryHandler(double s, std::array<int, 6> t, ParticleContainers::LinkedCellContainer& pc);
+    BoundaryHandler(std::array<int, 6> t, ParticleContainers::LinkedCellContainer& pc);
     ~BoundaryHandler() = default;
 
     /** Handles particles that have left/are about to leave the boundaries of the simulation
@@ -117,6 +113,12 @@ class BoundaryHandler{
      * @returns position of cloned particle
      */
     std::array<double, 3UL> cloneParticleLocation(std::array <double, 3UL> pos, int i);
+
+    /** Calculates the minimal distance for two particles with LJ-Parameter sigma to repel each other
+     * @param sigma the sigma parameter of the particles (both have the same sigma parameter)
+     * @returns minimal distance for the particles to repel each other
+     */
+    double minDist(double sigma);
    
 
 

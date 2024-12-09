@@ -11,7 +11,7 @@
 /**Test the function handleOutflow() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionOutflow) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
-BoundaryHandler handler = BoundaryHandler(1, {0, 0, 0, 0, 0, 0}, testContainer);
+BoundaryHandler handler = BoundaryHandler({0, 0, 0, 0, 0, 0}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 ParticleIdInitializer::reset();
 
@@ -86,7 +86,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 0);
 /**Test the function handleReflecting() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionReflecting) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
-BoundaryHandler handler = BoundaryHandler(1, {1, 1, 1, 1, 1, 1}, testContainer);
+BoundaryHandler handler = BoundaryHandler({1, 1, 1, 1, 1, 1}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
 ParticleIdInitializer::reset();
@@ -126,7 +126,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 4);
 /**Test the functionionality to set different conditions for diffeent boundaries */
 TEST(BoundaryHandlerTest, conditionCombine) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
-BoundaryHandler handler = BoundaryHandler(1, {1, 1, 0, 0, 1, 1}, testContainer);
+BoundaryHandler handler = BoundaryHandler({1, 1, 0, 0, 1, 1}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
 ParticleIdInitializer::reset();
@@ -192,7 +192,7 @@ EXPECT_TRUE(outflowed);
 /**Test the function handlePeriodic() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionPeriodic) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
-BoundaryHandler handler = BoundaryHandler(1, {2, 2, 2, 2, 2, 2}, testContainer);
+BoundaryHandler handler = BoundaryHandler({2, 2, 2, 2, 2, 2}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 ParticleIdInitializer::reset();
 
@@ -291,7 +291,7 @@ TEST(BoundaryHandlerTest, PeriodicThreeClonesForCorner) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 ParticleIdInitializer::reset();
 
-BoundaryHandler handler = BoundaryHandler(1, {2, 2, 2, 2, 2, 2}, testContainer);
+BoundaryHandler handler = BoundaryHandler({2, 2, 2, 2, 2, 2}, testContainer);
 
 testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner particle
 
@@ -330,7 +330,7 @@ for (int i = 2; i < 5; i++) {
 /**Test that only one clone particle gets created for a corner particle if not both boundaries are periodic*/
 TEST(BoundaryHandlerTest, PeriodicOneCloneForCorner) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
-BoundaryHandler handler = BoundaryHandler(1, {0, 2, 2, 2, 2, 2}, testContainer);
+BoundaryHandler handler = BoundaryHandler({0, 2, 2, 2, 2, 2}, testContainer);
 ParticleIdInitializer::reset();
 
 testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner particle
@@ -371,7 +371,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 2);
 TEST(BoundaryHandlerTest, OnlyCloneOnce) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
-BoundaryHandler handler = BoundaryHandler(1, {2, 2, 2, 2, 2, 2}, testContainer);
+BoundaryHandler handler = BoundaryHandler({2, 2, 2, 2, 2, 2}, testContainer);
 ParticleIdInitializer::reset();
 
 testContainer.addParticle(Particle({0.5, 2, 0}, {0, 0.1, 0}, 1, 0)); //corner particle
@@ -380,9 +380,6 @@ testContainer.updateParticlesInCell();
 
 EXPECT_EQ(testContainer.getParticles().size(), 1);
 
-for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
-}
 
 
      bool contains = false;

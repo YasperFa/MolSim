@@ -191,7 +191,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
             std::array<int, 6> cond = {0,0,0,0,0,0};
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
+            boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -226,7 +226,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
      }
 }
         
-        boundaryHandler = std::make_unique<BoundaryHandler>(1, conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+        boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
 
          } catch (const std::exception& e) {
         

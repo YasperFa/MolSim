@@ -15,8 +15,8 @@
 
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
-BoundaryHandler::BoundaryHandler(double s, std::array<int, 6> t, ParticleContainers::LinkedCellContainer& container) :
-sigma {s}, type {t}, container {container}, minDist {std::pow(2.0, 1.0/6.0) * sigma}, 
+BoundaryHandler::BoundaryHandler(std::array<int, 6> t, ParticleContainers::LinkedCellContainer& container) :
+type {t}, container {container}, 
 boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
 SPDLOG_DEBUG("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
 };
@@ -68,7 +68,7 @@ void BoundaryHandler::handleReflecting(){
   
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
-                if (dist < minDist/2) { //must be closer
+                if (dist < minDist(p -> getSigma())/2) { //must be closer
                     std::array<double, 3> sub = operator-(ghostParticleLocation(*p, i, dist), p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
                     std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
@@ -280,6 +280,7 @@ void BoundaryHandler::handleCornersPeriodic(int i, Cell& cell) {
     }
 
 }
-//TODO: handle periodical initial
-//TODO: handle corners
 
+double BoundaryHandler::minDist(double sigma){
+    return std::pow(2.0, 1.0/6.0) * sigma;
+}

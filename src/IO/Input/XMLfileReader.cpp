@@ -61,7 +61,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     condition[3] = sim ->container().BoundaryType().get().l();
                     condition[4] = sim ->container().BoundaryType().get().m();
                     condition[5] = sim ->container().BoundaryType().get().k();
-                    boundaryHandler = std::make_unique<BoundaryHandler>(1, condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                    boundaryHandler = std::make_unique<BoundaryHandler>(condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
                 }
 
             }
