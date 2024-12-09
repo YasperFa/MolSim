@@ -73,7 +73,6 @@ namespace ParticleContainers {
  public:
   /**
    * @brief Constructor for a new Linked Cell Container
-   * BOUNDARIES FROM TASK 3 HAS TO BE ADDED!!!
    * @param domainSize size of the domain that will be used for the simulation
    * @param cutoff cut off radius for the simulation
    */
