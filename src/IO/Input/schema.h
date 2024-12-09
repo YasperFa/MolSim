@@ -573,7 +573,7 @@ class DiscType;
 class ParticleType;
 class TempType;
 class DoubleVectorType;
-class BoolVector;
+class IntVector;
 class DimensionsType;
 class simulation;
 
@@ -1223,7 +1223,7 @@ class ContainerType: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::BoolVector BoundaryType_type;
+  typedef ::IntVector BoundaryType_type;
 
   /**
    * @brief Element optional container type.
@@ -1516,6 +1516,71 @@ class ParametersType: public ::xml_schema::type
   //@}
 
   /**
+   * @name gravity
+   *
+   * @brief Accessor and modifier functions for the %gravity
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ gravity_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< gravity_type > gravity_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< gravity_type, char, ::xsd::cxx::tree::schema_type::double_ > gravity_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const gravity_optional&
+  gravity () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  gravity_optional&
+  gravity ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  gravity (const gravity_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  gravity (const gravity_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -1598,6 +1663,7 @@ class ParametersType: public ::xml_schema::type
   protected:
   tEnd_optional tEnd_;
   deltaT_optional deltaT_;
+  gravity_optional gravity_;
 
   //@endcond
 };
@@ -2214,6 +2280,201 @@ class CuboidType: public ::xml_schema::type
   //@}
 
   /**
+   * @name type
+   *
+   * @brief Accessor and modifier functions for the %type
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::int_ type_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< type_type > type_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const type_optional&
+  type () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  type_optional&
+  type ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  type (const type_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  type (const type_optional& x);
+
+  //@}
+
+  /**
+   * @name epsilon
+   *
+   * @brief Accessor and modifier functions for the %epsilon
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ epsilon_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< epsilon_type > epsilon_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< epsilon_type, char, ::xsd::cxx::tree::schema_type::double_ > epsilon_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const epsilon_optional&
+  epsilon () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  epsilon_optional&
+  epsilon ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  epsilon (const epsilon_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  epsilon (const epsilon_optional& x);
+
+  //@}
+
+  /**
+   * @name sigma
+   *
+   * @brief Accessor and modifier functions for the %sigma
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ sigma_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< sigma_type > sigma_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< sigma_type, char, ::xsd::cxx::tree::schema_type::double_ > sigma_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const sigma_optional&
+  sigma () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  sigma_optional&
+  sigma ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  sigma (const sigma_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  sigma (const sigma_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -2320,6 +2581,9 @@ class CuboidType: public ::xml_schema::type
   ::xsd::cxx::tree::one< distance_type > distance_;
   ::xsd::cxx::tree::one< meanVelocity_type > meanVelocity_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+  type_optional type_;
+  epsilon_optional epsilon_;
+  sigma_optional sigma_;
 
   //@endcond
 };
@@ -2590,6 +2854,201 @@ class DiscType: public ::xml_schema::type
   //@}
 
   /**
+   * @name type
+   *
+   * @brief Accessor and modifier functions for the %type
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::int_ type_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< type_type > type_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const type_optional&
+  type () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  type_optional&
+  type ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  type (const type_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  type (const type_optional& x);
+
+  //@}
+
+  /**
+   * @name epsilon
+   *
+   * @brief Accessor and modifier functions for the %epsilon
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ epsilon_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< epsilon_type > epsilon_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< epsilon_type, char, ::xsd::cxx::tree::schema_type::double_ > epsilon_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const epsilon_optional&
+  epsilon () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  epsilon_optional&
+  epsilon ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  epsilon (const epsilon_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  epsilon (const epsilon_optional& x);
+
+  //@}
+
+  /**
+   * @name sigma
+   *
+   * @brief Accessor and modifier functions for the %sigma
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ sigma_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< sigma_type > sigma_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< sigma_type, char, ::xsd::cxx::tree::schema_type::double_ > sigma_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const sigma_optional&
+  sigma () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  sigma_optional&
+  sigma ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  sigma (const sigma_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  sigma (const sigma_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -2693,6 +3152,9 @@ class DiscType: public ::xml_schema::type
   ::xsd::cxx::tree::one< initialVelocity_type > initialVelocity_;
   ::xsd::cxx::tree::one< distance_type > distance_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+  type_optional type_;
+  epsilon_optional epsilon_;
+  sigma_optional sigma_;
 
   //@endcond
 };
@@ -2869,6 +3331,201 @@ class ParticleType: public ::xml_schema::type
   //@}
 
   /**
+   * @name type
+   *
+   * @brief Accessor and modifier functions for the %type
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::int_ type_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< type_type > type_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const type_optional&
+  type () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  type_optional&
+  type ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  type (const type_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  type (const type_optional& x);
+
+  //@}
+
+  /**
+   * @name epsilon
+   *
+   * @brief Accessor and modifier functions for the %epsilon
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ epsilon_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< epsilon_type > epsilon_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< epsilon_type, char, ::xsd::cxx::tree::schema_type::double_ > epsilon_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const epsilon_optional&
+  epsilon () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  epsilon_optional&
+  epsilon ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  epsilon (const epsilon_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  epsilon (const epsilon_optional& x);
+
+  //@}
+
+  /**
+   * @name sigma
+   *
+   * @brief Accessor and modifier functions for the %sigma
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::double_ sigma_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< sigma_type > sigma_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< sigma_type, char, ::xsd::cxx::tree::schema_type::double_ > sigma_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const sigma_optional&
+  sigma () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  sigma_optional&
+  sigma ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  sigma (const sigma_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  sigma (const sigma_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -2966,6 +3623,9 @@ class ParticleType: public ::xml_schema::type
   ::xsd::cxx::tree::one< position_type > position_;
   ::xsd::cxx::tree::one< velocity_type > velocity_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+  type_optional type_;
+  epsilon_optional epsilon_;
+  sigma_optional sigma_;
 
   //@endcond
 };
@@ -3592,11 +4252,11 @@ class DoubleVectorType: public ::xml_schema::type
 };
 
 /**
- * @brief Class corresponding to the %BoolVector schema type.
+ * @brief Class corresponding to the %IntVector schema type.
  *
  * @nosubgrouping
  */
-class BoolVector: public ::xml_schema::type
+class IntVector: public ::xml_schema::type
 {
   public:
   /**
@@ -3610,7 +4270,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean x_type;
+  typedef ::xml_schema::int_ x_type;
 
   /**
    * @brief Element traits type.
@@ -3657,7 +4317,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean y_type;
+  typedef ::xml_schema::int_ y_type;
 
   /**
    * @brief Element traits type.
@@ -3704,7 +4364,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean z_type;
+  typedef ::xml_schema::int_ z_type;
 
   /**
    * @brief Element traits type.
@@ -3751,7 +4411,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean l_type;
+  typedef ::xml_schema::int_ l_type;
 
   /**
    * @brief Element traits type.
@@ -3798,7 +4458,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean m_type;
+  typedef ::xml_schema::int_ m_type;
 
   /**
    * @brief Element traits type.
@@ -3845,7 +4505,7 @@ class BoolVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::boolean k_type;
+  typedef ::xml_schema::int_ k_type;
 
   /**
    * @brief Element traits type.
@@ -3890,12 +4550,12 @@ class BoolVector: public ::xml_schema::type
    * @brief Create an instance from the ultimate base and
    * initializers for required elements and attributes.
    */
-  BoolVector (const x_type&,
-              const y_type&,
-              const z_type&,
-              const l_type&,
-              const m_type&,
-              const k_type&);
+  IntVector (const x_type&,
+             const y_type&,
+             const z_type&,
+             const l_type&,
+             const m_type&,
+             const k_type&);
 
   /**
    * @brief Create an instance from a DOM element.
@@ -3905,9 +4565,9 @@ class BoolVector: public ::xml_schema::type
    * @param c A pointer to the object that will contain the new
    * instance.
    */
-  BoolVector (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+  IntVector (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f = 0,
+             ::xml_schema::container* c = 0);
 
   /**
    * @brief Copy constructor.
@@ -3918,9 +4578,9 @@ class BoolVector: public ::xml_schema::type
    *
    * For polymorphic object models use the @c _clone function instead.
    */
-  BoolVector (const BoolVector& x,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+  IntVector (const IntVector& x,
+             ::xml_schema::flags f = 0,
+             ::xml_schema::container* c = 0);
 
   /**
    * @brief Copy the instance polymorphically.
@@ -3933,7 +4593,7 @@ class BoolVector: public ::xml_schema::type
    * used for copying and should be used for polymorphic object
    * models instead of the copy constructor.
    */
-  virtual BoolVector*
+  virtual IntVector*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
@@ -3945,8 +4605,8 @@ class BoolVector: public ::xml_schema::type
    *
    * For polymorphic object models use the @c _clone function instead.
    */
-  BoolVector&
-  operator= (const BoolVector& x);
+  IntVector&
+  operator= (const IntVector& x);
 
   //@}
 
@@ -3954,7 +4614,7 @@ class BoolVector: public ::xml_schema::type
    * @brief Destructor.
    */
   virtual 
-  ~BoolVector ();
+  ~IntVector ();
 
   // Implementation.
   //

@@ -60,6 +60,9 @@ void FileReader::readParticles(ParticleContainers::ParticleContainer &particles,
     std::array<double, 3> x;
     std::array<double, 3> v;
     double m;
+    int t; 
+    double epsilon;
+    double sigma;
     int num_particles = 0;
     std::string tmp_string;
     getline(input_file, tmp_string);
@@ -84,7 +87,11 @@ void FileReader::readParticles(ParticleContainers::ParticleContainer &particles,
             SPDLOG_ERROR("Error reading file: unexpected data format");
             exit(-1);
         }
-        particles.addParticle(Particle(x, v, m));
+
+        datastream >> t;
+        datastream >> epsilon;
+        datastream >> sigma;
+        particles.addParticle(Particle(x, v, m, t, epsilon, sigma));
 
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
@@ -100,6 +107,9 @@ void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, s
     double h;
     double m;
     double mv;
+    int t;
+    double epsilon;
+    double sigma;
     // initialize the number of cuboids which will be later read from the file
     int num_cuboids;
     // initialize a string which will contain a line
@@ -140,11 +150,15 @@ void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, s
             SPDLOG_ERROR("Error reading file: unexpected data format");
             exit(-1);
         }
+
+        datastream >> t;
+        datastream >> epsilon;
+        datastream >> sigma;
         // create a cuboid with the parameters
         Cuboid cuboid(x, N, h, m, v, mv);
         SPDLOG_DEBUG("Cuboid created!: ");
         // generates the particles in the cuboid
-        ParticleGenerator::generateCuboid(particles,cuboid);
+        ParticleGenerator::generateCuboid(particles,cuboid, t, epsilon, sigma);
         // read another line (if more cuboids follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
@@ -158,6 +172,9 @@ void FileReader::readDiscs(ParticleContainers::ParticleContainer &particles, std
     int radius;
     double h;
     double m;
+    int t;
+    double epsilon;
+    double sigma;
     // initialize the number of discs which will be later read from the file
     int numDiscs;
     // initialize a string which will contain a line
@@ -194,11 +211,15 @@ void FileReader::readDiscs(ParticleContainers::ParticleContainer &particles, std
             SPDLOG_ERROR("Error reading file: unexpected data format");
             exit(-1);
         }
+
+        datastream >> t;
+        datastream >> epsilon;
+        datastream >> sigma;
         // create a disc with the parameters
        Disc disc(centerCoord, initVel, radius, h, m);
         SPDLOG_DEBUG("Disc created!: ");
         // generates the particles in the disc
-        ParticleGenerator::generateDisc(particles,disc);
+        ParticleGenerator::generateDisc(particles,disc, t, epsilon, sigma);
         // read another line (if more discs follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);

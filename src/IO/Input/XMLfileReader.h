@@ -33,7 +33,7 @@ class XMLfileReader {
    * @param particleContainer: particle container
    * @param thermostat: thermostat
    */
-   static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
+   static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq,
                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer, std::unique_ptr<BoundaryHandler> &boundaryHandler,
                                std::unique_ptr<Thermostat> &thermostat);

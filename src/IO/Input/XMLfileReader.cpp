@@ -13,7 +13,7 @@
 #include "Objects/Temperature/GradualThermostat.h"
 
 
-int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
+int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq,
                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat) {
 
@@ -54,7 +54,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 }
                 particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
                 if(sim -> container().BoundaryType().present()) {
-                   std::array<bool, 6> condition;
+                   std::array<int, 6> condition;
                     condition[0] = sim ->container().BoundaryType().get().x();
                     condition[1] = sim ->container().BoundaryType().get().y();
                     condition[2] = sim ->container().BoundaryType().get().z();
@@ -84,6 +84,16 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     SPDLOG_ERROR("Invalid endTime, endTime should be >= 0 !, using default value");
                     endTime = 5;
                 }
+            }
+            if(sim->parameters().gravity().present()){
+                gravity = sim->parameters().gravity().get();
+                SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
+                if (gravity < 0){
+                    SPDLOG_ERROR("Invalid gravity, gravity should be >= 0 !, using default value");
+                    gravity = 0;
+                }
+            } else {
+                gravity = 0;
             }
             if (sim->output().baseName().present())
             {
@@ -156,7 +166,23 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 v[1] = sim->shapes().particle().at(i).velocity().y();
                 v[2] = sim->shapes().particle().at(i).velocity().z();
                 double m = sim->shapes().particle().at(i).mass();
-                Particle newParticle(x,v,m,0);
+
+                int type = 0;
+                if (sim->shapes().particle().at(i).type().present()){
+                    type = sim->shapes().particle().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().particle().at(i).epsilon().present()){
+                    epsilon = sim->shapes().particle().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().particle().at(i).sigma().present()){
+                    sigma = sim->shapes().particle().at(i).sigma().get();
+                }
+
+                Particle newParticle(x,v,m, type, epsilon, sigma);
                 (particleContainer) -> addParticle(newParticle);
             }
             for (int i=0; i < (int) sim->shapes().cuboid().size();i++){
@@ -184,8 +210,25 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                         v = operator*(scale, v);
                     }
                 }
+
+                int type = 0;
+                if (sim->shapes().cuboid().at(i).type().present()){
+                    type = sim->shapes().cuboid().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().cuboid().at(i).epsilon().present()){
+                    epsilon = sim->shapes().cuboid().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().cuboid().at(i).sigma().present()){
+                    sigma = sim->shapes().cuboid().at(i).sigma().get();
+                }
+
+
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma);
             }
             for (int i=0; i < (int) sim->shapes().disc().size();i++){
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -202,8 +245,24 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double m = sim->shapes().disc().at(i).mass();
                 double radius = sim->shapes().disc().at(i).radius();
 
+                int type = 0;
+                if (sim->shapes().disc().at(i).type().present()){
+                    type = sim->shapes().disc().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().disc().at(i).epsilon().present()){
+                    epsilon = sim->shapes().disc().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().disc().at(i).sigma().present()){
+                    sigma = sim->shapes().disc().at(i).sigma().get();
+                }
+
+
                 Disc disc(x,v,radius,h,m);
-                ParticleGenerator::generateDisc(*particleContainer, disc);
+                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma);
             }
 
 

@@ -79,7 +79,7 @@ Optional arguments:
 }
 
 
-bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
+bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double& endTime, double& gravity,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
                             std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -98,10 +98,9 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
             ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int>>())
+            ("g, gravity","Set gravity", cxxopts::value<double>()->default_value("0"))
 
     ;
-
-
 
 
     auto parseResult = options.parse(argc, argv);
@@ -253,8 +252,15 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         return false;
     }
 
+     if (parseResult["gravity"].as<double>() <= 0.0) {
+        SPDLOG_ERROR("Invalid gravity value. EndTime has to be positive");
+        printHelp();
+        return false;
+    }
+
     deltaT = parseResult["deltaT"].as<double>();
     endTime = parseResult["endTime"].as<double>();
+    gravity = parseResult["gravity"].as<double>();
     outputWriter = std::make_unique<outputWriters::VTKWriter>();
     calculator = std::make_unique<Calculators::GravityCalculator>();
 

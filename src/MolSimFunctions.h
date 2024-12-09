@@ -35,7 +35,7 @@ void printHelp();
  * @param calculator that will be used during the simulation
  * @particleContainer empty ParticleContainer
  */
-bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
+bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime, double& gravity,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
                             std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,

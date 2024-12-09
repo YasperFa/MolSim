@@ -34,20 +34,21 @@ int main(int argc, char *argsv[]) {
     double deltaT;
     double endTime;
     int freq = 20;
+    double gravity;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
     //parses and sets arguments from the command line
-    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, outputWriter, calculator, particleContainer, boundaryHandler)) {
+    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, gravity,  outputWriter, calculator, particleContainer, boundaryHandler)) {
         return 1;
        }
 
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, freq, outputWriter,calculator, particleContainer, boundaryHandler, thermostat))
+        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, gravity, freq, outputWriter, calculator, particleContainer, boundaryHandler, thermostat))
             return 1;
     }
     else{
