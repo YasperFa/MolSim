@@ -164,6 +164,7 @@ namespace Calculators {
         void calculateX(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p: particleContainer) {
+                p.setOldX(p.getX());
                 std::array<double, 3> newX = operator+(
                     p.getX(), operator+(operator*(delta_t, p.getV()),
                                         operator*(0.5 * pow(delta_t, 2) / p.getM(), p.getF())));
