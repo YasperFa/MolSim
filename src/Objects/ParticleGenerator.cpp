@@ -8,7 +8,7 @@
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 
-void ParticleGenerator::generateCuboid(ParticleContainer &particles, Cuboid &cuboid) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
@@ -37,9 +37,33 @@ void ParticleGenerator::generateCuboid(ParticleContainer &particles, Cuboid &cub
                 Particle nParticle(particle_pos,vel,m,0);
                 // add new particle to container
                 particles.addParticle(nParticle);
-
-
             }
         }
     }
+}
+
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc) {
+    const std::array<double, 3> center = disc.getCenterCoordinate();
+    const  std::array<double, 3> initVel = disc.getInitVelocity();
+    const int r = disc.getRadius();
+    const double mass = disc.getMass();
+    const double h = disc.getDistanceBetweenParticles();
+    SPDLOG_DEBUG("generating disc particles");
+    SPDLOG_DEBUG("r: {}", r);
+    for (int i = -r ; i <= r ; ++i) {
+        SPDLOG_DEBUG("column {}", i);
+        // check if position is inside the circle j*j + i*i <= r*r
+        for (int j = -r ; j <= r; ++j) {
+            if (((j*j) + (i*i) <= r*r)) {
+                SPDLOG_DEBUG("line {}", j);
+                const std::array<double, 3> particlePosition = {center[0] + j*h, center[1] + i*h, center[2]};
+                // create new particle
+                Particle nParticle(particlePosition,initVel, mass,0);
+                // add new particle to container
+                particles.addParticle(nParticle);
+            }
+        }
+    }
+
+
 }

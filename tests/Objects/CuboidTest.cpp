@@ -14,20 +14,20 @@ TEST(CuboidTest, testGettersAndConstructor) {
     double m = 1.5 ;
     double mv = 0.5 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
-    EXPECT_EQ(1.0, cuboid1.h);
-    EXPECT_EQ(1.5, cuboid1.m);
-    EXPECT_EQ(0.5, cuboid1.mv);
+    EXPECT_EQ(1.0, cuboid1.getDistBetweenParticles());
+    EXPECT_EQ(1.5, cuboid1.getMass());
+    EXPECT_EQ(0.5, cuboid1.getMeanVelocity());
     //check x
-    EXPECT_EQ(4.0, cuboid1.x[0]);
-    EXPECT_EQ(5.0, cuboid1.x[1]);
-    EXPECT_EQ(6.0, cuboid1.x[2]);
+    EXPECT_EQ(4.0, cuboid1.getLowerFrontCorner()[0]);
+    EXPECT_EQ(5.0, cuboid1.getLowerFrontCorner()[1]);
+    EXPECT_EQ(6.0, cuboid1.getLowerFrontCorner()[2]);
     //check N
-    EXPECT_EQ(3.0, cuboid1.N[0]);
-    EXPECT_EQ(2.0, cuboid1.N[1]);
-    EXPECT_EQ(1.0, cuboid1.N[2]);
+    EXPECT_EQ(3.0, cuboid1.getNumOfParticlesPerDimension()[0]);
+    EXPECT_EQ(2.0, cuboid1.getNumOfParticlesPerDimension()[1]);
+    EXPECT_EQ(1.0, cuboid1.getNumOfParticlesPerDimension()[2]);
     //check v
-    EXPECT_EQ(10.0, cuboid1.v[0]);
-    EXPECT_EQ(0.0, cuboid1.v[1]);
-    EXPECT_EQ(0.0, cuboid1.v[2]);
+    EXPECT_EQ(10.0, cuboid1.getInitVelocity()[0]);
+    EXPECT_EQ(0.0, cuboid1.getInitVelocity()[1]);
+    EXPECT_EQ(0.0, cuboid1.getInitVelocity()[2]);
 
 }

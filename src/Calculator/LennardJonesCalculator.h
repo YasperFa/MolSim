@@ -6,7 +6,7 @@
 
 #include "Calculator.h"
 #include "Objects/Particle.h"
-#include "Objects/ParticleContainer.h"
+#include "../Objects/Containers/DirectSum/DirectSumContainer.h"
 
 
 namespace Calculators{
@@ -15,7 +15,7 @@ namespace Calculators{
 
           LennardJonesCalculator() = default;
 
-          virtual ~LennardJonesCalculator() = default;
+          ~LennardJonesCalculator() override = default;
           /**
           *  function for calculating the force FIJ acting between two particles according to lennard jones
           * @param sub: subtraction of positions
@@ -25,7 +25,7 @@ namespace Calculators{
           * @return force fij between the particle i and j
           */
         std::array<double, 3> calculateFIJ(const std::array<double,3> &sub, double m1, double m2, double normCubed) override;
-
+        std::string toString() override;
 
     };
 }

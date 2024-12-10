@@ -1,0 +1,33 @@
+#
+# file format:
+# Lines of comment start with '#' and are only allowed at the beginning of the file
+# Empty lines are not allowed.
+# The first line not being a comment has to be one integer, indicating the type of
+# object. 0 --> particle, 1 --> cuboid, 2 --> disc
+# The second line not being a comment has to be one integer, indicating the number of
+# object data sets.
+#
+# Molecule data consists of
+# * xyz-coordinates (3 double values)
+# * velocities (2 or 3 double values)
+# * mass (1 double value)
+#------------------------------------
+# Cuboid data consists of
+# * left front -coordinates (3 double values)
+# * Number of particles per dimension (3 double values)
+# * Initial velocity (2 or 3 double values)
+# * distance between particles (1 double value)
+# * mass (1 double values)
+# * mean velocity  (1 double value)
+# -------------------------------------------------------------------------------------
+# Disc data consists of
+# * center coordinate (3 double values)
+# * Initial velocity (2 or 3 double values)
+# * radius ( in terms of the number of molecules along the radius) (1 double values)
+# * distance between particles (1 double value)
+# * mass (1 double values)
+# -------------------------------------------------------------------------------------
+# centerCoor     initialVelocity      Radius      distanceBetweenParticle      mass
+2
+1
+60.0 25.0 0.0     0.0 -10.0 0.0         15              1.1225                  1.0

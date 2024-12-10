@@ -6,11 +6,13 @@
 #define CUBOID_H
 #include <array>
 
-#include "ParticleContainer.h"
+#include "Containers/DirectSum/DirectSumContainer.h"
 
-
+/**
+ * a class that defines cuboid parameters
+ */
 class Cuboid {
-public:
+private:
  /**
   * Coordinate of the  lower left front-side corner
   */
@@ -46,7 +48,7 @@ public:
     * @param mv Mean velocity of the particles.
     */
     Cuboid(const std::array<double, 3> x, const std::array<double, 3> N, const double h, const double m, const std::array<double, 3> v
-    ,const double mv);
+    ,const double mv) : x(x), N(N), h(h), m(m), v(v), mv(mv){}
 
     /**
     * @brief default destructor of the cuboid.

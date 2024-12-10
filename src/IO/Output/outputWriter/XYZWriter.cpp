@@ -11,7 +11,7 @@
 #include "spdlog/spdlog.h"
 
 namespace outputWriters {
-    void XYZWriter::plotParticles(int iteration, ParticleContainer &particleContainer, const std::string &filename) {
+    void XYZWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer &particleContainer, const std::string &filename) {
         SPDLOG_TRACE("XYZ Writer plotParticlesFromContainer: opening file in iteration {}", iteration);
         std::ofstream file;
         std::stringstream strstr;
@@ -36,4 +36,8 @@ namespace outputWriters {
         }
         file.close();
     }
+    std::string XYZWriter::toString() {
+        return std::string("XYZWriter");
+    }
+
 } // namespace outputWriter

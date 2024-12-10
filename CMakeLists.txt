@@ -36,7 +36,8 @@ file(GLOB_RECURSE MY_SRC
 )
 
 # create make target
-add_executable(MolSim ${MY_SRC})
+add_executable(MolSim ${MY_SRC}
+)
 
 # set cxx standard. You may raise this if you want.
 target_compile_features(MolSim
@@ -70,7 +71,3 @@ target_compile_options(MolSim
         # disable some spam warnings for icpc...
         $<$<CXX_COMPILER_ID:Intel>:-w3 -wd383,981,1418,1572,2259>
 )
-
-
-
-

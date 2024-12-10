@@ -1,0 +1,16 @@
+/*!
+ * \page runtimeComparison Runtime Analysis
+ *
+ * # Runtime Comparison
+ *
+ * This project compares the runtime per iteration for two implementations:
+ * - **Linked-Cell Algorithm**
+ * - **Direct-Sum Algorithm**
+ *
+ * Below is the runtime analysis for 2d cuboid examples with 1000, 2000, 4000 and 8000 particles in the cuboid in seconds and minutes:
+ *
+ * \image html LCCvsDSCseconds.png "Runtime Comparison: LCC vs DSC in seconds"
+ * \image html LCCvsDSCminutes.png "Runtime Comparison: LCC vs DSC in minutes"
+ * \image latex LCCvsDSCseconds.pdf "Runtime Comparison: LCC vs DSC in seconds"
+ * \image latex LCCvsDSCminutes.pdf "Runtime Comparison: LCC vs DSC in minutes"
+ */
