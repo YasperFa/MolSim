@@ -18,7 +18,7 @@
         <BoundaryType>
             <x>2</x>
             <y>2</y>
-            <z>0</z>
+            <z>1</z>
             <l>1</l>
             <m>0</m>
             <k>0</k>
@@ -39,7 +39,7 @@
             <dimensions>
                 <x>50</x>
                 <y>14</y>
-                <z>0</z>
+                <z>1</z>
             </dimensions>
             <initialVelocity>
                 <x>0</x>
@@ -62,7 +62,7 @@
             <dimensions>
                 <x>50</x>
                 <y>14</y>
-                <z>0</z>
+                <z>1</z>
             </dimensions>
             <initialVelocity>
                 <x>0</x>
