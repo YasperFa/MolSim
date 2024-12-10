@@ -1,5 +1,4 @@
 \mainpage Molecular Dynamics WS24 - GroupG
-
  
 ===
 ## Prerequisites
