@@ -1,5 +1,6 @@
 \mainpage Molecular Dynamics WS24 - GroupG
  
+
 ===
 ## Prerequisites
 To be able to build and run this code, the following tools have to be installed:
