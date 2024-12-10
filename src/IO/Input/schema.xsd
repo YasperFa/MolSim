@@ -7,6 +7,7 @@
                 <xs:element name="container" type="ContainerType"/>
                 <xs:element name="parameters" type="ParametersType"/>
                 <xs:element name="shapes" type="ShapeType"/>
+                <xs:element name="temperature" type="TempType" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -29,13 +30,14 @@
             <xs:element name="containerType" type="xs:string"/>
             <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
             <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
-            <xs:element name="BoundaryType" type="BoolVector" minOccurs="0"/>
+            <xs:element name="BoundaryType" type="IntVector" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParametersType">
         <xs:sequence>
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
             <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
+            <xs:element name="gravity" type="xs:double" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ShapeType">
@@ -54,6 +56,9 @@
             <xs:element name="distance" type="xs:double"/>
             <xs:element name="meanVelocity" type="xs:double"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DiscType">
@@ -63,6 +68,9 @@
             <xs:element name="initialVelocity" type="DoubleVectorType"/>
             <xs:element name="distance" type="xs:double"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParticleType">
@@ -70,6 +78,18 @@
             <xs:element name="position" type="DoubleVectorType"/>
             <xs:element name="velocity" type="DoubleVectorType"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+     <xs:complexType name="TempType">
+        <xs:sequence>
+            <xs:element name="thermostatType" type="xs:string"/>
+            <xs:element name="initialTemperature" type="xs:double"/>
+            <xs:element name="timeSteps" type="xs:int"/>
+            <xs:element name="targetTemperature" type="xs:double" minOccurs="0"/>
+            <xs:element name="maxDeltaTemperature" type="xs:double" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DoubleVectorType">
@@ -79,14 +99,14 @@
             <xs:element name="z" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="BoolVector">
+    <xs:complexType name="IntVector">
         <xs:sequence>
-            <xs:element name="x" type="xs:boolean"/>
-            <xs:element name="y" type="xs:boolean"/>
-            <xs:element name="z" type="xs:boolean"/>
-            <xs:element name="l" type="xs:boolean"/>
-            <xs:element name="m" type="xs:boolean"/>
-            <xs:element name="k" type="xs:boolean"/>
+            <xs:element name="x" type="xs:int"/>
+            <xs:element name="y" type="xs:int"/>
+            <xs:element name="z" type="xs:int"/>
+            <xs:element name="l" type="xs:int"/>
+            <xs:element name="m" type="xs:int"/>
+            <xs:element name="k" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
 

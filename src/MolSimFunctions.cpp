@@ -79,7 +79,7 @@ Optional arguments:
 }
 
 
-bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
+bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double& endTime, double& gravity,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
                             std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -97,11 +97,10 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<bool>>())
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int>>())
+            ("g, gravity","Set gravity", cxxopts::value<double>()->default_value("0"))
 
     ;
-
-
 
 
     auto parseResult = options.parse(argc, argv);
@@ -191,8 +190,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
             particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            std::array<bool, 6> cond = {0,0,0,0,0,0};
-            boundaryHandler = std::make_unique<BoundaryHandler>(1, cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
+            std::array<int, 6> cond = {0,0,0,0,0,0};
+            boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -200,6 +199,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
     }
+
     if(parseResult.count("boundaryCondition")){
         SPDLOG_DEBUG("boundary set");
         if (LCCset == false){
@@ -209,15 +209,24 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         }
 
         try{
-        std::vector<bool> condition = parseResult["boundaryCondition"].as<std::vector<bool>>();
+        std::vector<int> condition = parseResult["boundaryCondition"].as<std::vector<int>>();
 
         if (condition.size() != 6) {
             throw std::runtime_error("");
         }
         
-        std::array<bool, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+        std::array<int, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+
+        for (int i = 0; i < 6; i++){
+        int t = conditionArray[i];
+        if (t > 2 || t < 0){
+        SPDLOG_ERROR("invalid boundary parameter!");
+        printHelp();
+        return false;
+     }
+}
         
-        boundaryHandler = std::make_unique<BoundaryHandler>(1, conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+        boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
 
          } catch (const std::exception& e) {
         
@@ -245,6 +254,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 
     deltaT = parseResult["deltaT"].as<double>();
     endTime = parseResult["endTime"].as<double>();
+    gravity = parseResult["gravity"].as<double>();
     outputWriter = std::make_unique<outputWriters::VTKWriter>();
     calculator = std::make_unique<Calculators::GravityCalculator>();
 
@@ -287,10 +297,10 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
 }
 
 
-void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, int &freq,
+void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, double& gravity, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
-                    std::unique_ptr<BoundaryHandler> &boundaryHandler) {            
+                    std::unique_ptr<BoundaryHandler> &boundaryHandler,  std::unique_ptr<Thermostat> &thermostat) {
 
 
     const std::string outName = "MD";
@@ -298,8 +308,9 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     double currentTime = 0.0;
     int iteration = 0;
 
+    boundaryHandler -> handleBoundaries();
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT);
+        calculator->calculateXFV(particleContainer, deltaT, gravity);
         if (boundaryHandler != nullptr){
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();
@@ -311,7 +322,13 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
             outputWriter->plotParticles(iteration, particleContainer, outName);
         }
 
-       SPDLOG_DEBUG("Iteration {} finished.", iteration);
+        if(thermostat != nullptr) {
+
+        if (iteration % thermostat->getNtimeSteps() == 0) {
+            thermostat->applyThermostat(particleContainer);
+        }}
+
+      // SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");

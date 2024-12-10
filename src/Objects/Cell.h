@@ -41,12 +41,17 @@ private:
      */
     std::unordered_set<Cell*> influencedBy;
 
+
+    /** @brief position of the cell in the cell grid */
+    std::array<int,3> position;
+
 public:
     /**
      * @brief constructor for a Cell object
      * @param cellType determines the type of the Cell object that is being created.
+     * @param pos detemines the position of the cell in the cell grid
      */
-    explicit Cell(CType cellType);
+    explicit Cell(CType cellType, std::array <int, 3> pos);
 
     /**
      *
@@ -115,4 +120,6 @@ public:
     std::unordered_set<Cell*> getInfluencedByCells();
 
     CType getCellType();
+
+    std::array<int, 3> getPosition();
 };

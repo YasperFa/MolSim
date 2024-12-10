@@ -153,16 +153,16 @@ namespace ParticleContainers {
         for (int x = -1; x < cellNumPerDimension[0] + 1; ++x) {
             for (int y = -1; y < cellNumPerDimension[1] + 1 ; ++y) {
                     if (x < 0 || y < 0 ||  x >= cellNumPerDimension[0] || y >= cellNumPerDimension[1]) {
-                        Cell nCell(Cell::CType::HALO);
+                        Cell nCell(Cell::CType::HALO, {x, y, 0});
                         cells.push_back(nCell);
                         haloCells.push_back(cells.back());
                     } else if (x == 0 || y == 0 || x == cellNumPerDimension[0] - 1 || y == cellNumPerDimension[1] - 1) {
-                        Cell nCell(Cell::CType::BOUNDARY);
+                        Cell nCell(Cell::CType::BOUNDARY, {x, y, 0});
                         cells.push_back(nCell);
                         boundaryCells.push_back(cells.back());
                         innerCells.push_back(cells.back());
                     } else {
-                        Cell nCell(Cell::CType::INNER);
+                        Cell nCell(Cell::CType::INNER, {x, y, 0});
                         cells.push_back(nCell);
                         innerCells.push_back(cells.back());
                     }

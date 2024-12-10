@@ -301,6 +301,30 @@ deltaT (const deltaT_optional& x)
   this->deltaT_ = x;
 }
 
+const ParametersType::gravity_optional& ParametersType::
+gravity () const
+{
+  return this->gravity_;
+}
+
+ParametersType::gravity_optional& ParametersType::
+gravity ()
+{
+  return this->gravity_;
+}
+
+void ParametersType::
+gravity (const gravity_type& x)
+{
+  this->gravity_.set (x);
+}
+
+void ParametersType::
+gravity (const gravity_optional& x)
+{
+  this->gravity_ = x;
+}
+
 
 // ShapeType
 // 
@@ -489,6 +513,78 @@ mass (const mass_type& x)
   this->mass_.set (x);
 }
 
+const CuboidType::type_optional& CuboidType::
+type () const
+{
+  return this->type_;
+}
+
+CuboidType::type_optional& CuboidType::
+type ()
+{
+  return this->type_;
+}
+
+void CuboidType::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void CuboidType::
+type (const type_optional& x)
+{
+  this->type_ = x;
+}
+
+const CuboidType::epsilon_optional& CuboidType::
+epsilon () const
+{
+  return this->epsilon_;
+}
+
+CuboidType::epsilon_optional& CuboidType::
+epsilon ()
+{
+  return this->epsilon_;
+}
+
+void CuboidType::
+epsilon (const epsilon_type& x)
+{
+  this->epsilon_.set (x);
+}
+
+void CuboidType::
+epsilon (const epsilon_optional& x)
+{
+  this->epsilon_ = x;
+}
+
+const CuboidType::sigma_optional& CuboidType::
+sigma () const
+{
+  return this->sigma_;
+}
+
+CuboidType::sigma_optional& CuboidType::
+sigma ()
+{
+  return this->sigma_;
+}
+
+void CuboidType::
+sigma (const sigma_type& x)
+{
+  this->sigma_.set (x);
+}
+
+void CuboidType::
+sigma (const sigma_optional& x)
+{
+  this->sigma_ = x;
+}
+
 
 // DiscType
 // 
@@ -595,6 +691,78 @@ mass (const mass_type& x)
   this->mass_.set (x);
 }
 
+const DiscType::type_optional& DiscType::
+type () const
+{
+  return this->type_;
+}
+
+DiscType::type_optional& DiscType::
+type ()
+{
+  return this->type_;
+}
+
+void DiscType::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void DiscType::
+type (const type_optional& x)
+{
+  this->type_ = x;
+}
+
+const DiscType::epsilon_optional& DiscType::
+epsilon () const
+{
+  return this->epsilon_;
+}
+
+DiscType::epsilon_optional& DiscType::
+epsilon ()
+{
+  return this->epsilon_;
+}
+
+void DiscType::
+epsilon (const epsilon_type& x)
+{
+  this->epsilon_.set (x);
+}
+
+void DiscType::
+epsilon (const epsilon_optional& x)
+{
+  this->epsilon_ = x;
+}
+
+const DiscType::sigma_optional& DiscType::
+sigma () const
+{
+  return this->sigma_;
+}
+
+DiscType::sigma_optional& DiscType::
+sigma ()
+{
+  return this->sigma_;
+}
+
+void DiscType::
+sigma (const sigma_type& x)
+{
+  this->sigma_.set (x);
+}
+
+void DiscType::
+sigma (const sigma_optional& x)
+{
+  this->sigma_ = x;
+}
+
 
 // ParticleType
 // 
@@ -665,6 +833,190 @@ mass (const mass_type& x)
   this->mass_.set (x);
 }
 
+const ParticleType::type_optional& ParticleType::
+type () const
+{
+  return this->type_;
+}
+
+ParticleType::type_optional& ParticleType::
+type ()
+{
+  return this->type_;
+}
+
+void ParticleType::
+type (const type_type& x)
+{
+  this->type_.set (x);
+}
+
+void ParticleType::
+type (const type_optional& x)
+{
+  this->type_ = x;
+}
+
+const ParticleType::epsilon_optional& ParticleType::
+epsilon () const
+{
+  return this->epsilon_;
+}
+
+ParticleType::epsilon_optional& ParticleType::
+epsilon ()
+{
+  return this->epsilon_;
+}
+
+void ParticleType::
+epsilon (const epsilon_type& x)
+{
+  this->epsilon_.set (x);
+}
+
+void ParticleType::
+epsilon (const epsilon_optional& x)
+{
+  this->epsilon_ = x;
+}
+
+const ParticleType::sigma_optional& ParticleType::
+sigma () const
+{
+  return this->sigma_;
+}
+
+ParticleType::sigma_optional& ParticleType::
+sigma ()
+{
+  return this->sigma_;
+}
+
+void ParticleType::
+sigma (const sigma_type& x)
+{
+  this->sigma_.set (x);
+}
+
+void ParticleType::
+sigma (const sigma_optional& x)
+{
+  this->sigma_ = x;
+}
+
+
+// TempType
+// 
+
+const TempType::thermostatType_type& TempType::
+thermostatType () const
+{
+  return this->thermostatType_.get ();
+}
+
+TempType::thermostatType_type& TempType::
+thermostatType ()
+{
+  return this->thermostatType_.get ();
+}
+
+void TempType::
+thermostatType (const thermostatType_type& x)
+{
+  this->thermostatType_.set (x);
+}
+
+void TempType::
+thermostatType (::std::unique_ptr< thermostatType_type > x)
+{
+  this->thermostatType_.set (std::move (x));
+}
+
+const TempType::initialTemperature_type& TempType::
+initialTemperature () const
+{
+  return this->initialTemperature_.get ();
+}
+
+TempType::initialTemperature_type& TempType::
+initialTemperature ()
+{
+  return this->initialTemperature_.get ();
+}
+
+void TempType::
+initialTemperature (const initialTemperature_type& x)
+{
+  this->initialTemperature_.set (x);
+}
+
+const TempType::timeSteps_type& TempType::
+timeSteps () const
+{
+  return this->timeSteps_.get ();
+}
+
+TempType::timeSteps_type& TempType::
+timeSteps ()
+{
+  return this->timeSteps_.get ();
+}
+
+void TempType::
+timeSteps (const timeSteps_type& x)
+{
+  this->timeSteps_.set (x);
+}
+
+const TempType::targetTemperature_optional& TempType::
+targetTemperature () const
+{
+  return this->targetTemperature_;
+}
+
+TempType::targetTemperature_optional& TempType::
+targetTemperature ()
+{
+  return this->targetTemperature_;
+}
+
+void TempType::
+targetTemperature (const targetTemperature_type& x)
+{
+  this->targetTemperature_.set (x);
+}
+
+void TempType::
+targetTemperature (const targetTemperature_optional& x)
+{
+  this->targetTemperature_ = x;
+}
+
+const TempType::maxDeltaTemperature_optional& TempType::
+maxDeltaTemperature () const
+{
+  return this->maxDeltaTemperature_;
+}
+
+TempType::maxDeltaTemperature_optional& TempType::
+maxDeltaTemperature ()
+{
+  return this->maxDeltaTemperature_;
+}
+
+void TempType::
+maxDeltaTemperature (const maxDeltaTemperature_type& x)
+{
+  this->maxDeltaTemperature_.set (x);
+}
+
+void TempType::
+maxDeltaTemperature (const maxDeltaTemperature_optional& x)
+{
+  this->maxDeltaTemperature_ = x;
+}
+
 
 // DoubleVectorType
 // 
@@ -724,112 +1076,112 @@ z (const z_type& x)
 }
 
 
-// BoolVector
+// IntVector
 // 
 
-const BoolVector::x_type& BoolVector::
+const IntVector::x_type& IntVector::
 x () const
 {
   return this->x_.get ();
 }
 
-BoolVector::x_type& BoolVector::
+IntVector::x_type& IntVector::
 x ()
 {
   return this->x_.get ();
 }
 
-void BoolVector::
+void IntVector::
 x (const x_type& x)
 {
   this->x_.set (x);
 }
 
-const BoolVector::y_type& BoolVector::
+const IntVector::y_type& IntVector::
 y () const
 {
   return this->y_.get ();
 }
 
-BoolVector::y_type& BoolVector::
+IntVector::y_type& IntVector::
 y ()
 {
   return this->y_.get ();
 }
 
-void BoolVector::
+void IntVector::
 y (const y_type& x)
 {
   this->y_.set (x);
 }
 
-const BoolVector::z_type& BoolVector::
+const IntVector::z_type& IntVector::
 z () const
 {
   return this->z_.get ();
 }
 
-BoolVector::z_type& BoolVector::
+IntVector::z_type& IntVector::
 z ()
 {
   return this->z_.get ();
 }
 
-void BoolVector::
+void IntVector::
 z (const z_type& x)
 {
   this->z_.set (x);
 }
 
-const BoolVector::l_type& BoolVector::
+const IntVector::l_type& IntVector::
 l () const
 {
   return this->l_.get ();
 }
 
-BoolVector::l_type& BoolVector::
+IntVector::l_type& IntVector::
 l ()
 {
   return this->l_.get ();
 }
 
-void BoolVector::
+void IntVector::
 l (const l_type& x)
 {
   this->l_.set (x);
 }
 
-const BoolVector::m_type& BoolVector::
+const IntVector::m_type& IntVector::
 m () const
 {
   return this->m_.get ();
 }
 
-BoolVector::m_type& BoolVector::
+IntVector::m_type& IntVector::
 m ()
 {
   return this->m_.get ();
 }
 
-void BoolVector::
+void IntVector::
 m (const m_type& x)
 {
   this->m_.set (x);
 }
 
-const BoolVector::k_type& BoolVector::
+const IntVector::k_type& IntVector::
 k () const
 {
   return this->k_.get ();
 }
 
-BoolVector::k_type& BoolVector::
+IntVector::k_type& IntVector::
 k ()
 {
   return this->k_.get ();
 }
 
-void BoolVector::
+void IntVector::
 k (const k_type& x)
 {
   this->k_.set (x);
@@ -1015,6 +1367,36 @@ void simulation::
 shapes (::std::unique_ptr< shapes_type > x)
 {
   this->shapes_.set (std::move (x));
+}
+
+const simulation::temperature_optional& simulation::
+temperature () const
+{
+  return this->temperature_;
+}
+
+simulation::temperature_optional& simulation::
+temperature ()
+{
+  return this->temperature_;
+}
+
+void simulation::
+temperature (const temperature_type& x)
+{
+  this->temperature_.set (x);
+}
+
+void simulation::
+temperature (const temperature_optional& x)
+{
+  this->temperature_ = x;
+}
+
+void simulation::
+temperature (::std::unique_ptr< temperature_type > x)
+{
+  this->temperature_.set (std::move (x));
 }
 
 
@@ -1355,7 +1737,8 @@ ParametersType::
 ParametersType ()
 : ::xml_schema::type (),
   tEnd_ (this),
-  deltaT_ (this)
+  deltaT_ (this),
+  gravity_ (this)
 {
 }
 
@@ -1365,7 +1748,8 @@ ParametersType (const ParametersType& x,
                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   tEnd_ (x.tEnd_, f, this),
-  deltaT_ (x.deltaT_, f, this)
+  deltaT_ (x.deltaT_, f, this),
+  gravity_ (x.gravity_, f, this)
 {
 }
 
@@ -1375,7 +1759,8 @@ ParametersType (const ::xercesc::DOMElement& e,
                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   tEnd_ (this),
-  deltaT_ (this)
+  deltaT_ (this),
+  gravity_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1416,6 +1801,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // gravity
+    //
+    if (n.name () == "gravity" && n.namespace_ ().empty ())
+    {
+      if (!this->gravity_)
+      {
+        this->gravity_.set (gravity_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 }
@@ -1435,6 +1831,7 @@ operator= (const ParametersType& x)
     static_cast< ::xml_schema::type& > (*this) = x;
     this->tEnd_ = x.tEnd_;
     this->deltaT_ = x.deltaT_;
+    this->gravity_ = x.gravity_;
   }
 
   return *this;
@@ -1573,7 +1970,10 @@ CuboidType (const position_type& position,
   initialVelocity_ (initialVelocity, this),
   distance_ (distance, this),
   meanVelocity_ (meanVelocity, this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -1590,7 +1990,10 @@ CuboidType (::std::unique_ptr< position_type > position,
   initialVelocity_ (std::move (initialVelocity), this),
   distance_ (distance, this),
   meanVelocity_ (meanVelocity, this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -1604,7 +2007,10 @@ CuboidType (const CuboidType& x,
   initialVelocity_ (x.initialVelocity_, f, this),
   distance_ (x.distance_, f, this),
   meanVelocity_ (x.meanVelocity_, f, this),
-  mass_ (x.mass_, f, this)
+  mass_ (x.mass_, f, this),
+  type_ (x.type_, f, this),
+  epsilon_ (x.epsilon_, f, this),
+  sigma_ (x.sigma_, f, this)
 {
 }
 
@@ -1618,7 +2024,10 @@ CuboidType (const ::xercesc::DOMElement& e,
   initialVelocity_ (this),
   distance_ (this),
   meanVelocity_ (this),
-  mass_ (this)
+  mass_ (this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1712,6 +2121,39 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ ().empty ())
+    {
+      if (!this->type_)
+      {
+        this->type_.set (type_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // epsilon
+    //
+    if (n.name () == "epsilon" && n.namespace_ ().empty ())
+    {
+      if (!this->epsilon_)
+      {
+        this->epsilon_.set (epsilon_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // sigma
+    //
+    if (n.name () == "sigma" && n.namespace_ ().empty ())
+    {
+      if (!this->sigma_)
+      {
+        this->sigma_.set (sigma_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -1777,6 +2219,9 @@ operator= (const CuboidType& x)
     this->distance_ = x.distance_;
     this->meanVelocity_ = x.meanVelocity_;
     this->mass_ = x.mass_;
+    this->type_ = x.type_;
+    this->epsilon_ = x.epsilon_;
+    this->sigma_ = x.sigma_;
   }
 
   return *this;
@@ -1801,7 +2246,10 @@ DiscType (const center_type& center,
   radius_ (radius, this),
   initialVelocity_ (initialVelocity, this),
   distance_ (distance, this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -1816,7 +2264,10 @@ DiscType (::std::unique_ptr< center_type > center,
   radius_ (radius, this),
   initialVelocity_ (std::move (initialVelocity), this),
   distance_ (distance, this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -1829,7 +2280,10 @@ DiscType (const DiscType& x,
   radius_ (x.radius_, f, this),
   initialVelocity_ (x.initialVelocity_, f, this),
   distance_ (x.distance_, f, this),
-  mass_ (x.mass_, f, this)
+  mass_ (x.mass_, f, this),
+  type_ (x.type_, f, this),
+  epsilon_ (x.epsilon_, f, this),
+  sigma_ (x.sigma_, f, this)
 {
 }
 
@@ -1842,7 +2296,10 @@ DiscType (const ::xercesc::DOMElement& e,
   radius_ (this),
   initialVelocity_ (this),
   distance_ (this),
-  mass_ (this)
+  mass_ (this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1922,6 +2379,39 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ ().empty ())
+    {
+      if (!this->type_)
+      {
+        this->type_.set (type_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // epsilon
+    //
+    if (n.name () == "epsilon" && n.namespace_ ().empty ())
+    {
+      if (!this->epsilon_)
+      {
+        this->epsilon_.set (epsilon_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // sigma
+    //
+    if (n.name () == "sigma" && n.namespace_ ().empty ())
+    {
+      if (!this->sigma_)
+      {
+        this->sigma_.set (sigma_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -1979,6 +2469,9 @@ operator= (const DiscType& x)
     this->initialVelocity_ = x.initialVelocity_;
     this->distance_ = x.distance_;
     this->mass_ = x.mass_;
+    this->type_ = x.type_;
+    this->epsilon_ = x.epsilon_;
+    this->sigma_ = x.sigma_;
   }
 
   return *this;
@@ -1999,7 +2492,10 @@ ParticleType (const position_type& position,
 : ::xml_schema::type (),
   position_ (position, this),
   velocity_ (velocity, this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -2010,7 +2506,10 @@ ParticleType (::std::unique_ptr< position_type > position,
 : ::xml_schema::type (),
   position_ (std::move (position), this),
   velocity_ (std::move (velocity), this),
-  mass_ (mass, this)
+  mass_ (mass, this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
 }
 
@@ -2021,7 +2520,10 @@ ParticleType (const ParticleType& x,
 : ::xml_schema::type (x, f, c),
   position_ (x.position_, f, this),
   velocity_ (x.velocity_, f, this),
-  mass_ (x.mass_, f, this)
+  mass_ (x.mass_, f, this),
+  type_ (x.type_, f, this),
+  epsilon_ (x.epsilon_, f, this),
+  sigma_ (x.sigma_, f, this)
 {
 }
 
@@ -2032,7 +2534,10 @@ ParticleType (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   position_ (this),
   velocity_ (this),
-  mass_ (this)
+  mass_ (this),
+  type_ (this),
+  epsilon_ (this),
+  sigma_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2090,6 +2595,39 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // type
+    //
+    if (n.name () == "type" && n.namespace_ ().empty ())
+    {
+      if (!this->type_)
+      {
+        this->type_.set (type_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // epsilon
+    //
+    if (n.name () == "epsilon" && n.namespace_ ().empty ())
+    {
+      if (!this->epsilon_)
+      {
+        this->epsilon_.set (epsilon_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // sigma
+    //
+    if (n.name () == "sigma" && n.namespace_ ().empty ())
+    {
+      if (!this->sigma_)
+      {
+        this->sigma_.set (sigma_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2131,6 +2669,9 @@ operator= (const ParticleType& x)
     this->position_ = x.position_;
     this->velocity_ = x.velocity_;
     this->mass_ = x.mass_;
+    this->type_ = x.type_;
+    this->epsilon_ = x.epsilon_;
+    this->sigma_ = x.sigma_;
   }
 
   return *this;
@@ -2138,6 +2679,174 @@ operator= (const ParticleType& x)
 
 ParticleType::
 ~ParticleType ()
+{
+}
+
+// TempType
+//
+
+TempType::
+TempType (const thermostatType_type& thermostatType,
+          const initialTemperature_type& initialTemperature,
+          const timeSteps_type& timeSteps)
+: ::xml_schema::type (),
+  thermostatType_ (thermostatType, this),
+  initialTemperature_ (initialTemperature, this),
+  timeSteps_ (timeSteps, this),
+  targetTemperature_ (this),
+  maxDeltaTemperature_ (this)
+{
+}
+
+TempType::
+TempType (const TempType& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  thermostatType_ (x.thermostatType_, f, this),
+  initialTemperature_ (x.initialTemperature_, f, this),
+  timeSteps_ (x.timeSteps_, f, this),
+  targetTemperature_ (x.targetTemperature_, f, this),
+  maxDeltaTemperature_ (x.maxDeltaTemperature_, f, this)
+{
+}
+
+TempType::
+TempType (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  thermostatType_ (this),
+  initialTemperature_ (this),
+  timeSteps_ (this),
+  targetTemperature_ (this),
+  maxDeltaTemperature_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void TempType::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // thermostatType
+    //
+    if (n.name () == "thermostatType" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< thermostatType_type > r (
+        thermostatType_traits::create (i, f, this));
+
+      if (!thermostatType_.present ())
+      {
+        this->thermostatType_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    // initialTemperature
+    //
+    if (n.name () == "initialTemperature" && n.namespace_ ().empty ())
+    {
+      if (!initialTemperature_.present ())
+      {
+        this->initialTemperature_.set (initialTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // timeSteps
+    //
+    if (n.name () == "timeSteps" && n.namespace_ ().empty ())
+    {
+      if (!timeSteps_.present ())
+      {
+        this->timeSteps_.set (timeSteps_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // targetTemperature
+    //
+    if (n.name () == "targetTemperature" && n.namespace_ ().empty ())
+    {
+      if (!this->targetTemperature_)
+      {
+        this->targetTemperature_.set (targetTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // maxDeltaTemperature
+    //
+    if (n.name () == "maxDeltaTemperature" && n.namespace_ ().empty ())
+    {
+      if (!this->maxDeltaTemperature_)
+      {
+        this->maxDeltaTemperature_.set (maxDeltaTemperature_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!thermostatType_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "thermostatType",
+      "");
+  }
+
+  if (!initialTemperature_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "initialTemperature",
+      "");
+  }
+
+  if (!timeSteps_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "timeSteps",
+      "");
+  }
+}
+
+TempType* TempType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class TempType (*this, f, c);
+}
+
+TempType& TempType::
+operator= (const TempType& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->thermostatType_ = x.thermostatType_;
+    this->initialTemperature_ = x.initialTemperature_;
+    this->timeSteps_ = x.timeSteps_;
+    this->targetTemperature_ = x.targetTemperature_;
+    this->maxDeltaTemperature_ = x.maxDeltaTemperature_;
+  }
+
+  return *this;
+}
+
+TempType::
+~TempType ()
 {
 }
 
@@ -2276,16 +2985,16 @@ DoubleVectorType::
 {
 }
 
-// BoolVector
+// IntVector
 //
 
-BoolVector::
-BoolVector (const x_type& x,
-            const y_type& y,
-            const z_type& z,
-            const l_type& l,
-            const m_type& m,
-            const k_type& k)
+IntVector::
+IntVector (const x_type& x,
+           const y_type& y,
+           const z_type& z,
+           const l_type& l,
+           const m_type& m,
+           const k_type& k)
 : ::xml_schema::type (),
   x_ (x, this),
   y_ (y, this),
@@ -2296,10 +3005,10 @@ BoolVector (const x_type& x,
 {
 }
 
-BoolVector::
-BoolVector (const BoolVector& x,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+IntVector::
+IntVector (const IntVector& x,
+           ::xml_schema::flags f,
+           ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   x_ (x.x_, f, this),
   y_ (x.y_, f, this),
@@ -2310,10 +3019,10 @@ BoolVector (const BoolVector& x,
 {
 }
 
-BoolVector::
-BoolVector (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+IntVector::
+IntVector (const ::xercesc::DOMElement& e,
+           ::xml_schema::flags f,
+           ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   x_ (this),
   y_ (this),
@@ -2329,7 +3038,7 @@ BoolVector (const ::xercesc::DOMElement& e,
   }
 }
 
-void BoolVector::
+void IntVector::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -2451,15 +3160,15 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-BoolVector* BoolVector::
+IntVector* IntVector::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class BoolVector (*this, f, c);
+  return new class IntVector (*this, f, c);
 }
 
-BoolVector& BoolVector::
-operator= (const BoolVector& x)
+IntVector& IntVector::
+operator= (const IntVector& x)
 {
   if (this != &x)
   {
@@ -2475,8 +3184,8 @@ operator= (const BoolVector& x)
   return *this;
 }
 
-BoolVector::
-~BoolVector ()
+IntVector::
+~IntVector ()
 {
 }
 
@@ -2629,7 +3338,8 @@ simulation (const output_type& output,
   calculator_ (calculator, this),
   container_ (container, this),
   parameters_ (parameters, this),
-  shapes_ (shapes, this)
+  shapes_ (shapes, this),
+  temperature_ (this)
 {
 }
 
@@ -2644,7 +3354,8 @@ simulation (::std::unique_ptr< output_type > output,
   calculator_ (std::move (calculator), this),
   container_ (std::move (container), this),
   parameters_ (std::move (parameters), this),
-  shapes_ (std::move (shapes), this)
+  shapes_ (std::move (shapes), this),
+  temperature_ (this)
 {
 }
 
@@ -2657,7 +3368,8 @@ simulation (const simulation& x,
   calculator_ (x.calculator_, f, this),
   container_ (x.container_, f, this),
   parameters_ (x.parameters_, f, this),
-  shapes_ (x.shapes_, f, this)
+  shapes_ (x.shapes_, f, this),
+  temperature_ (x.temperature_, f, this)
 {
 }
 
@@ -2670,7 +3382,8 @@ simulation (const ::xercesc::DOMElement& e,
   calculator_ (this),
   container_ (this),
   parameters_ (this),
-  shapes_ (this)
+  shapes_ (this),
+  temperature_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2759,6 +3472,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // temperature
+    //
+    if (n.name () == "temperature" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< temperature_type > r (
+        temperature_traits::create (i, f, this));
+
+      if (!this->temperature_)
+      {
+        this->temperature_.set (::std::move (r));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2816,6 +3543,7 @@ operator= (const simulation& x)
     this->container_ = x.container_;
     this->parameters_ = x.parameters_;
     this->shapes_ = x.shapes_;
+    this->temperature_ = x.temperature_;
   }
 
   return *this;

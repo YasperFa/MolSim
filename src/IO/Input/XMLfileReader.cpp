@@ -8,12 +8,14 @@
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 #include "schema.h"
 #include "spdlog/spdlog.h"
+#include <float.h>
+#include "utils/MaxwellBoltzmannDistribution.h"
+#include "Objects/Temperature/GradualThermostat.h"
 
 
-
-int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, int &freq,
-                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                                     std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler) {
+int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq,
+                                    std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                                    std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,  std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat) {
 
     if (!fileStream) {
         SPDLOG_ERROR("Error: Unable to open file");
@@ -52,19 +54,19 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 }
                 particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
                 if(sim -> container().BoundaryType().present()) {
-                   std::array<bool, 6> condition;
+                   std::array<int, 6> condition;
                     condition[0] = sim ->container().BoundaryType().get().x();
                     condition[1] = sim ->container().BoundaryType().get().y();
                     condition[2] = sim ->container().BoundaryType().get().z();
                     condition[3] = sim ->container().BoundaryType().get().l();
                     condition[4] = sim ->container().BoundaryType().get().m();
                     condition[5] = sim ->container().BoundaryType().get().k();
-                    boundaryHandler = std::make_unique<BoundaryHandler>(1, condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                    boundaryHandler = std::make_unique<BoundaryHandler>(condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
                 }
 
             }
             else {
-                SPDLOG_ERROR("Invalid container type!");
+                SPDLOG_ERROR("Invalid container type! choose one of the following: DSC / LCC");
             }
             if(sim->parameters().deltaT().present()){
 
@@ -83,6 +85,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     endTime = 5;
                 }
             }
+            if(sim->parameters().gravity().present()){
+                gravity = sim->parameters().gravity().get();
+                SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
+            } else {
+                gravity = 0;
+            }
             if (sim->output().baseName().present())
             {
                 std::string output = sim->output().baseName().get();
@@ -96,7 +104,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     outputWriter = std::make_unique<outputWriters::XYZWriter>();
                     SPDLOG_DEBUG("xyz is selected from xml as the output writer");
                 } else {
-                    SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified! Using default value/value from flag");
+                    SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified! Output should be XYZ / VTK");
                     return 1;
                 }
             }
@@ -113,8 +121,33 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                     calculator = std::make_unique<Calculators::GravityCalculator>();
                     SPDLOG_DEBUG("Default calculator is selected from xml");
                 } else {
-                    SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! Using default value/value from flag");
+                    SPDLOG_ERROR("Erroneous programme call! Invalid calculator specified! calculator should be Default / LJC.");
                     return 1;
+                }
+            }
+            //use it later for initial velocities (see shapes parsing)
+            double initialTemperature = -1;
+            if(sim->temperature().present()) {
+                initialTemperature = sim->temperature().get().initialTemperature();
+                int timeSteps = sim->temperature().get().timeSteps();
+                double targetTemperature = initialTemperature;
+                double maxDeltaT = DBL_MAX;
+                if (sim->temperature().get().targetTemperature().present()) {
+                    targetTemperature = sim->temperature().get().targetTemperature().get();
+                }
+                if (sim->temperature().get().maxDeltaTemperature().present()) {
+                    maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
+                }
+                if (sim->temperature().get().thermostatType() == "direct") {
+                    thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                    SPDLOG_DEBUG("Direct thermostat is selected from xml");
+                }
+                else if (sim->temperature().get().thermostatType() == "gradual") {
+                    thermostat = std::make_unique<GradualThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                    SPDLOG_DEBUG("Gradual thermostat is selected from xml");
+                }
+                else {
+                    SPDLOG_ERROR("Erroneous programme call! Invalid thermostat type specified! thermostat should be direct / gradual");
                 }
             }
             for (int i=0; i < (int) sim->shapes().particle().size(); i++) {
@@ -129,7 +162,23 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 v[1] = sim->shapes().particle().at(i).velocity().y();
                 v[2] = sim->shapes().particle().at(i).velocity().z();
                 double m = sim->shapes().particle().at(i).mass();
-                Particle newParticle(x,v,m,0);
+
+                int type = 0;
+                if (sim->shapes().particle().at(i).type().present()){
+                    type = sim->shapes().particle().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().particle().at(i).epsilon().present()){
+                    epsilon = sim->shapes().particle().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().particle().at(i).sigma().present()){
+                    sigma = sim->shapes().particle().at(i).sigma().get();
+                }
+
+                Particle newParticle(x,v,m, type, epsilon, sigma);
                 (particleContainer) -> addParticle(newParticle);
             }
             for (int i=0; i < (int) sim->shapes().cuboid().size();i++){
@@ -150,8 +199,32 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double h = sim->shapes().cuboid().at(i).distance();
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
+                if(v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
+                    v = maxwellBoltzmannDistributedVelocity(mv,2);
+                    if (initialTemperature != -1) {
+                        double scale = std::sqrt(initialTemperature/m);
+                        v = operator*(scale, v);
+                    }
+                }
+
+                int type = 0;
+                if (sim->shapes().cuboid().at(i).type().present()){
+                    type = sim->shapes().cuboid().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().cuboid().at(i).epsilon().present()){
+                    epsilon = sim->shapes().cuboid().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().cuboid().at(i).sigma().present()){
+                    sigma = sim->shapes().cuboid().at(i).sigma().get();
+                }
+
+
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma);
             }
             for (int i=0; i < (int) sim->shapes().disc().size();i++){
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -168,9 +241,26 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double m = sim->shapes().disc().at(i).mass();
                 double radius = sim->shapes().disc().at(i).radius();
 
+                int type = 0;
+                if (sim->shapes().disc().at(i).type().present()){
+                    type = sim->shapes().disc().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().disc().at(i).epsilon().present()){
+                    epsilon = sim->shapes().disc().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().disc().at(i).sigma().present()){
+                    sigma = sim->shapes().disc().at(i).sigma().get();
+                }
+
+
                 Disc disc(x,v,radius,h,m);
-                ParticleGenerator::generateDisc(*particleContainer, disc);
+                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma);
             }
+
 
 
         return 0;
