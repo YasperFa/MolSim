@@ -6,9 +6,10 @@
 
 #include "Containers/ParticleContainer.h"
 #include "spdlog/spdlog.h"
+#include "utils/MaxwellBoltzmannDistribution.h"
 
 
-void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma, double initTemperature) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
@@ -16,6 +17,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     std::array<double,3> v = cuboid.getInitVelocity();
     double h = cuboid.getDistBetweenParticles();
     double m = cuboid.getMass();
+    double mv = cuboid.getMeanVelocity();
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
             for (int i=0; i < N[0];++i) {
@@ -24,8 +26,21 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                 double y_coor = x[1] + j*h;
                 double z_coor = x[2] + k*h;
                 std::array<double, 3> particle_pos = {x_coor,y_coor,z_coor};
+                // get the maxwell velocity
+                std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(mv,2);
+                // get the initial velocity
+                std::array<double, 3> vel = v;
+                //scale according to temperature
+                double scale = 1;
+                if(initTemperature != -1) {
+                    scale = std::sqrt(initTemperature/m);
+                }
+                // add maxwell velocity to initial velocity
+                for (int m = 0; m < 3; ++m) {
+                    vel[m] += scale * maxwell_vel[m];
+                }
                 // create new particle
-                Particle nParticle(particle_pos,v,m, type, epsilon, sigma);
+                Particle nParticle(particle_pos,vel,m, type, epsilon, sigma);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }

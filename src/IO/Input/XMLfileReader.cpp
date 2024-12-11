@@ -9,8 +9,6 @@
 #include "schema.h"
 #include "spdlog/spdlog.h"
 #include <float.h>
-#include "utils/MaxwellBoltzmannDistribution.h"
-#include "Objects/Temperature/GradualThermostat.h"
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq,
@@ -138,17 +136,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 if (sim->temperature().get().maxDeltaTemperature().present()) {
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
-                if (sim->temperature().get().thermostatType() == "direct") {
-                    thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
-                    SPDLOG_DEBUG("Direct thermostat is selected from xml");
-                }
-                else if (sim->temperature().get().thermostatType() == "gradual") {
-                    thermostat = std::make_unique<GradualThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
-                    SPDLOG_DEBUG("Gradual thermostat is selected from xml");
-                }
-                else {
-                    SPDLOG_ERROR("Erroneous programme call! Invalid thermostat type specified! thermostat should be direct / gradual");
-                }
+                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                SPDLOG_DEBUG("Direct thermostat is selected from xml");
+
             }
             for (int i=0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
@@ -199,13 +189,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
                 double h = sim->shapes().cuboid().at(i).distance();
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
-                if(v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
-                    v = maxwellBoltzmannDistributedVelocity(mv,2);
-                    if (initialTemperature != -1) {
-                        double scale = std::sqrt(initialTemperature/m);
-                        v = operator*(scale, v);
-                    }
-                }
+
 
                 int type = 0;
                 if (sim->shapes().cuboid().at(i).type().present()){
@@ -224,7 +208,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream& fileStream,double &deltaT, do
 
 
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature);
             }
             for (int i=0; i < (int) sim->shapes().disc().size();i++){
                 SPDLOG_DEBUG("reading discs from xml file");
