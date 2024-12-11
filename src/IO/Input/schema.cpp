@@ -909,30 +909,6 @@ sigma (const sigma_optional& x)
 // TempType
 // 
 
-const TempType::thermostatType_type& TempType::
-thermostatType () const
-{
-  return this->thermostatType_.get ();
-}
-
-TempType::thermostatType_type& TempType::
-thermostatType ()
-{
-  return this->thermostatType_.get ();
-}
-
-void TempType::
-thermostatType (const thermostatType_type& x)
-{
-  this->thermostatType_.set (x);
-}
-
-void TempType::
-thermostatType (::std::unique_ptr< thermostatType_type > x)
-{
-  this->thermostatType_.set (std::move (x));
-}
-
 const TempType::initialTemperature_type& TempType::
 initialTemperature () const
 {
@@ -2686,11 +2662,9 @@ ParticleType::
 //
 
 TempType::
-TempType (const thermostatType_type& thermostatType,
-          const initialTemperature_type& initialTemperature,
+TempType (const initialTemperature_type& initialTemperature,
           const timeSteps_type& timeSteps)
 : ::xml_schema::type (),
-  thermostatType_ (thermostatType, this),
   initialTemperature_ (initialTemperature, this),
   timeSteps_ (timeSteps, this),
   targetTemperature_ (this),
@@ -2703,7 +2677,6 @@ TempType (const TempType& x,
           ::xml_schema::flags f,
           ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  thermostatType_ (x.thermostatType_, f, this),
   initialTemperature_ (x.initialTemperature_, f, this),
   timeSteps_ (x.timeSteps_, f, this),
   targetTemperature_ (x.targetTemperature_, f, this),
@@ -2716,7 +2689,6 @@ TempType (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f,
           ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  thermostatType_ (this),
   initialTemperature_ (this),
   timeSteps_ (this),
   targetTemperature_ (this),
@@ -2738,20 +2710,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
-
-    // thermostatType
-    //
-    if (n.name () == "thermostatType" && n.namespace_ ().empty ())
-    {
-      ::std::unique_ptr< thermostatType_type > r (
-        thermostatType_traits::create (i, f, this));
-
-      if (!thermostatType_.present ())
-      {
-        this->thermostatType_.set (::std::move (r));
-        continue;
-      }
-    }
 
     // initialTemperature
     //
@@ -2800,13 +2758,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!thermostatType_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "thermostatType",
-      "");
-  }
-
   if (!initialTemperature_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -2835,7 +2786,6 @@ operator= (const TempType& x)
   if (this != &x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
-    this->thermostatType_ = x.thermostatType_;
     this->initialTemperature_ = x.initialTemperature_;
     this->timeSteps_ = x.timeSteps_;
     this->targetTemperature_ = x.targetTemperature_;

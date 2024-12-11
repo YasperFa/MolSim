@@ -78,7 +78,6 @@
         </cuboid>
     </shapes>
     <temperature>
-        <thermostatType>direct</thermostatType>
         <initialTemperature>40.0</initialTemperature>
         <timeSteps>1000</timeSteps>
     </temperature>

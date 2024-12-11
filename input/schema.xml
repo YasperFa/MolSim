@@ -17,12 +17,12 @@
             <z>1</z>
         </domainSize>
         <BoundaryType>
-            <x>false</x>
-            <y>false</y>
-            <z>false</z>
-            <l>true</l>
-            <m>false</m>
-            <k>false</k>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+            <l>0</l>
+            <m>0</m>
+            <k>0</k>
         </BoundaryType>
     </container>
     <parameters>
@@ -47,7 +47,6 @@
         </disc>
     </shapes>
     <temperature>
-        <thermostatType>direct</thermostatType>
         <initialTemperature>10.0</initialTemperature>
         <timeSteps>10</timeSteps>
     </temperature>

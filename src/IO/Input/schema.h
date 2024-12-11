@@ -3639,64 +3639,6 @@ class TempType: public ::xml_schema::type
 {
   public:
   /**
-   * @name thermostatType
-   *
-   * @brief Accessor and modifier functions for the %thermostatType
-   * required element.
-   */
-  //@{
-
-  /**
-   * @brief Element type.
-   */
-  typedef ::xml_schema::string thermostatType_type;
-
-  /**
-   * @brief Element traits type.
-   */
-  typedef ::xsd::cxx::tree::traits< thermostatType_type, char > thermostatType_traits;
-
-  /**
-   * @brief Return a read-only (constant) reference to the element.
-   *
-   * @return A constant reference to the element.
-   */
-  const thermostatType_type&
-  thermostatType () const;
-
-  /**
-   * @brief Return a read-write reference to the element.
-   *
-   * @return A reference to the element.
-   */
-  thermostatType_type&
-  thermostatType ();
-
-  /**
-   * @brief Set the element value.
-   *
-   * @param x A new value to set.
-   *
-   * This function makes a copy of its argument and sets it as
-   * the new value of the element.
-   */
-  void
-  thermostatType (const thermostatType_type& x);
-
-  /**
-   * @brief Set the element value without copying.
-   *
-   * @param p A new value to use.
-   *
-   * This function will try to use the passed value directly
-   * instead of making a copy.
-   */
-  void
-  thermostatType (::std::unique_ptr< thermostatType_type > p);
-
-  //@}
-
-  /**
    * @name initialTemperature
    *
    * @brief Accessor and modifier functions for the %initialTemperature
@@ -3929,8 +3871,7 @@ class TempType: public ::xml_schema::type
    * @brief Create an instance from the ultimate base and
    * initializers for required elements and attributes.
    */
-  TempType (const thermostatType_type&,
-            const initialTemperature_type&,
+  TempType (const initialTemperature_type&,
             const timeSteps_type&);
 
   /**
@@ -4003,7 +3944,6 @@ class TempType: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
-  ::xsd::cxx::tree::one< thermostatType_type > thermostatType_;
   ::xsd::cxx::tree::one< initialTemperature_type > initialTemperature_;
   ::xsd::cxx::tree::one< timeSteps_type > timeSteps_;
   targetTemperature_optional targetTemperature_;

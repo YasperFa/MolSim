@@ -11,20 +11,17 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-
     <xs:complexType name="OutputType">
         <xs:sequence>
             <xs:element name="baseName" type="xs:string" minOccurs="0"/>
             <xs:element name="writeFrequency" type="xs:int" minOccurs="0" default="10"/>
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="CalculatorType">
         <xs:sequence>
             <xs:element name="calculatorForce" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="ContainerType">
         <xs:sequence>
             <xs:element name="containerType" type="xs:string"/>
@@ -45,7 +42,6 @@
             <xs:element name="cuboid" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="disc" type="DiscType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="particle" type="ParticleType" minOccurs="0" maxOccurs="unbounded"/>
-
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="CuboidType">
@@ -85,7 +81,6 @@
     </xs:complexType>
      <xs:complexType name="TempType">
         <xs:sequence>
-            <xs:element name="thermostatType" type="xs:string"/>
             <xs:element name="initialTemperature" type="xs:double"/>
             <xs:element name="timeSteps" type="xs:int"/>
             <xs:element name="targetTemperature" type="xs:double" minOccurs="0"/>
@@ -109,7 +104,6 @@
             <xs:element name="k" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="DimensionsType">
         <xs:sequence>
             <xs:element name="x" type="xs:int"/>
