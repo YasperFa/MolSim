@@ -573,8 +573,9 @@ class DiscType;
 class ParticleType;
 class TempType;
 class DoubleVectorType;
-class IntVector;
+class ConditionVector;
 class DimensionsType;
+class ConditionType;
 class simulation;
 
 #include <memory>    // ::std::unique_ptr
@@ -1213,9 +1214,9 @@ class ContainerType: public ::xml_schema::type
   //@}
 
   /**
-   * @name BoundaryType
+   * @name boundaryType
    *
-   * @brief Accessor and modifier functions for the %BoundaryType
+   * @brief Accessor and modifier functions for the %boundaryType
    * optional element.
    */
   //@{
@@ -1223,17 +1224,17 @@ class ContainerType: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::IntVector BoundaryType_type;
+  typedef ::ConditionVector boundaryType_type;
 
   /**
    * @brief Element optional container type.
    */
-  typedef ::xsd::cxx::tree::optional< BoundaryType_type > BoundaryType_optional;
+  typedef ::xsd::cxx::tree::optional< boundaryType_type > boundaryType_optional;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< BoundaryType_type, char > BoundaryType_traits;
+  typedef ::xsd::cxx::tree::traits< boundaryType_type, char > boundaryType_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element
@@ -1241,16 +1242,16 @@ class ContainerType: public ::xml_schema::type
    *
    * @return A constant reference to the optional container.
    */
-  const BoundaryType_optional&
-  BoundaryType () const;
+  const boundaryType_optional&
+  boundaryType () const;
 
   /**
    * @brief Return a read-write reference to the element container.
    *
    * @return A reference to the optional container.
    */
-  BoundaryType_optional&
-  BoundaryType ();
+  boundaryType_optional&
+  boundaryType ();
 
   /**
    * @brief Set the element value.
@@ -1261,7 +1262,7 @@ class ContainerType: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  BoundaryType (const BoundaryType_type& x);
+  boundaryType (const boundaryType_type& x);
 
   /**
    * @brief Set the element value.
@@ -1273,7 +1274,7 @@ class ContainerType: public ::xml_schema::type
    * Otherwise the element container is set the 'not present' state.
    */
   void
-  BoundaryType (const BoundaryType_optional& x);
+  boundaryType (const boundaryType_optional& x);
 
   /**
    * @brief Set the element value without copying.
@@ -1284,7 +1285,7 @@ class ContainerType: public ::xml_schema::type
    * of making a copy.
    */
   void
-  BoundaryType (::std::unique_ptr< BoundaryType_type > p);
+  boundaryType (::std::unique_ptr< boundaryType_type > p);
 
   //@}
 
@@ -1372,7 +1373,7 @@ class ContainerType: public ::xml_schema::type
   ::xsd::cxx::tree::one< containerType_type > containerType_;
   cutoffRadius_optional cutoffRadius_;
   domainSize_optional domainSize_;
-  BoundaryType_optional BoundaryType_;
+  boundaryType_optional boundaryType_;
 
   //@endcond
 };
@@ -4192,17 +4193,17 @@ class DoubleVectorType: public ::xml_schema::type
 };
 
 /**
- * @brief Class corresponding to the %IntVector schema type.
+ * @brief Class corresponding to the %ConditionVector schema type.
  *
  * @nosubgrouping
  */
-class IntVector: public ::xml_schema::type
+class ConditionVector: public ::xml_schema::type
 {
   public:
   /**
-   * @name x
+   * @name left
    *
-   * @brief Accessor and modifier functions for the %x
+   * @brief Accessor and modifier functions for the %left
    * required element.
    */
   //@{
@@ -4210,28 +4211,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ x_type;
+  typedef ::ConditionType left_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< x_type, char > x_traits;
+  typedef ::xsd::cxx::tree::traits< left_type, char > left_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const x_type&
-  x () const;
+  const left_type&
+  left () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  x_type&
-  x ();
+  left_type&
+  left ();
 
   /**
    * @brief Set the element value.
@@ -4242,14 +4243,25 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  x (const x_type& x);
+  left (const left_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  left (::std::unique_ptr< left_type > p);
 
   //@}
 
   /**
-   * @name y
+   * @name right
    *
-   * @brief Accessor and modifier functions for the %y
+   * @brief Accessor and modifier functions for the %right
    * required element.
    */
   //@{
@@ -4257,28 +4269,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ y_type;
+  typedef ::ConditionType right_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< y_type, char > y_traits;
+  typedef ::xsd::cxx::tree::traits< right_type, char > right_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const y_type&
-  y () const;
+  const right_type&
+  right () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  y_type&
-  y ();
+  right_type&
+  right ();
 
   /**
    * @brief Set the element value.
@@ -4289,14 +4301,25 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  y (const y_type& x);
+  right (const right_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  right (::std::unique_ptr< right_type > p);
 
   //@}
 
   /**
-   * @name z
+   * @name top
    *
-   * @brief Accessor and modifier functions for the %z
+   * @brief Accessor and modifier functions for the %top
    * required element.
    */
   //@{
@@ -4304,28 +4327,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ z_type;
+  typedef ::ConditionType top_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< z_type, char > z_traits;
+  typedef ::xsd::cxx::tree::traits< top_type, char > top_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const z_type&
-  z () const;
+  const top_type&
+  top () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  z_type&
-  z ();
+  top_type&
+  top ();
 
   /**
    * @brief Set the element value.
@@ -4336,14 +4359,25 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  z (const z_type& x);
+  top (const top_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  top (::std::unique_ptr< top_type > p);
 
   //@}
 
   /**
-   * @name l
+   * @name bottom
    *
-   * @brief Accessor and modifier functions for the %l
+   * @brief Accessor and modifier functions for the %bottom
    * required element.
    */
   //@{
@@ -4351,28 +4385,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ l_type;
+  typedef ::ConditionType bottom_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< l_type, char > l_traits;
+  typedef ::xsd::cxx::tree::traits< bottom_type, char > bottom_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const l_type&
-  l () const;
+  const bottom_type&
+  bottom () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  l_type&
-  l ();
+  bottom_type&
+  bottom ();
 
   /**
    * @brief Set the element value.
@@ -4383,14 +4417,25 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  l (const l_type& x);
+  bottom (const bottom_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  bottom (::std::unique_ptr< bottom_type > p);
 
   //@}
 
   /**
-   * @name m
+   * @name front
    *
-   * @brief Accessor and modifier functions for the %m
+   * @brief Accessor and modifier functions for the %front
    * required element.
    */
   //@{
@@ -4398,28 +4443,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ m_type;
+  typedef ::ConditionType front_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
+  typedef ::xsd::cxx::tree::traits< front_type, char > front_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const m_type&
-  m () const;
+  const front_type&
+  front () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  m_type&
-  m ();
+  front_type&
+  front ();
 
   /**
    * @brief Set the element value.
@@ -4430,14 +4475,25 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  m (const m_type& x);
+  front (const front_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  front (::std::unique_ptr< front_type > p);
 
   //@}
 
   /**
-   * @name k
+   * @name back
    *
-   * @brief Accessor and modifier functions for the %k
+   * @brief Accessor and modifier functions for the %back
    * required element.
    */
   //@{
@@ -4445,28 +4501,28 @@ class IntVector: public ::xml_schema::type
   /**
    * @brief Element type.
    */
-  typedef ::xml_schema::int_ k_type;
+  typedef ::ConditionType back_type;
 
   /**
    * @brief Element traits type.
    */
-  typedef ::xsd::cxx::tree::traits< k_type, char > k_traits;
+  typedef ::xsd::cxx::tree::traits< back_type, char > back_traits;
 
   /**
    * @brief Return a read-only (constant) reference to the element.
    *
    * @return A constant reference to the element.
    */
-  const k_type&
-  k () const;
+  const back_type&
+  back () const;
 
   /**
    * @brief Return a read-write reference to the element.
    *
    * @return A reference to the element.
    */
-  k_type&
-  k ();
+  back_type&
+  back ();
 
   /**
    * @brief Set the element value.
@@ -4477,7 +4533,18 @@ class IntVector: public ::xml_schema::type
    * the new value of the element.
    */
   void
-  k (const k_type& x);
+  back (const back_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  back (::std::unique_ptr< back_type > p);
 
   //@}
 
@@ -4490,12 +4557,12 @@ class IntVector: public ::xml_schema::type
    * @brief Create an instance from the ultimate base and
    * initializers for required elements and attributes.
    */
-  IntVector (const x_type&,
-             const y_type&,
-             const z_type&,
-             const l_type&,
-             const m_type&,
-             const k_type&);
+  ConditionVector (const left_type&,
+                   const right_type&,
+                   const top_type&,
+                   const bottom_type&,
+                   const front_type&,
+                   const back_type&);
 
   /**
    * @brief Create an instance from a DOM element.
@@ -4505,9 +4572,9 @@ class IntVector: public ::xml_schema::type
    * @param c A pointer to the object that will contain the new
    * instance.
    */
-  IntVector (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f = 0,
-             ::xml_schema::container* c = 0);
+  ConditionVector (const ::xercesc::DOMElement& e,
+                   ::xml_schema::flags f = 0,
+                   ::xml_schema::container* c = 0);
 
   /**
    * @brief Copy constructor.
@@ -4518,9 +4585,9 @@ class IntVector: public ::xml_schema::type
    *
    * For polymorphic object models use the @c _clone function instead.
    */
-  IntVector (const IntVector& x,
-             ::xml_schema::flags f = 0,
-             ::xml_schema::container* c = 0);
+  ConditionVector (const ConditionVector& x,
+                   ::xml_schema::flags f = 0,
+                   ::xml_schema::container* c = 0);
 
   /**
    * @brief Copy the instance polymorphically.
@@ -4533,7 +4600,7 @@ class IntVector: public ::xml_schema::type
    * used for copying and should be used for polymorphic object
    * models instead of the copy constructor.
    */
-  virtual IntVector*
+  virtual ConditionVector*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
@@ -4545,8 +4612,8 @@ class IntVector: public ::xml_schema::type
    *
    * For polymorphic object models use the @c _clone function instead.
    */
-  IntVector&
-  operator= (const IntVector& x);
+  ConditionVector&
+  operator= (const ConditionVector& x);
 
   //@}
 
@@ -4554,7 +4621,7 @@ class IntVector: public ::xml_schema::type
    * @brief Destructor.
    */
   virtual 
-  ~IntVector ();
+  ~ConditionVector ();
 
   // Implementation.
   //
@@ -4567,12 +4634,12 @@ class IntVector: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
-  ::xsd::cxx::tree::one< x_type > x_;
-  ::xsd::cxx::tree::one< y_type > y_;
-  ::xsd::cxx::tree::one< z_type > z_;
-  ::xsd::cxx::tree::one< l_type > l_;
-  ::xsd::cxx::tree::one< m_type > m_;
-  ::xsd::cxx::tree::one< k_type > k_;
+  ::xsd::cxx::tree::one< left_type > left_;
+  ::xsd::cxx::tree::one< right_type > right_;
+  ::xsd::cxx::tree::one< top_type > top_;
+  ::xsd::cxx::tree::one< bottom_type > bottom_;
+  ::xsd::cxx::tree::one< front_type > front_;
+  ::xsd::cxx::tree::one< back_type > back_;
 
   //@endcond
 };
@@ -4812,6 +4879,152 @@ class DimensionsType: public ::xml_schema::type
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
   ::xsd::cxx::tree::one< z_type > z_;
+
+  //@endcond
+};
+
+/**
+ * @brief Enumeration class corresponding to the %ConditionType
+ * schema type.
+ */
+class ConditionType: public ::xml_schema::string
+{
+  public:
+
+  /**
+   * @brief Underlying enum type.
+   */
+  enum value
+  {
+    outflow,
+    reflecting,
+    periodic
+  };
+
+  /**
+   * @brief Create an instance from the underlying enum value.
+   *
+   * @param v A enum value.
+   */
+  ConditionType (value v);
+
+  /**
+   * @brief Create an instance from a C string.
+   *
+   * @param v A string value.
+   */
+  ConditionType (const char* v);
+
+  /**
+   * @brief Create an instance from a string.
+   *
+   * @param v A string value.
+   */
+  ConditionType (const ::std::string& v);
+
+  /**
+   * @brief Create an instance from the base value.
+   *
+   * @param v A base value.
+   */
+  ConditionType (const ::xml_schema::string& v);
+
+  /**
+   * @brief Create an instance from a DOM element.
+   *
+   * @param e A DOM element to extract the data from.
+   * @param f Flags to create the new instance with.
+   * @param c A pointer to the object that will contain the new
+   * instance.
+   */
+  ConditionType (const ::xercesc::DOMElement& e,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Create an instance from a DOM attribute.
+   *
+   * @param a A DOM attribute to extract the data from.
+   * @param f Flags to create the new instance with.
+   * @param c A pointer to the object that will contain the new
+   * instance.
+   */
+  ConditionType (const ::xercesc::DOMAttr& a,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Create an instance from a string fragment.
+   *
+   * @param s A string fragment to extract the data from.
+   * @param e A pointer to DOM element containing the string fragment.
+   * @param f Flags to create the new instance with.
+   * @param c A pointer to the object that will contain the new
+   * instance.
+   */
+  ConditionType (const ::std::string& s,
+                 const ::xercesc::DOMElement* e,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Copy constructor.
+   *
+   * @param x An instance to make a copy of.
+   * @param f Flags to create the copy with.
+   * @param c A pointer to the object that will contain the copy.
+   *
+   * For polymorphic object models use the @c _clone function instead.
+   */
+  ConditionType (const ConditionType& x,
+                 ::xml_schema::flags f = 0,
+                 ::xml_schema::container* c = 0);
+
+  /**
+   * @brief Copy the instance polymorphically.
+   *
+   * @param f Flags to create the copy with.
+   * @param c A pointer to the object that will contain the copy.
+   * @return A pointer to the dynamically allocated copy.
+   *
+   * This function ensures that the dynamic type of the instance is
+   * used for copying and should be used for polymorphic object
+   * models instead of the copy constructor.
+   */
+  virtual ConditionType*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  /**
+   * @brief Assign the underlying enum value.
+   *
+   * @param v A enum value.
+   * @return A reference to the instance.
+   */
+  ConditionType&
+  operator= (value v);
+
+  /**
+   * @brief Implicit conversion operator to the underlying
+   * enum value.
+   *
+   * @return A enum value.
+   */
+  virtual
+  operator value () const
+  {
+    return _xsd_ConditionType_convert ();
+  }
+
+  //@cond
+
+  protected:
+  value
+  _xsd_ConditionType_convert () const;
+
+  public:
+  static const char* const _xsd_ConditionType_literals_[3];
+  static const value _xsd_ConditionType_indexes_[3];
 
   //@endcond
 };

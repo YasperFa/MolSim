@@ -6,39 +6,20 @@
 #include "LinkedCellContainer.h"
 #include <memory>
 
-
+/**Class that handles particles at the boundaries of a LinkedCellContainer */
 class BoundaryHandler{
 
-    private:
+     public:
 
-    /** determines what condition is used on what border
-     * boundaries of the simulation: left, right, top, bottom(, front, back)
-     *  type 0: Outflow
-     *  type 1: Reflecting
-     *  type 2: Periodic
-     */
-    const std::array<int, 6> type; 
+    /**Enum class for the different types of boundary conditions */
+    enum class bCondition{
+        OUTFLOW,
+        REFLECTING,
+        PERIODIC,
+    };
 
-    /** ParticleContainer that the BoundaryHandler operates on */
-    ParticleContainers::LinkedCellContainer & container;
 
-    /**boundaries of the simulation: left, right, top, bottom(, front, back) */
-    const std::array<double, 6> boundaries;
-
-    /**Deletes particles that have left the boundaries of the simulation 
-    */
-    void handleOutflow();
-
-    /**Reflects particles that are about to leave the boundaries of the simulation using ghost particles 
-    */
-    void handleReflecting();
-
-   /**Particles that exit the domain on one side enter it from the opposite side*/
-    void handlePeriodic();
-
-    public:
-
-    BoundaryHandler(std::array<int, 6> t, ParticleContainers::LinkedCellContainer& pc);
+    BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& pc);
     ~BoundaryHandler() = default;
 
     /** Handles particles that have left/are about to leave the boundaries of the simulation
@@ -119,8 +100,31 @@ class BoundaryHandler{
      * @returns minimal distance for the particles to repel each other
      */
     double minDist(double sigma);
+
+    private:
+
+    /** determines what condition is used on what border
+     * boundaries of the simulation: left, right, top, bottom(, front, back)
+     */
+    const std::array<bCondition, 6> type; 
+
+    /** ParticleContainer that the BoundaryHandler operates on */
+    ParticleContainers::LinkedCellContainer & container;
+
+    /**boundaries of the simulation: left, right, top, bottom(, front, back) */
+    const std::array<double, 6> boundaries;
+
+    /**Deletes particles that have left the boundaries of the simulation 
+    */
+    void handleOutflow();
+
+    /**Reflects particles that are about to leave the boundaries of the simulation using ghost particles 
+    */
+    void handleReflecting();
+
+   /**Particles that exit the domain on one side enter it from the opposite side*/
+    void handlePeriodic();
+
    
-
-
 
 };

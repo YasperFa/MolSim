@@ -219,34 +219,34 @@ domainSize (::std::unique_ptr< domainSize_type > x)
   this->domainSize_.set (std::move (x));
 }
 
-const ContainerType::BoundaryType_optional& ContainerType::
-BoundaryType () const
+const ContainerType::boundaryType_optional& ContainerType::
+boundaryType () const
 {
-  return this->BoundaryType_;
+  return this->boundaryType_;
 }
 
-ContainerType::BoundaryType_optional& ContainerType::
-BoundaryType ()
+ContainerType::boundaryType_optional& ContainerType::
+boundaryType ()
 {
-  return this->BoundaryType_;
-}
-
-void ContainerType::
-BoundaryType (const BoundaryType_type& x)
-{
-  this->BoundaryType_.set (x);
+  return this->boundaryType_;
 }
 
 void ContainerType::
-BoundaryType (const BoundaryType_optional& x)
+boundaryType (const boundaryType_type& x)
 {
-  this->BoundaryType_ = x;
+  this->boundaryType_.set (x);
 }
 
 void ContainerType::
-BoundaryType (::std::unique_ptr< BoundaryType_type > x)
+boundaryType (const boundaryType_optional& x)
 {
-  this->BoundaryType_.set (std::move (x));
+  this->boundaryType_ = x;
+}
+
+void ContainerType::
+boundaryType (::std::unique_ptr< boundaryType_type > x)
+{
+  this->boundaryType_.set (std::move (x));
 }
 
 
@@ -1052,115 +1052,151 @@ z (const z_type& x)
 }
 
 
-// IntVector
+// ConditionVector
 // 
 
-const IntVector::x_type& IntVector::
-x () const
+const ConditionVector::left_type& ConditionVector::
+left () const
 {
-  return this->x_.get ();
+  return this->left_.get ();
 }
 
-IntVector::x_type& IntVector::
-x ()
+ConditionVector::left_type& ConditionVector::
+left ()
 {
-  return this->x_.get ();
+  return this->left_.get ();
 }
 
-void IntVector::
-x (const x_type& x)
+void ConditionVector::
+left (const left_type& x)
 {
-  this->x_.set (x);
+  this->left_.set (x);
 }
 
-const IntVector::y_type& IntVector::
-y () const
+void ConditionVector::
+left (::std::unique_ptr< left_type > x)
 {
-  return this->y_.get ();
+  this->left_.set (std::move (x));
 }
 
-IntVector::y_type& IntVector::
-y ()
+const ConditionVector::right_type& ConditionVector::
+right () const
 {
-  return this->y_.get ();
+  return this->right_.get ();
 }
 
-void IntVector::
-y (const y_type& x)
+ConditionVector::right_type& ConditionVector::
+right ()
 {
-  this->y_.set (x);
+  return this->right_.get ();
 }
 
-const IntVector::z_type& IntVector::
-z () const
+void ConditionVector::
+right (const right_type& x)
 {
-  return this->z_.get ();
+  this->right_.set (x);
 }
 
-IntVector::z_type& IntVector::
-z ()
+void ConditionVector::
+right (::std::unique_ptr< right_type > x)
 {
-  return this->z_.get ();
+  this->right_.set (std::move (x));
 }
 
-void IntVector::
-z (const z_type& x)
+const ConditionVector::top_type& ConditionVector::
+top () const
 {
-  this->z_.set (x);
+  return this->top_.get ();
 }
 
-const IntVector::l_type& IntVector::
-l () const
+ConditionVector::top_type& ConditionVector::
+top ()
 {
-  return this->l_.get ();
+  return this->top_.get ();
 }
 
-IntVector::l_type& IntVector::
-l ()
+void ConditionVector::
+top (const top_type& x)
 {
-  return this->l_.get ();
+  this->top_.set (x);
 }
 
-void IntVector::
-l (const l_type& x)
+void ConditionVector::
+top (::std::unique_ptr< top_type > x)
 {
-  this->l_.set (x);
+  this->top_.set (std::move (x));
 }
 
-const IntVector::m_type& IntVector::
-m () const
+const ConditionVector::bottom_type& ConditionVector::
+bottom () const
 {
-  return this->m_.get ();
+  return this->bottom_.get ();
 }
 
-IntVector::m_type& IntVector::
-m ()
+ConditionVector::bottom_type& ConditionVector::
+bottom ()
 {
-  return this->m_.get ();
+  return this->bottom_.get ();
 }
 
-void IntVector::
-m (const m_type& x)
+void ConditionVector::
+bottom (const bottom_type& x)
 {
-  this->m_.set (x);
+  this->bottom_.set (x);
 }
 
-const IntVector::k_type& IntVector::
-k () const
+void ConditionVector::
+bottom (::std::unique_ptr< bottom_type > x)
 {
-  return this->k_.get ();
+  this->bottom_.set (std::move (x));
 }
 
-IntVector::k_type& IntVector::
-k ()
+const ConditionVector::front_type& ConditionVector::
+front () const
 {
-  return this->k_.get ();
+  return this->front_.get ();
 }
 
-void IntVector::
-k (const k_type& x)
+ConditionVector::front_type& ConditionVector::
+front ()
 {
-  this->k_.set (x);
+  return this->front_.get ();
+}
+
+void ConditionVector::
+front (const front_type& x)
+{
+  this->front_.set (x);
+}
+
+void ConditionVector::
+front (::std::unique_ptr< front_type > x)
+{
+  this->front_.set (std::move (x));
+}
+
+const ConditionVector::back_type& ConditionVector::
+back () const
+{
+  return this->back_.get ();
+}
+
+ConditionVector::back_type& ConditionVector::
+back ()
+{
+  return this->back_.get ();
+}
+
+void ConditionVector::
+back (const back_type& x)
+{
+  this->back_.set (x);
+}
+
+void ConditionVector::
+back (::std::unique_ptr< back_type > x)
+{
+  this->back_.set (std::move (x));
 }
 
 
@@ -1219,6 +1255,51 @@ void DimensionsType::
 z (const z_type& x)
 {
   this->z_.set (x);
+}
+
+
+// ConditionType
+// 
+
+ConditionType::
+ConditionType (value v)
+: ::xml_schema::string (_xsd_ConditionType_literals_[v])
+{
+}
+
+ConditionType::
+ConditionType (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+ConditionType::
+ConditionType (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+ConditionType::
+ConditionType (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+ConditionType::
+ConditionType (const ConditionType& v,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+ConditionType& ConditionType::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_ConditionType_literals_[v]);
+
+  return *this;
 }
 
 
@@ -1572,7 +1653,7 @@ ContainerType (const containerType_type& containerType)
   containerType_ (containerType, this),
   cutoffRadius_ (this),
   domainSize_ (this),
-  BoundaryType_ (this)
+  boundaryType_ (this)
 {
 }
 
@@ -1584,7 +1665,7 @@ ContainerType (const ContainerType& x,
   containerType_ (x.containerType_, f, this),
   cutoffRadius_ (x.cutoffRadius_, f, this),
   domainSize_ (x.domainSize_, f, this),
-  BoundaryType_ (x.BoundaryType_, f, this)
+  boundaryType_ (x.boundaryType_, f, this)
 {
 }
 
@@ -1596,7 +1677,7 @@ ContainerType (const ::xercesc::DOMElement& e,
   containerType_ (this),
   cutoffRadius_ (this),
   domainSize_ (this),
-  BoundaryType_ (this)
+  boundaryType_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1654,16 +1735,16 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // BoundaryType
+    // boundaryType
     //
-    if (n.name () == "BoundaryType" && n.namespace_ ().empty ())
+    if (n.name () == "boundaryType" && n.namespace_ ().empty ())
     {
-      ::std::unique_ptr< BoundaryType_type > r (
-        BoundaryType_traits::create (i, f, this));
+      ::std::unique_ptr< boundaryType_type > r (
+        boundaryType_traits::create (i, f, this));
 
-      if (!this->BoundaryType_)
+      if (!this->boundaryType_)
       {
-        this->BoundaryType_.set (::std::move (r));
+        this->boundaryType_.set (::std::move (r));
         continue;
       }
     }
@@ -1695,7 +1776,7 @@ operator= (const ContainerType& x)
     this->containerType_ = x.containerType_;
     this->cutoffRadius_ = x.cutoffRadius_;
     this->domainSize_ = x.domainSize_;
-    this->BoundaryType_ = x.BoundaryType_;
+    this->boundaryType_ = x.boundaryType_;
   }
 
   return *this;
@@ -2935,51 +3016,51 @@ DoubleVectorType::
 {
 }
 
-// IntVector
+// ConditionVector
 //
 
-IntVector::
-IntVector (const x_type& x,
-           const y_type& y,
-           const z_type& z,
-           const l_type& l,
-           const m_type& m,
-           const k_type& k)
+ConditionVector::
+ConditionVector (const left_type& left,
+                 const right_type& right,
+                 const top_type& top,
+                 const bottom_type& bottom,
+                 const front_type& front,
+                 const back_type& back)
 : ::xml_schema::type (),
-  x_ (x, this),
-  y_ (y, this),
-  z_ (z, this),
-  l_ (l, this),
-  m_ (m, this),
-  k_ (k, this)
+  left_ (left, this),
+  right_ (right, this),
+  top_ (top, this),
+  bottom_ (bottom, this),
+  front_ (front, this),
+  back_ (back, this)
 {
 }
 
-IntVector::
-IntVector (const IntVector& x,
-           ::xml_schema::flags f,
-           ::xml_schema::container* c)
+ConditionVector::
+ConditionVector (const ConditionVector& x,
+                 ::xml_schema::flags f,
+                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  x_ (x.x_, f, this),
-  y_ (x.y_, f, this),
-  z_ (x.z_, f, this),
-  l_ (x.l_, f, this),
-  m_ (x.m_, f, this),
-  k_ (x.k_, f, this)
+  left_ (x.left_, f, this),
+  right_ (x.right_, f, this),
+  top_ (x.top_, f, this),
+  bottom_ (x.bottom_, f, this),
+  front_ (x.front_, f, this),
+  back_ (x.back_, f, this)
 {
 }
 
-IntVector::
-IntVector (const ::xercesc::DOMElement& e,
-           ::xml_schema::flags f,
-           ::xml_schema::container* c)
+ConditionVector::
+ConditionVector (const ::xercesc::DOMElement& e,
+                 ::xml_schema::flags f,
+                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  x_ (this),
-  y_ (this),
-  z_ (this),
-  l_ (this),
-  m_ (this),
-  k_ (this)
+  left_ (this),
+  right_ (this),
+  top_ (this),
+  bottom_ (this),
+  front_ (this),
+  back_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2988,7 +3069,7 @@ IntVector (const ::xercesc::DOMElement& e,
   }
 }
 
-void IntVector::
+void ConditionVector::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -2998,68 +3079,86 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // x
+    // left
     //
-    if (n.name () == "x" && n.namespace_ ().empty ())
+    if (n.name () == "left" && n.namespace_ ().empty ())
     {
-      if (!x_.present ())
+      ::std::unique_ptr< left_type > r (
+        left_traits::create (i, f, this));
+
+      if (!left_.present ())
       {
-        this->x_.set (x_traits::create (i, f, this));
+        this->left_.set (::std::move (r));
         continue;
       }
     }
 
-    // y
+    // right
     //
-    if (n.name () == "y" && n.namespace_ ().empty ())
+    if (n.name () == "right" && n.namespace_ ().empty ())
     {
-      if (!y_.present ())
+      ::std::unique_ptr< right_type > r (
+        right_traits::create (i, f, this));
+
+      if (!right_.present ())
       {
-        this->y_.set (y_traits::create (i, f, this));
+        this->right_.set (::std::move (r));
         continue;
       }
     }
 
-    // z
+    // top
     //
-    if (n.name () == "z" && n.namespace_ ().empty ())
+    if (n.name () == "top" && n.namespace_ ().empty ())
     {
-      if (!z_.present ())
+      ::std::unique_ptr< top_type > r (
+        top_traits::create (i, f, this));
+
+      if (!top_.present ())
       {
-        this->z_.set (z_traits::create (i, f, this));
+        this->top_.set (::std::move (r));
         continue;
       }
     }
 
-    // l
+    // bottom
     //
-    if (n.name () == "l" && n.namespace_ ().empty ())
+    if (n.name () == "bottom" && n.namespace_ ().empty ())
     {
-      if (!l_.present ())
+      ::std::unique_ptr< bottom_type > r (
+        bottom_traits::create (i, f, this));
+
+      if (!bottom_.present ())
       {
-        this->l_.set (l_traits::create (i, f, this));
+        this->bottom_.set (::std::move (r));
         continue;
       }
     }
 
-    // m
+    // front
     //
-    if (n.name () == "m" && n.namespace_ ().empty ())
+    if (n.name () == "front" && n.namespace_ ().empty ())
     {
-      if (!m_.present ())
+      ::std::unique_ptr< front_type > r (
+        front_traits::create (i, f, this));
+
+      if (!front_.present ())
       {
-        this->m_.set (m_traits::create (i, f, this));
+        this->front_.set (::std::move (r));
         continue;
       }
     }
 
-    // k
+    // back
     //
-    if (n.name () == "k" && n.namespace_ ().empty ())
+    if (n.name () == "back" && n.namespace_ ().empty ())
     {
-      if (!k_.present ())
+      ::std::unique_ptr< back_type > r (
+        back_traits::create (i, f, this));
+
+      if (!back_.present ())
       {
-        this->k_.set (k_traits::create (i, f, this));
+        this->back_.set (::std::move (r));
         continue;
       }
     }
@@ -3067,75 +3166,75 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!x_.present ())
+  if (!left_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "x",
+      "left",
       "");
   }
 
-  if (!y_.present ())
+  if (!right_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "y",
+      "right",
       "");
   }
 
-  if (!z_.present ())
+  if (!top_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "z",
+      "top",
       "");
   }
 
-  if (!l_.present ())
+  if (!bottom_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "l",
+      "bottom",
       "");
   }
 
-  if (!m_.present ())
+  if (!front_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "m",
+      "front",
       "");
   }
 
-  if (!k_.present ())
+  if (!back_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "k",
+      "back",
       "");
   }
 }
 
-IntVector* IntVector::
+ConditionVector* ConditionVector::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class IntVector (*this, f, c);
+  return new class ConditionVector (*this, f, c);
 }
 
-IntVector& IntVector::
-operator= (const IntVector& x)
+ConditionVector& ConditionVector::
+operator= (const ConditionVector& x)
 {
   if (this != &x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
-    this->x_ = x.x_;
-    this->y_ = x.y_;
-    this->z_ = x.z_;
-    this->l_ = x.l_;
-    this->m_ = x.m_;
-    this->k_ = x.k_;
+    this->left_ = x.left_;
+    this->right_ = x.right_;
+    this->top_ = x.top_;
+    this->bottom_ = x.bottom_;
+    this->front_ = x.front_;
+    this->back_ = x.back_;
   }
 
   return *this;
 }
 
-IntVector::
-~IntVector ()
+ConditionVector::
+~ConditionVector ()
 {
 }
 
@@ -3273,6 +3372,78 @@ DimensionsType::
 ~DimensionsType ()
 {
 }
+
+// ConditionType
+//
+
+ConditionType::
+ConditionType (const ::xercesc::DOMElement& e,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_ConditionType_convert ();
+}
+
+ConditionType::
+ConditionType (const ::xercesc::DOMAttr& a,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_ConditionType_convert ();
+}
+
+ConditionType::
+ConditionType (const ::std::string& s,
+               const ::xercesc::DOMElement* e,
+               ::xml_schema::flags f,
+               ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_ConditionType_convert ();
+}
+
+ConditionType* ConditionType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class ConditionType (*this, f, c);
+}
+
+ConditionType::value ConditionType::
+_xsd_ConditionType_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_ConditionType_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_ConditionType_indexes_,
+                    _xsd_ConditionType_indexes_ + 3,
+                    *this,
+                    c));
+
+  if (i == _xsd_ConditionType_indexes_ + 3 || _xsd_ConditionType_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const ConditionType::
+_xsd_ConditionType_literals_[3] =
+{
+  "outflow",
+  "reflecting",
+  "periodic"
+};
+
+const ConditionType::value ConditionType::
+_xsd_ConditionType_indexes_[3] =
+{
+  ::ConditionType::outflow,
+  ::ConditionType::periodic,
+  ::ConditionType::reflecting
+};
 
 // simulation
 //

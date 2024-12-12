@@ -27,7 +27,7 @@
             <xs:element name="containerType" type="xs:string"/>
             <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
             <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
-            <xs:element name="BoundaryType" type="IntVector" minOccurs="0"/>
+            <xs:element name="boundaryType" type="ConditionVector" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParametersType">
@@ -94,14 +94,14 @@
             <xs:element name="z" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="IntVector">
+    <xs:complexType name="ConditionVector">
         <xs:sequence>
-            <xs:element name="x" type="xs:int"/>
-            <xs:element name="y" type="xs:int"/>
-            <xs:element name="z" type="xs:int"/>
-            <xs:element name="l" type="xs:int"/>
-            <xs:element name="m" type="xs:int"/>
-            <xs:element name="k" type="xs:int"/>
+            <xs:element name="left" type="ConditionType"/>
+            <xs:element name="right" type="ConditionType"/>
+            <xs:element name="top" type="ConditionType"/>
+            <xs:element name="bottom" type="ConditionType"/>
+            <xs:element name="front" type="ConditionType"/>
+            <xs:element name="back" type="ConditionType"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DimensionsType">
@@ -111,4 +111,11 @@
             <xs:element name="z" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
+     <xs:simpleType name="ConditionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="outflow"/>
+            <xs:enumeration value="reflecting"/>
+            <xs:enumeration value="periodic"/>
+         </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
