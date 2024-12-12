@@ -26,7 +26,7 @@ Example calls:
     './MolSim -i ../input/schema.xml -c Default -o VTK -l debug'
     './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info --particleContainer=DSC'
     './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5 -p DSC'
-    './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b 0,0,0,1,0,0'
+    './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b o,o,o,r,o,o'
 
 The output should be in the build directory.
 
@@ -70,10 +70,9 @@ Optional arguments:
         following the format: '-r {radius}' or '--cutoffRadius {radius}'. If no radius is specified, a default radius of 3 will be used.
 
         '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error. 
-        The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are 0 for ourflow and 1 for reflecting. 
-        The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', 
-        where boundaryCondition has the following format: {left},{right},{top},{bottom},{front},{back}. 
-        If no value is specified, outflow will be used for all boundaries.
+        The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are o for outflow, r for reflecting and p for periodic. 
+        The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', where boundaryCondition has the following format: 
+        {left},{right},{top},{bottom},{front},{back}. If no value is specified, outflow will be used for all boundaries.
 
     )" << std::endl;
 }
