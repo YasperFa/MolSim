@@ -77,7 +77,7 @@ TEST(CalculatorTest, correctVcalculations) {
         EXPECT_NEAR(1.3125, t.getV()[2], 0.00001);
     }
 }
-
+// checks if x f v are calculated correctly using newton force calculation
     TEST(CalculatorTest, correctXFVcalculations) {
     ParticleContainers::DirectSumContainer testContainer;
 
