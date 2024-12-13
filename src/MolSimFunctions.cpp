@@ -7,7 +7,7 @@
 #include <memory>
 #include <stdexcept>
 #include <exception>
-
+#include <chrono>
 void MolSim::printHelp() {
     std::cout << R"(
 Welcome to MolSim helper!
@@ -314,10 +314,10 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
 
 
     const std::string outName = "MD";
-
     double currentTime = 0.0;
     int iteration = 0;
-
+    // get start time
+    auto start = std::chrono::high_resolution_clock::now();
     boundaryHandler -> handleBoundaries();
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT, gravity);
@@ -341,6 +341,10 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
       // SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    SPDLOG_INFO("Simulation took {}s", elapsed.count());
+    SPDLOG_INFO("Molecular updates per second: {}", iteration/elapsed.count());
     SPDLOG_INFO("Output written. Terminating...");
 }
 
