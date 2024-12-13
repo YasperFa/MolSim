@@ -3,7 +3,7 @@
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
-        <writeFrequency>40</writeFrequency>
+        <writeFrequency>50</writeFrequency>
     </output>
     <calculator>
         <calculatorForce>LJC</calculatorForce>
@@ -12,8 +12,8 @@
         <containerType>LCC</containerType>
         <cutoffRadius>3.0</cutoffRadius>
         <domainSize>
-            <x>120</x>
-            <y>50</y>
+            <x>303</x>
+            <y>180</y>
             <z>1</z>
         </domainSize>
         <BoundaryType>
@@ -26,29 +26,31 @@
         </BoundaryType>
     </container>
     <parameters>
-        <tEnd>10</tEnd>
-        <deltaT>0.00005</deltaT>
+        <tEnd>50</tEnd>
+        <deltaT>0.0005</deltaT>
+        <gravity>-12.44</gravity>
     </parameters>
     <shapes>
         <disc>
             <center>
-                <x>60</x>
-                <y>25</y>
+                <x>150</x>
+                <y>150</y>
                 <z>0</z>
             </center>
-            <radius>15</radius>
+            <radius>20</radius>
             <initialVelocity>
                 <x>0</x>
-                <y>-10</y>
+                <y>0</y>
                 <z>0</z>
             </initialVelocity>
-            <distance>1.1225</distance>
+            <distance>1.2</distance>
             <mass>1.0</mass>
         </disc>
     </shapes>
-    <temperature>
-        <thermostatType>direct</thermostatType>
-        <initialTemperature>10.0</initialTemperature>
-        <timeSteps>10</timeSteps>
-    </temperature>
+    <subSimulations>
+        <subSimulation>
+            <name>Basin</name>
+            <inputFile>../input/Assignment4Inputs/FallingDropLiquid/Subsimulations/Basin.xml</inputFile>
+        </subSimulation>
+    </subSimulations>
 </simulation>

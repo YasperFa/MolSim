@@ -7,6 +7,14 @@
 #include <memory>
 #include <stdexcept>
 #include <exception>
+#include <fstream>
+#include <dirent.h>
+
+
+#include "IO/Input/schema.h"
+#include "IO/Input/XMLfileReader.h"
+#include "IO/Input/CheckpointInput/CheckpointReader/CheckpointFileReader.h"
+#include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
 
 void MolSim::printHelp() {
     std::cout << R"(
@@ -79,7 +87,8 @@ Optional arguments:
 }
 
 
-bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double& endTime, double& gravity,
+bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
+                            double &gravity,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
                             std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -95,12 +104,10 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("c,calculator", "Set Calculator", cxxopts::value<std::string>())
             ("l,logLevel", "Set log level", cxxopts::value<std::string>())
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
-            ("s, domainSize" , "Set domain size", cxxopts::value<std::vector<double>>()->default_value("180,90,1"))
+            ("s, domainSize", "Set domain size", cxxopts::value<std::vector<double> >()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int>>())
-            ("g, gravity","Set gravity", cxxopts::value<double>()->default_value("0"))
-
-    ;
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int> >())
+            ("g, gravity", "Set gravity", cxxopts::value<double>()->default_value("0"));
 
 
     auto parseResult = options.parse(argc, argv);
@@ -143,7 +150,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     }
 
     //check if the input file ends with ".txt"
-    if (inputFile.length() < 5 || (inputFile.compare(inputFile.length() - 4, 4, ".txt") != 0 && inputFile.compare(inputFile.length() - 4, 4, ".xml") != 0)) {
+    if (inputFile.length() < 5 || (inputFile.compare(inputFile.length() - 4, 4, ".txt") != 0 && inputFile.compare(
+                                       inputFile.length() - 4, 4, ".xml") != 0)) {
         SPDLOG_ERROR("Invalid input path! Input file must be a '.txt' file");
         printHelp();
         return false;
@@ -165,14 +173,15 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     }
     file.close();
 
-    auto domainSize = parseResult["domainSize"].as<std::vector<double>>();
+    auto domainSize = parseResult["domainSize"].as<std::vector<double> >();
     if (domainSize.size() != 3) {
-        SPDLOG_ERROR("Invalid domain size. Domain size must be 3. For a 2d simulation please set the last dimension to 1");
+        SPDLOG_ERROR(
+            "Invalid domain size. Domain size must be 3. For a 2d simulation please set the last dimension to 1");
         printHelp();
         return false;
     }
     //SPDLOG_DEBUG("Domain size array is: {}", domainSize);
-    std::array<double,3> domainSizeArray = {domainSize[0], domainSize[1], domainSize[2]};
+    std::array<double, 3> domainSizeArray = {domainSize[0], domainSize[1], domainSize[2]};
 
     if (parseResult["cutoffRadius"].as<double>() <= 0) {
         SPDLOG_ERROR("Cutoff radius must be greater than zero");
@@ -189,9 +198,11 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         if (containerType == "DSC") {
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
-            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            std::array<int, 6> cond = {0,0,0,0,0,0};
-            boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
+            particleContainer = std::make_unique<
+                ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            std::array<int, 6> cond = {0, 0, 0, 0, 0, 0};
+            boundaryHandler = std::make_unique<BoundaryHandler>(
+                cond, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -200,43 +211,44 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         }
     }
 
-    if(parseResult.count("boundaryCondition")){
+    if (parseResult.count("boundaryCondition")) {
         SPDLOG_DEBUG("boundary set");
-        if (LCCset == false){
+        if (LCCset == false) {
             SPDLOG_ERROR("Boundary condition can only be set in combination with LCC");
             printHelp();
             return false;
         }
 
-        try{
-        std::vector<int> condition = parseResult["boundaryCondition"].as<std::vector<int>>();
+        try {
+            std::vector<int> condition = parseResult["boundaryCondition"].as<std::vector<int> >();
 
-        if (condition.size() != 6) {
-            throw std::runtime_error("");
-        }
-        
-        std::array<int, 6> conditionArray = {condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]};
+            if (condition.size() != 6) {
+                throw std::runtime_error("");
+            }
 
-        for (int i = 0; i < 6; i++){
-        int t = conditionArray[i];
-        if (t > 2 || t < 0){
-        SPDLOG_ERROR("invalid boundary parameter!");
-        printHelp();
-        return false;
-     }
-}
-        
-        boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+            std::array<int, 6> conditionArray = {
+                condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]
+            };
 
-         } catch (const std::exception& e) {
-        
+            for (int i = 0; i < 6; i++) {
+                int t = conditionArray[i];
+                if (t > 2 || t < 0) {
+                    SPDLOG_ERROR("invalid boundary parameter!");
+                    printHelp();
+                    return false;
+                }
+            }
+
+            boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray,
+                                                                *(dynamic_cast<ParticleContainers::LinkedCellContainer
+                                                                    *>(&(*particleContainer))));
+            //sigma is hardcoded for now
+        } catch (const std::exception &e) {
             SPDLOG_ERROR("Boundary condition is not set correctly");
             printHelp();
             return false;
         }
-        
     }
-
 
 
     //set deltaT and endTime
@@ -268,6 +280,9 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         } else if (outputWriterTemp == "XYZ") {
             outputWriter = std::make_unique<outputWriters::XYZWriter>();
             SPDLOG_DEBUG("{} is selected as the output writer", outputWriterTemp);
+        } else if (outputWriterTemp == "CHK") {
+            outputWriter = std::make_unique<outputWriters::CheckpointWriter>();
+            SPDLOG_DEBUG("{} is selected as the output writer", outputWriterTemp);
         } else {
             SPDLOG_ERROR("Erroneous programme call! Invalid output writer specified!");
             printHelp();
@@ -291,27 +306,85 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     }
 
 
-
-    
     return true;
 }
 
+bool MolSim::loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
+    try {
+        SPDLOG_INFO("Scanning for checkpoint files in the current directory...");
 
-void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, double& gravity, int &freq,
+        std::vector<std::string> checkpointFiles;
+        const std::string extension = ".chk";
+
+        // Open the current directory
+        DIR *dir = opendir(".");
+        if (!dir) {
+            SPDLOG_ERROR("Failed to open the current directory!");
+            return false;
+        }
+
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != nullptr) {
+            std::string filename = entry->d_name;
+
+            // Check if the file has the .chk extension
+            if (filename.size() > extension.size() &&
+                filename.compare(filename.size() - extension.size(), extension.size(), extension) == 0) {
+                checkpointFiles.push_back(filename);
+            }
+        }
+        closedir(dir);
+
+        if (!checkpointFiles.empty()) {
+            SPDLOG_INFO("Found {} checkpoint file(s).", checkpointFiles.size());
+
+            // Sort checkpoint files to ensure consistent load order
+            std::sort(checkpointFiles.begin(), checkpointFiles.end());
+
+            for (std::string &checkpointFile: checkpointFiles) {
+                SPDLOG_INFO("Loading checkpoint file: {}", checkpointFile);
+
+                std::ifstream checkpointStream(checkpointFile);
+                if (!checkpointStream.is_open()) {
+                    SPDLOG_ERROR("Failed to open checkpoint file: {}", checkpointFile);
+                    continue; // Skip this file and proceed to the next one
+                }
+
+                try {
+                    // Load the checkpoint file into the particle container
+                    CheckpointFileReader::readCheckpoint(checkpointFile, particleContainer);
+                } catch (const std::exception &e) {
+                    SPDLOG_ERROR("Error while parsing checkpoint file {}: {}", checkpointFile, e.what());
+                    return false; // Exit on a critical parsing error
+                }
+            }
+            return true;
+        } else {
+            SPDLOG_INFO("No checkpoint files found.");
+            return false;
+        }
+    } catch (const std::exception &e) {
+        SPDLOG_ERROR("An error occurred while loading checkpoints: {}", e.what());
+        return false;
+    }
+}
+
+
+void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
+                    double &gravity, int &freq,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
-                    std::unique_ptr<BoundaryHandler> &boundaryHandler,  std::unique_ptr<Thermostat> &thermostat) {
-
-
+                    std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
+                    std::string &inputFile) {
     const std::string outName = "MD";
 
     double currentTime = 0.0;
     int iteration = 0;
 
-    boundaryHandler -> handleBoundaries();
+    boundaryHandler->handleBoundaries();
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT, gravity);
-        if (boundaryHandler != nullptr){
+        if (boundaryHandler != nullptr) {
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();
         }
@@ -319,18 +392,73 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         iteration++;
 
         if (iteration % freq == 0) {
-            outputWriter->plotParticles(iteration, particleContainer, outName);
+            outputWriter->plotParticles(iteration, particleContainer, outName, inputFile, endTime, gravity, deltaT);
         }
 
-        if(thermostat != nullptr) {
+        if (thermostat != nullptr) {
+            if (iteration % thermostat->getNtimeSteps() == 0) {
+                thermostat->applyThermostat(particleContainer);
+            }
+        }
 
-        if (iteration % thermostat->getNtimeSteps() == 0) {
-            thermostat->applyThermostat(particleContainer);
-        }}
-
-      // SPDLOG_DEBUG("Iteration {} finished.", iteration);
+        SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
     SPDLOG_INFO("Output written. Terminating...");
 }
 
+
+bool MolSim::runSubSim(std::string &mainInputFile) {
+    try {
+        std::ifstream file(mainInputFile);
+        if (!file.is_open()) {
+            SPDLOG_ERROR("Could not open the main input file!");
+            return false;
+        }
+
+        auto mainSim = simulation_(file);
+        auto &subSims = mainSim->subSimulations();
+
+        if (!subSims.present()) {
+            SPDLOG_INFO("No sub simulations found!");
+            return false;
+        }
+
+        for (const auto &subSim: subSims->subSimulation()) {
+            SPDLOG_INFO("Running sub simulation {}", subSim.name());
+
+            std::string subInputFile = static_cast<std::string>(subSim.inputFile());
+
+            std::ifstream subFile(subInputFile);
+            if (!subFile.is_open()) {
+                SPDLOG_ERROR("Could not open the input file!");
+                return false;
+            }
+
+            double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0;
+            int subFreq = 20;
+            std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
+            std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
+            std::unique_ptr<Calculators::Calculator> subCalculator;
+            std::unique_ptr<BoundaryHandler> subBoundaryHandler;
+            std::unique_ptr<Thermostat> subThermostat;
+
+
+            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, subFreq, subOutputWriter,
+                                                subCalculator,
+                                                subParticleContainer, subBoundaryHandler, subThermostat) != 0) {
+                SPDLOG_ERROR("Could not parse input file!");
+                return false;
+            }
+
+            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, subFreq, subOutputWriter,
+                           subCalculator,
+                           subBoundaryHandler, subThermostat, subInputFile);
+        }
+
+        return true;
+    } catch (const std::exception &e) {
+        SPDLOG_ERROR("Exception occurred during simulation!");
+        return false;
+    }
+}

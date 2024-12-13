@@ -21,40 +21,46 @@
 
 /**Provides utility functions for running the simulation */
 namespace MolSim {
+    /**Prints the help message to std::out */
+    void printHelp();
 
-/**Prints the help message to std::out */
-void printHelp();
+    /**  the arguments from argv and initializes the arguments accordingly
+     * @param argc number of arguments
+     * @param argv argument vector
+     * @param inputFile valid path to input file
+     * @param deltaT
+     * @param endTime
+     * @param gravity
+     * @param outputWriter that will be used to write the output
+     * @param calculator that will be used during the simulation
+     * @particleContainer empty ParticleContainer
+     */
+    bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
+                        double &gravity,
+                        std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                        std::unique_ptr<Calculators::Calculator> &calculator,
+                        std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
+                        std::unique_ptr<BoundaryHandler> &boundaryHandler);
 
-/**  the arguments from argv and initializes the arguments accordingly
- * @param argc number of arguments
- * @param argv argument vector
- * @param inputFile valid path to input file
- * @param deltaT
- * @param endTime
- * @param gravity
- * @param outputWriter that will be used to write the output
- * @param calculator that will be used during the simulation
- * @particleContainer empty ParticleContainer
- */
-bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime, double& gravity,
-                            std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                            std::unique_ptr<Calculators::Calculator> &calculator,
-                            std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
-                            std::unique_ptr<BoundaryHandler> &boundaryHandler);
+    /** Runs the simulation using the specified parameters
+     * @param particleContainer initialized ParticleContainer
+     * @param deltaT
+     * @param endTime
+     * @param gravity
+     * @param freq
+     * @param outputWriter that will be used to write the output
+     * @param calculator that will be used during the simulation
+     * @param boundaryHandler that will be used to handle boundaries
+     * @param thermostat to adjust the temperature of the simulation
+    */
+    void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
+                double &gravity, int &freq,
+                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                std::unique_ptr<Calculators::Calculator> &calculator,
+                std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
+                std::string &inputFile);
 
-/** Runs the simulation using the specified parameters 
- * @param particleContainer initialized ParticleContainer
- * @param deltaT
- * @param endTime
- * @param gravity
- * @param freq
- * @param outputWriter that will be used to write the output
- * @param calculator that will be used during the simulation
- * @param boundaryHandler that will be used to handle boundaries
- * @param thermostat to adjust the temperature of the simulation
-*/
-void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime, double& gravity, int &freq,
-                    std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                    std::unique_ptr<Calculators::Calculator> &calculator,
-                    std::unique_ptr<BoundaryHandler> &boundaryHandler,  std::unique_ptr<Thermostat> &thermostat);
+    bool runSubSim(std::string &mainInputFile);
+
+    bool loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContainer>& particleContainer);
 }

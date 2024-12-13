@@ -5,6 +5,7 @@
 #include "MolSimFunctions.h"
 
 #include "IO/Input/XMLfileReader.h"
+#include "IO/Input/CheckpointInput/CheckpointReader/CheckpointFileReader.h"
 
 
 /** \brief Reads programme input and writes output file
@@ -48,19 +49,28 @@ int main(int argc, char *argsv[]) {
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, gravity, freq, outputWriter, calculator, particleContainer, boundaryHandler, thermostat))
+        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, gravity, freq, outputWriter, calculator, particleContainer, boundaryHandler, thermostat)) {
             return 1;
-    }
-    else{
+        }
+
+        if (MolSim::runSubSim(inputFile)) {
+            SPDLOG_INFO("Subsimulations completed successfully!");
+        }
+
+    } else if (inputFile.compare(inputFile.length() - 4, 4, ".chk") == 0) {
+        CheckpointFileReader::readCheckpoint(inputFile, particleContainer);
+    } else{
         FileReader fileReader;
         fileReader.readFile(*particleContainer, inputFile);
     }
+
+    MolSim::loadCheckpoints(particleContainer);
 
 
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, freq, outputWriter, calculator, boundaryHandler, thermostat);
+    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, freq, outputWriter, calculator, boundaryHandler, thermostat, inputFile);
 
     SPDLOG_DEBUG("Simulation finished!");
 
