@@ -15,7 +15,7 @@
 
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
-BoundaryHandler::BoundaryHandler(std::array<int, 6> t, ParticleContainers::LinkedCellContainer& container) :
+BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& container) :
 type {t}, container {container}, 
 boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
 SPDLOG_DEBUG("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
@@ -34,7 +34,7 @@ void BoundaryHandler::handleOutflow(){
 
     for (int i = 0; i < 4; i++) { //FOR 3D: 6
 
-     if (type[i] != 0) {continue;}
+     if (type[i] != bCondition::OUTFLOW) {continue;}
 
         for (auto cell : container.getHaloCells()) {
 
@@ -58,7 +58,7 @@ void BoundaryHandler::handleReflecting(){
 
     for (int i = 0; i < 4; i++) {//0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 2 dimensions only for now
 
-        if (type [i] != 1) {continue;}
+        if (type [i] != bCondition::REFLECTING) {continue;}
    
         for (auto cell : container.getBoundaryCells()){
 
@@ -85,7 +85,7 @@ void BoundaryHandler::handlePeriodic() {
 
     for (int i = 0; i < 4; i++) {
 
-        if (type [i] != 2) {continue;}
+        if (type [i] != bCondition::PERIODIC) {continue;}
 
         for (auto cell : container.getBoundaryCells()){
             if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
@@ -264,7 +264,7 @@ void BoundaryHandler::handleCornersPeriodic(int i, Cell& cell) {
             continue;
         }
 
-        if (type[j] != 2) {
+        if (type[j] != bCondition::PERIODIC) {
             continue;
         }
 

@@ -22,6 +22,10 @@
 
 /**Class for parsing xml input from a file */
 class XMLfileReader {
+   private:
+
+   static BoundaryHandler::bCondition getConditionType(std::string input);
+
    public:
     /**Parses data from an xml file
    * @param fileStream: stream of the xml file

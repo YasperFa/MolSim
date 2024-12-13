@@ -16,6 +16,7 @@
 #include "IO/Input/CheckpointInput/CheckpointReader/CheckpointFileReader.h"
 #include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
 
+#include <chrono>
 void MolSim::printHelp() {
     std::cout << R"(
 Welcome to MolSim helper!
@@ -34,7 +35,7 @@ Example calls:
     './MolSim -i ../input/schema.xml -c Default -o VTK -l debug'
     './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info --particleContainer=DSC'
     './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5 -p DSC'
-    './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b 0,0,0,1,0,0'
+    './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b o,o,o,r,o,o'
 
 The output should be in the build directory.
 
@@ -78,10 +79,9 @@ Optional arguments:
         following the format: '-r {radius}' or '--cutoffRadius {radius}'. If no radius is specified, a default radius of 3 will be used.
 
         '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error. 
-        The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are 0 for ourflow and 1 for reflecting. 
-        The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', 
-        where boundaryCondition has the following format: {left},{right},{top},{bottom},{front},{back}. 
-        If no value is specified, outflow will be used for all boundaries.
+        The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are o for outflow, r for reflecting and p for periodic.
+        The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', where boundaryCondition has the following format:
+        {left},{right},{top},{bottom},{front},{back}. If no value is specified, outflow will be used for all boundaries.
 
     )" << std::endl;
 }
@@ -106,8 +106,10 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize", "Set domain size", cxxopts::value<std::vector<double> >()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<int> >())
-            ("g, gravity", "Set gravity", cxxopts::value<double>()->default_value("0"));
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<char>>())
+            ("g, gravity","Set gravity", cxxopts::value<double>()->default_value("0"))
+
+    ;
 
 
     auto parseResult = options.parse(argc, argv);
@@ -198,11 +200,9 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         if (containerType == "DSC") {
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
-            particleContainer = std::make_unique<
-                ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
-            std::array<int, 6> cond = {0, 0, 0, 0, 0, 0};
-            boundaryHandler = std::make_unique<BoundaryHandler>(
-                cond, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer)))); //default
+            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            std::array<BoundaryHandler::bCondition, 6> cond = {BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW};
+            boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -219,25 +219,36 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
 
-        try {
-            std::vector<int> condition = parseResult["boundaryCondition"].as<std::vector<int> >();
+        try{
+        std::vector<char> condition = parseResult["boundaryCondition"].as<std::vector<char>>();
 
-            if (condition.size() != 6) {
-                throw std::runtime_error("");
+        if (condition.size() != 6) {
+        SPDLOG_ERROR("invalid boundary parameter! Length must be 6");
+        printHelp();
+        return false;
+        }
+
+        for (int i = 0; i < 6; i++){
+        int t = condition[i];
+        if (t!='o' && t != 'r' && t != 'p'){
+        SPDLOG_ERROR("invalid boundary parameter!");
+        printHelp();
+        return false;
+     }
+}
+
+        std::array<BoundaryHandler::bCondition, 6> conditionArray;
+
+        for (int i = 0; i < 6; i++){
+            switch(condition[i]){
+                case 'o': conditionArray[i] = BoundaryHandler::bCondition::OUTFLOW; break;
+                case 'r': conditionArray[i] = BoundaryHandler::bCondition::REFLECTING; break;
+                case 'p': conditionArray[i] = BoundaryHandler::bCondition::PERIODIC; break;
+                default: SPDLOG_ERROR("invalid boundary parameter! Only 'o', 'r' and 'p' allowed"); printHelp(); return false;
             }
-
-            std::array<int, 6> conditionArray = {
-                condition[0], condition[1], condition[2], condition[3], condition[4], condition[5]
-            };
-
-            for (int i = 0; i < 6; i++) {
-                int t = conditionArray[i];
-                if (t > 2 || t < 0) {
-                    SPDLOG_ERROR("invalid boundary parameter!");
-                    printHelp();
-                    return false;
-                }
-            }
+        }
+        
+        boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
 
             boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray,
                                                                 *(dynamic_cast<ParticleContainers::LinkedCellContainer
@@ -306,6 +317,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     }
 
 
+
+    
     return true;
 }
 
@@ -377,11 +390,11 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
                     std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
                     std::string &inputFile) {
     const std::string outName = "MD";
-
     double currentTime = 0.0;
     int iteration = 0;
-
-    boundaryHandler->handleBoundaries();
+    // get start time
+    auto start = std::chrono::high_resolution_clock::now();
+    boundaryHandler -> handleBoundaries();
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT, gravity);
         if (boundaryHandler != nullptr) {
@@ -404,6 +417,10 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    SPDLOG_INFO("Simulation took {}s", elapsed.count());
+    SPDLOG_INFO("Molecular updates per second: {}", iteration/elapsed.count());
     SPDLOG_INFO("Output written. Terminating...");
 }
 

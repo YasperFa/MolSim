@@ -18,13 +18,18 @@ public:
    * @param particles empty Particle container where particles will be inserted
    * @param cuboid Cuboid that defines parameters
    * @param type defines the type of the particles
+   * @param epsilon
+   * @param sigma
+   * @param initTemperature initial temperature
    */
-   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma);
+   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature);
    /**
    * @brief generates particles from a given disc
    * @param particles empty Particle container where particles will be inserted
    * @param disc Disc that defines parameters
    * @param type defines the type of the particles
+   * @param epsilon
+   * @param sigma
    */
    static void generateDisc(ParticleContainers::ParticleContainer &particles, Disc& disc, int type, double epsilon, double sigma);
 };

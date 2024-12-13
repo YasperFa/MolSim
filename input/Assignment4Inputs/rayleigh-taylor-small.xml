@@ -15,14 +15,14 @@
             <y>36</y>
             <z>1</z>
         </domainSize>
-        <BoundaryType>
-            <x>2</x>
-            <y>2</y>
-            <z>1</z>
-            <l>1</l>
-            <m>0</m>
-            <k>0</k>
-        </BoundaryType>
+        <boundaryType>
+            <left>periodic</left>
+            <right>periodic</right>
+            <top>reflecting</top>
+            <bottom>reflecting</bottom>
+            <front>outflow</front>
+            <back>outflow</back>
+        </boundaryType>
     </container>
     <parameters>
         <tEnd>25</tEnd>
@@ -78,7 +78,6 @@
         </cuboid>
     </shapes>
     <temperature>
-        <thermostatType>direct</thermostatType>
         <initialTemperature>40.0</initialTemperature>
         <timeSteps>1000</timeSteps>
     </temperature>

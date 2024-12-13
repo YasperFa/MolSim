@@ -4,7 +4,6 @@
 
 #include <gtest/gtest.h>
 #include "../../../src/Objects/Temperature/Thermostat.h"
-#include "../../../src/Objects/Temperature/GradualThermostat.h"
 #include "../../../src/Objects/Temperature/DirectThermostat.h"
 #include "../../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 
@@ -68,43 +67,4 @@ TEST(DirectThermostatTest, applyDirectThermostatCooling) {
     // maximum deltaT is 20
     EXPECT_NEAR(currentTemperature,40.0, 0.00001);
 }
-// test correct scaling for heating -- gradualThermostat
-TEST(GradualThermostatTest, applyGradualThermostatHeating) {
-    ParticleContainers::DirectSumContainer testContainer;
-    testContainer.addParticle(Particle({2, 3, 0}, {5, 1.1, 0}, 2, 0));
-    testContainer.addParticle(Particle({2, 1, 0}, {0, -4.1, 0}, 1, 0));
-    testContainer.addParticle(Particle({1, 2, 0}, {-1.3, 0, 0}, 1, 0));
-    testContainer.addParticle(Particle({3, 2, 0}, {1.0, 0, 0}, 1, 0));
-    GradualThermostat t(10,20, false, 1);
-    double currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_NEAR(currentTemperature, 8.99 , 0.00001);
-    t.applyThermostat(testContainer);
-    currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_GE(currentTemperature, 8.99);
-    EXPECT_LE(currentTemperature, 10.0);
-    double prevTemperature = currentTemperature;
-    t.applyThermostat(testContainer);
-    currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_GE(currentTemperature, prevTemperature);
-    EXPECT_LE(currentTemperature, 10.0);
-}
-// test correct scaling for cooling -- gradualThermostat
-TEST(GradualThermostatTest, applyGradualThermostatCooling) {
-    ParticleContainers::DirectSumContainer testContainer;
-    testContainer.addParticle(Particle({2, 3, 0}, {5, 1.1, 0}, 2, 0));
-    testContainer.addParticle(Particle({2, 1, 0}, {0, -4.1, 0}, 1, 0));
-    testContainer.addParticle(Particle({1, 2, 0}, {-1.3, 0, 0}, 1, 0));
-    testContainer.addParticle(Particle({3, 2, 0}, {1.0, 0, 0}, 1, 0));
-    GradualThermostat t(7,20, false, 1);
-    double currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_NEAR(currentTemperature, 8.99 , 0.00001);
-    t.applyThermostat(testContainer);
-    currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_GE(currentTemperature, 7);
-    EXPECT_LE(currentTemperature, 8.99);
-    double prevTemperature = currentTemperature;
-    t.applyThermostat(testContainer);
-    currentTemperature = t.getCurrentTemperature(testContainer, false);
-    EXPECT_LE(currentTemperature, prevTemperature);
-    EXPECT_GE(currentTemperature, 7);
-}
+

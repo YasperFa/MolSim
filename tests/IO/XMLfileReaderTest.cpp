@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include "../../src/IO/Input/XMLfileReader.h"
 
+// check if parsing of the xml file MolSim/input/schemaTest1.xml
 TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     std::ifstream file("../input/schemaTest1.xml");
     double deltaT;
@@ -35,6 +36,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     }
 
 }
+// check if parsing of the xml file MolSim/input/schemaTest2.xml
 TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     std::ifstream file("../input/schemaTest2.xml");
     double deltaT = 0.0;

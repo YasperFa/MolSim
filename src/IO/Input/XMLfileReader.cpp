@@ -58,20 +58,20 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
                 }
-                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(
-                    domainSizeArray, cutoffRadius);
-                if (sim->container().BoundaryType().present()) {
-                    std::array<int, 6> condition;
-                    condition[0] = sim->container().BoundaryType().get().x();
-                    condition[1] = sim->container().BoundaryType().get().y();
-                    condition[2] = sim->container().BoundaryType().get().z();
-                    condition[3] = sim->container().BoundaryType().get().l();
-                    condition[4] = sim->container().BoundaryType().get().m();
-                    condition[5] = sim->container().BoundaryType().get().k();
-                    boundaryHandler = std::make_unique<BoundaryHandler>(
-                        condition, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer))));
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+                if(sim -> container().BoundaryType().present()) {
+                   std::array<int, 6> condition;
+                    condition[0] = sim ->container().BoundaryType().get().x();
+                    condition[1] = sim ->container().BoundaryType().get().y();
+                    condition[2] = sim ->container().BoundaryType().get().z();
+                    condition[3] = sim ->container().BoundaryType().get().l();
+                    condition[4] = sim ->container().BoundaryType().get().m();
+                    condition[5] = sim ->container().BoundaryType().get().k();
+                    boundaryHandler = std::make_unique<BoundaryHandler>(condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
                 }
-            } else {
+
+            }
+            else {
                 SPDLOG_ERROR("Invalid container type! choose one of the following: DSC / LCC");
             }
             if (sim->parameters().deltaT().present()) {
@@ -140,18 +140,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 if (sim->temperature().get().maxDeltaTemperature().present()) {
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
-                if (sim->temperature().get().thermostatType() == "direct") {
-                    thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature,
-                                                                    timeSteps);
-                    SPDLOG_DEBUG("Direct thermostat is selected from xml");
-                } else if (sim->temperature().get().thermostatType() == "gradual") {
-                    thermostat = std::make_unique<GradualThermostat>(targetTemperature, maxDeltaT, initialTemperature,
-                                                                     timeSteps);
-                    SPDLOG_DEBUG("Gradual thermostat is selected from xml");
-                } else {
-                    SPDLOG_ERROR(
-                        "Erroneous programme call! Invalid thermostat type specified! thermostat should be direct / gradual");
-                }
+                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                SPDLOG_DEBUG("Direct thermostat is selected from xml");
+
             }
             for (int i = 0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
@@ -202,13 +193,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 double h = sim->shapes().cuboid().at(i).distance();
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
-                if (v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0) {
-                    v = maxwellBoltzmannDistributedVelocity(mv, 2);
-                    if (initialTemperature != -1) {
-                        double scale = std::sqrt(initialTemperature / m);
-                        v = operator*(scale, v);
-                    }
-                }
+
 
                 int type = 0;
                 if (sim->shapes().cuboid().at(i).type().present()) {
@@ -226,8 +211,8 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
 
-                Cuboid cuboid(x, N, h, m, v, mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma);
+                Cuboid cuboid(x,N,h,m,v,mv);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature);
             }
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -279,3 +264,11 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
         return 1;
     }
 }
+
+BoundaryHandler::bCondition XMLfileReader::getConditionType(std::string input){
+    if (input == "reflecting"){
+        return BoundaryHandler::bCondition::REFLECTING;
+    } else if (input == "periodic"){
+        return BoundaryHandler::bCondition::PERIODIC;
+    } else return BoundaryHandler::bCondition::OUTFLOW; //xs enumeration prevents other values
+};
