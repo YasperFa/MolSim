@@ -29,7 +29,7 @@ namespace Calculators {
         }
 
         double potential_dirivative = -24*epsilon*(pow((smallSigma/normCubed),6) - 2*pow((smallSigma/normCubed),12))/pow(normCubed, 2);
-        const std::array<double,3> fij = operator*(potential_dirivative, operator*(-1,sub));
+        const std::array<double,3> fij = (potential_dirivative * (-1 * sub));
         return fij;
     }
     std::string LennardJonesCalculator::toString() {

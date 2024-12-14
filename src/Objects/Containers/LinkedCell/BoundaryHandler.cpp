@@ -69,10 +69,10 @@ void BoundaryHandler::handleReflecting(){
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
                 if (dist < minDist(p -> getSigma())/2) { //must be closer
-                    std::array<double, 3> sub = operator-(ghostParticleLocation(*p, i, dist), p->getX());
+                    std::array<double, 3> sub = (ghostParticleLocation(*p, i, dist) - p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
                     std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
-                    p->setF(operator+(p -> getF(), force));
+                    p->setF(p -> getF() + force);
                     
                 }
             }
