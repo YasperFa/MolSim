@@ -34,7 +34,7 @@ for (auto p : testContainer.getParticles()){
 for (int i = 1; i < 5; i++) {
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -52,7 +52,7 @@ for (auto p : testContainer.getParticles()){
 for (int i = 1; i < 5; i++) {
      bool contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -174,7 +174,7 @@ if (outflowed) {
      for (int a = 1; a < 3; a++) {
      bool contains = false;
      for (auto cell : testContainer.getCells()){
-          for (Particle* p : cell.getParticlesInCell()) {
+          for (auto p : cell.getParticlesInCell()) {
                if (p->getID() == a) {
                     contains = true;
                }
@@ -214,7 +214,7 @@ for (auto p : testContainer.getParticles()){
 for (int i = 1; i < 5; i++) {
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -240,7 +240,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8);
 for (int i = 5; i < 9; i++) {
      bool contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -258,7 +258,7 @@ for (auto p : testContainer.getParticles()){
 for (int i = 1; i < 5; i++) {
      bool contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -270,7 +270,7 @@ for (int i = 1; i < 5; i++) {
 for (int i = 5; i < 9; i++) {
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -286,7 +286,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8); //clone particles should not 
 
 }
 
-/**Test that 3 clone particles get created for a corner particle*/
+/**Test that 3 clone particles get created for a corner auto/
 TEST(BoundaryHandlerTest, PeriodicThreeClonesForCorner) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 ParticleIdInitializer::reset();
@@ -302,7 +302,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
 
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 1) {
                     contains = true;
                }
@@ -317,7 +317,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 4);
 for (int i = 2; i < 5; i++) {
      bool contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == i) {
                     contains = true;
                }
@@ -342,7 +342,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
 
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 1) {
                     contains = true;
                }
@@ -357,7 +357,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 2);
 
      contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 2) {
                     contains = true;
                }
@@ -385,7 +385,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
 
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 1) {
                     contains = true;
                }
@@ -401,7 +401,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 2);
 
      contains = false;
      for (auto cell : testContainer.getHaloCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 2) {
                     contains = true;
                }
@@ -418,7 +418,7 @@ for (int i = 0; i < 10; i++){
 
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
-          for (Particle* p : cell.get().getParticlesInCell()) {
+          for (auto p : cell.get().getParticlesInCell()) {
                if (p->getID() == 1) {
                     contains = true;
                }

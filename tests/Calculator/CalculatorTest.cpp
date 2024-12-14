@@ -121,8 +121,8 @@ TEST(CalculatorTest, correctVcalculations) {
 
     }
 
-    /*Checks that calculateF() of LJC correctly updates the force between particles*/
-TEST(CalculatorTest, correctLJcalculations) {
+    /*Checks that calculateF() of LJC correctly updates the force between particles for DirectSumContainer*/
+TEST(CalculatorTest, correctLJcalculationsDirectSum) {
     ParticleContainers::DirectSumContainer testContainer;
 
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
@@ -141,6 +141,31 @@ TEST(CalculatorTest, correctLJcalculations) {
         EXPECT_NEAR(0.01165109898, (testContainer.getParticle(i).getF())[in], 0.00001);
         EXPECT_NEAR(0, (testContainer.getParticle(j).getF())[in], 0.00001);
         EXPECT_NEAR(-0.01165109898, (testContainer.getParticle(k).getF())[in], 0.00001);
+    }
+    
+
+}
+
+ /*Checks that calculateF() of LJC correctly updates the force between particles for LinkedCellContainer*/
+TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{100, 100, 10}, 5);
+
+    Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
+    testContainer.addParticle(i);
+
+    Particle j({2.0, 2.0, 2.0},{0.0, 0.0, 0.0},2.0,0);
+    testContainer.addParticle(j);
+
+    Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
+    testContainer.addParticle(k);
+
+    Calculators::LennardJonesCalculator calc;
+    calc.calculateF(testContainer, 0); 
+
+    for (int in = 0; in < 3; in++) {
+        EXPECT_NEAR(0.01165109898, (testContainer.getParticles().at(0).getF())[in], 0.00001);
+        EXPECT_NEAR(0, testContainer.getParticles().at(1).getF()[in], 0.00001);
+        EXPECT_NEAR(-0.01165109898, testContainer.getParticles().at(2).getF()[in], 0.00001);
     }
     
 

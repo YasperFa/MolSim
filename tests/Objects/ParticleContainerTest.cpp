@@ -71,7 +71,7 @@ TEST(LinkedCellContainerTest, correctCellInitialization) {
 
 /** Checks that only neighboring cells are influenced during calculations */
 TEST(LinkedCellContainerTest, correctCalculations) {
-    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{5, 5, 1}, 0);
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{5, 5, 1}, 1.0);
     Calculators::LennardJonesCalculator calculator;
     
 
