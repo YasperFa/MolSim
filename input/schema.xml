@@ -16,14 +16,14 @@
             <y>50</y>
             <z>1</z>
         </domainSize>
-        <BoundaryType>
-            <x>0</x>
-            <y>0</y>
-            <z>0</z>
-            <l>0</l>
-            <m>0</m>
-            <k>0</k>
-        </BoundaryType>
+        <boundaryType>
+            <left>outflow</left>
+            <right>outflow</right>
+            <top>outflow</top>
+            <bottom>outflow</bottom>
+            <front>outflow</front>
+            <back>outflow</back>
+        </boundaryType>
     </container>
     <parameters>
         <tEnd>10</tEnd>

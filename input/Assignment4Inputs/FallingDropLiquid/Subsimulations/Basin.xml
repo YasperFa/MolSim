@@ -15,14 +15,14 @@
             <y>180</y>
             <z>1</z>
         </domainSize>
-        <BoundaryType>
-            <x>1</x>
-            <y>1</y>
-            <z>1</z>
-            <l>1</l>
-            <m>0</m>
-            <k>0</k>
-        </BoundaryType>
+        <boundaryType>
+            <left>reflecting</left>
+            <right>reflecting</right>
+            <top>reflecting</top>
+            <bottom>reflecting</bottom>
+            <front>outflow</front>
+            <back>outflow</back>
+        </boundaryType>
     </container>
     <parameters>
         <tEnd>15</tEnd>
@@ -55,7 +55,6 @@
         </cuboid>
     </shapes>
     <temperature>
-        <thermostatType>direct</thermostatType>
         <initialTemperature>0.5</initialTemperature>
         <timeSteps>1000</timeSteps>
     </temperature>
