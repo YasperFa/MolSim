@@ -315,10 +315,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
     }
-
-
-
-    
     return true;
 }
 
@@ -350,9 +346,6 @@ bool MolSim::loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContain
 
         if (!checkpointFiles.empty()) {
             SPDLOG_INFO("Found {} checkpoint file(s).", checkpointFiles.size());
-
-            // Sort checkpoint files to ensure consistent load order
-            std::sort(checkpointFiles.begin(), checkpointFiles.end());
 
             for (std::string &checkpointFile: checkpointFiles) {
                 SPDLOG_INFO("Loading checkpoint file: {}", checkpointFile);
