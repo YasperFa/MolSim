@@ -2,8 +2,9 @@
 #include <fstream>
 #include "IO/Input/CheckpointInput/CheckpointSchema.h"
 #include "spdlog/spdlog.h"
+#include <memory>
 
-void printSimulationData(const SimulationDataType &simulationData) {
+void CheckpointFileReader::printSimulationData(const SimulationDataType &simulationData) {
     SPDLOG_INFO("Checkpoint loaded with the following data:");
     SPDLOG_INFO("-> Input file: {}", simulationData.inputFile());
     SPDLOG_INFO("-> endTime: {}", simulationData.endTime());
@@ -11,8 +12,9 @@ void printSimulationData(const SimulationDataType &simulationData) {
     SPDLOG_INFO("-> gravity: {}", simulationData.gravity());
 }
 
-void CheckpointFileReader::readCheckpoint(std::string &filePath,std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
-        try {
+void CheckpointFileReader::readCheckpoint(std::string &filePath,
+                                          std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer) {
+    try {
         // Open the checkpoint file
         std::ifstream fileStream(filePath);
         if (!fileStream.is_open()) {
@@ -27,20 +29,21 @@ void CheckpointFileReader::readCheckpoint(std::string &filePath,std::unique_ptr<
         // Extract simulation data
         const auto &simulationData = checkpoint->SimulationData();
 
-
-        SPDLOG_INFO("Checkpoint loaded with the following data:");
-        SPDLOG_INFO("-> Input file: {}", simulationData.inputFile());
-        SPDLOG_INFO("-> deltaT: {}", simulationData.deltaT());
-        SPDLOG_INFO("-> endTime: {}", simulationData.endTime());
-        SPDLOG_INFO("-> gravity: {}", simulationData.gravity());
+        CheckpointFileReader::printSimulationData(simulationData);
 
         // Extract particle data
         const auto &particleData = checkpoint->ParticleData();
-        for (const auto &particle : particleData.particle()) {
-            std::array<double, 3> position = {particle.position().x(), particle.position().y(), particle.position().z()};
-            std::array<double, 3> velocity = {particle.velocity().x(), particle.velocity().y(), particle.velocity().z()};
+        for (const auto &particle: particleData.particle()) {
+            std::array<double, 3> position = {
+                particle.position().x(), particle.position().y(), particle.position().z()
+            };
+            std::array<double, 3> velocity = {
+                particle.velocity().x(), particle.velocity().y(), particle.velocity().z()
+            };
             std::array<double, 3> force = {particle.force().x(), particle.force().y(), particle.force().z()};
-            std::array<double, 3> oldForce = {particle.oldForce().x(), particle.oldForce().y(), particle.oldForce().z()};
+            std::array<double, 3> oldForce = {
+                particle.oldForce().x(), particle.oldForce().y(), particle.oldForce().z()
+            };
             double mass = particle.mass();
             int type = particle.type().present() ? particle.type().get() : 0;
 
