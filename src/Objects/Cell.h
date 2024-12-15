@@ -113,11 +113,11 @@ public:
      */
     void clearParticlesInCell();
 
-    std::vector<Particle*> getParticlesInCell();
+    std::vector<Particle*> & getParticlesInCell();
 
-    std::vector<Cell*> getNeighbourCells();
+    std::vector<Cell*> & getNeighbourCells();
 
-    std::unordered_set<Cell*> getInfluencedByCells();
+    std::unordered_set<Cell*> & getInfluencedByCells();
 
     CType getCellType();
 

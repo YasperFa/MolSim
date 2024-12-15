@@ -48,13 +48,13 @@ void Cell::addInfluencedByCell(Cell* cell) {
     influencedBy.insert(cell);
 }
 
-std::vector<Particle*> Cell::getParticlesInCell(){return particlesInCell;}
+std::vector<Particle*> & Cell::getParticlesInCell(){return particlesInCell;}
 
-std::vector<Cell*> Cell::getNeighbourCells(){return neighbourCells;}
+std::vector<Cell*> & Cell::getNeighbourCells(){return neighbourCells;}
 
 Cell::CType Cell::getCellType(){ return cellType;}
 
-std::unordered_set<Cell *> Cell::getInfluencedByCells() {
+std::unordered_set<Cell *> & Cell::getInfluencedByCells() {
     return influencedBy;
 }
 
