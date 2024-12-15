@@ -43,7 +43,8 @@ TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
     EXPECT_EQ(testContainer.sizeParticles(), i);
 
     bool contains = false;
-    for (auto p : testContainer.getCells().at(i - 1).getParticlesInCell()){
+    std::vector<Particle*> particlesInCell = testContainer.getCells().at(i - 1).getParticlesInCell();
+    for (auto p : particlesInCell){
         if (p->getID() == i){
             contains = true;
             break;
