@@ -83,22 +83,32 @@ double Particle::getSigma() {return sigma;}
  }
 
 void Particle::setF(const std::array<double, 3> &newF) {
-  f = newF;
+  f[0] = newF[0];
+  f[1] = newF[1];
+  f[2] = newF[2];
 }
 
 void Particle::setOldF(const std::array<double, 3> &newOldF) {
-  old_f = newOldF;
+  old_f[0] = newOldF[0];
+  old_f[1] = newOldF[1];
+  old_f[2] = newOldF[2];
 }
 void Particle::setX(const std::array<double, 3> &X) {
-  x = X;
+  x[0] = X[0];
+  x[1] = X[1];
+  x[2] = X[2];
 }
 
 void Particle::setOldX(const std::array<double, 3> &newOldX) {
-  old_x = newOldX;
+  old_x[0] = newOldX[0];
+  old_x[1] = newOldX[1];
+  old_x[2] = newOldX[2];
 }
 
 void Particle::setV(const std::array<double, 3> &V) {
-  v = V;
+  v[0] = V[0];
+  v[1] = V[1];
+  v[2] = V[2];
 }
 
 
