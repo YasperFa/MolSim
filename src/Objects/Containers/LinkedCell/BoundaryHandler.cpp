@@ -220,7 +220,7 @@ Particle BoundaryHandler::createCloneParticle(int i, Particle particle){
     newPosition = cloneParticleLocation(newPosition, i);
     newFormerPosition = cloneParticleLocation(newFormerPosition, i);
 
-    Particle newParticle = Particle({newPosition}, {particle.getV()}, particle.getM(), particle.getType());
+    Particle newParticle = Particle({newPosition}, {particle.getV()}, particle.getM(), particle.getType(), particle.getEpsilon(), particle.getSigma());
     newParticle.setF(particle.getF());
     newParticle.setOldF(particle.getOldF());
     newParticle.setOldX(newFormerPosition);
@@ -234,7 +234,7 @@ Particle BoundaryHandler::createCloneParticle(int i, int j, Particle particle){
     newPosition = cloneParticleLocation(cloneParticleLocation(newPosition, i), j);
     newFormerPosition = cloneParticleLocation(cloneParticleLocation(newFormerPosition, i), j);
 
-    Particle newParticle = Particle({newPosition}, {particle.getV()}, particle.getM(), particle.getType());
+    Particle newParticle = Particle({newPosition}, {particle.getV()}, particle.getM(), particle.getType(), particle.getEpsilon(), particle.getSigma());
     newParticle.setF(particle.getF());
     newParticle.setOldF(particle.getOldF());
     newParticle.setOldX(newFormerPosition);

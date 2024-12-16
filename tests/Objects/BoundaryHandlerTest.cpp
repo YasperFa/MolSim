@@ -286,7 +286,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8); //clone particles should not 
 
 }
 
-/**Test that 3 clone particles get created for a corner auto/
+/**Test that 3 clone particles get created for a corner particle*/
 TEST(BoundaryHandlerTest, PeriodicThreeClonesForCorner) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
 ParticleIdInitializer::reset();
