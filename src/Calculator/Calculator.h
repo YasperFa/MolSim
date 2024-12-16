@@ -85,6 +85,11 @@ namespace Calculators {
          */
         void calculateFLinkedCell(ParticleContainers::LinkedCellContainer &lcCon) {
             for (auto itCell = lcCon.beginCells(); itCell != lcCon.endCells(); ++itCell) {
+
+                if(itCell ->getCellType() == Cell::CType::HALO){ //halo cells copy behaviour of opposite boundary cells
+                    continue;
+                }
+
                 for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
                     if (*itParticle1 == nullptr) {
                         continue;

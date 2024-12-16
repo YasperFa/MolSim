@@ -63,6 +63,9 @@ double epsilon;
 /**Lennard-Jones parameter sigma */
 double sigma;
 
+/**Clone particle for periodic boundaries */
+int partner;
+
 public:
  explicit Particle(int type = 0);
 
@@ -103,6 +106,10 @@ public:
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
  bool operator==(const Particle &other);
+
+ void setPartner(int id);
+ int getPartner();
+ void removePartner();
 
  std::string toString() const;
 };

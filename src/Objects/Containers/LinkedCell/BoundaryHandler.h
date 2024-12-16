@@ -125,6 +125,23 @@ class BoundaryHandler{
    /**Particles that exit the domain on one side enter it from the opposite side*/
     void handlePeriodic();
 
-   
+    /**Handles cloning of particle values for clones particles in peridic boundaries */
+    void updatePartners();
+
+    /**Get int of opposite side
+     * @param i input side
+     * @returns opposite side
+     */
+    int oppositeSide(int i);
+
+    /**Get opposite boundary cell on opposite side for a halo cell
+     * @param position position of the cell in the cell grid
+     * @param i boundary of halo cell
+     * @returns position of boundary cell on opposite side
+     */
+    
+    std::array<int, 3> oppositeCell(std::array<int, 3> position, int i);
+
+
 
 };

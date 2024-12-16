@@ -26,6 +26,7 @@ void BoundaryHandler::handleBoundaries(){
             handlePeriodic();
             handleReflecting();
             handleOutflow();
+            updatePartners();
     }
 
 
@@ -77,6 +78,24 @@ void BoundaryHandler::handleReflecting(){
                 }
             }
         }
+
+        for (auto cell : container.getHaloCells()){
+
+            if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
+        
+            for (Particle * p : cell.get().getParticlesInCell()) {
+  
+                //calculate distance from boundary
+                double dist = calculateDistance(*p, i);
+                if (dist < minDist(p -> getSigma())/2) { //must be closer
+                    std::array<double, 3> sub = (ghostParticleLocation(*p, i, dist) - p->getX());
+                    double norm = ArrayUtils::L2Norm(sub);
+                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
+                    p->setF(p -> getF() + force);
+                    
+                }
+            }
+        }
     }    
      
 }
@@ -93,8 +112,10 @@ void BoundaryHandler::handlePeriodic() {
             for (auto particle : cell.get().getParticlesInCell()) {
                 
                 if (!movedIntoBoundary(i, particle -> getOldX())) {continue;} //only create clone particle if particle moved into boundary in this iteration
-                
-                container.addParticle(createCloneParticle(i, *particle));
+                Particle newParticle = createCloneParticle(i, *particle);
+                newParticle.setPartner(particle -> getID());
+                particle -> setPartner(newParticle.getID()); //if newParticle moves into domain and particle leaves domain, they switch roles
+                container.addParticle(newParticle);
                 //container.updateParticlesInCell();
             }
 
@@ -274,7 +295,10 @@ void BoundaryHandler::handleCornersPeriodic(int i, Cell& cell) {
 
         for (auto particle:cell.getParticlesInCell()){
             if (movedIntoBoundary(i, particle->getOldX()) && movedIntoBoundary (j, particle -> getOldX())){
-                container.addParticle(createCloneParticle(i, j, *particle));
+                Particle newParticle = createCloneParticle(i, j, *particle);
+                newParticle.setPartner(particle -> getID());
+                particle->setPartner(newParticle.getID());
+                container.addParticle(newParticle);
             }
         }
     }
@@ -284,3 +308,65 @@ void BoundaryHandler::handleCornersPeriodic(int i, Cell& cell) {
 double BoundaryHandler::minDist(double sigma){
     return std::pow(2.0, 1.0/6.0) * sigma;
 }
+
+void BoundaryHandler::updatePartners(){
+
+    for (auto cell: container.getHaloCells()){
+
+        for (int i = 0; i < 4; i++){
+
+            if (type[oppositeSide(i)] != bCondition::PERIODIC){
+                continue;
+            }
+
+            if(!isHaloCellofBoundary(i, cell.get().getPosition())){
+                continue;
+            }
+
+        std::array<int, 3> pos = oppositeCell(cell.get().getPosition(), i);
+        Cell oppositeCell = container.getCells().at(container.cellIndex(pos[0], pos[1], pos[2]));
+
+        for (auto particle: cell.get().getParticlesInCell()){
+
+            if (particle->getPartner() == 0){ //not a cloned particle
+                continue;
+            }
+            
+            for (auto p : oppositeCell.getParticlesInCell()){
+                if (particle -> getPartner() == p ->getID()){
+                    particle -> setF(p -> getF());
+                    particle -> setOldF(p -> getOldF());
+                    particle -> setV(p -> getV());
+                }
+            }
+        }
+    }
+ }
+}
+
+int BoundaryHandler::oppositeSide(int i){
+    switch (i){
+        case 0: return 1;
+        case 1: return 0;
+        case 2: return 3;
+        case 3: return 2;
+        case 4: return 5;
+        case 5: return 4;
+        default: throw std::runtime_error("Error calculating oppositeSide");
+    }
+}
+
+std::array<int, 3>  BoundaryHandler::oppositeCell(std::array<int,3> position, int i){
+    switch(i){
+        case 0: position[0] = position[0] + container.getCellNumPerDimension()[0]; break;
+        case 1: position[0] = position[0] - container.getCellNumPerDimension()[0]; break;
+        case 2: position[1] = position[1] - container.getCellNumPerDimension()[1]; break;
+        case 3: position[1] = position[1] + container.getCellNumPerDimension()[1]; break;
+        case 4: position[2] = position[2] - container.getCellNumPerDimension()[2]; break;
+        case 5: position[2] = position[2] + container.getCellNumPerDimension()[2]; break;
+        default: throw std::runtime_error("Error calculating oppositeCell");
+    }
+
+    return position;
+}
+

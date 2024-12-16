@@ -165,7 +165,7 @@ namespace ParticleContainers {
    *
    * @return a vector containing the cells
    */
-  std::vector<Cell> getCells() const;
+  std::vector<Cell> & getCells();
 
   /**
    *
