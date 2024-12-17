@@ -52,7 +52,6 @@ private:
 
  /** Id of the particle. New particles are created with ascending id numbers starting with 1.
   *  Every id is unique. 
-  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
  */
 
 int id;
@@ -63,7 +62,9 @@ double epsilon;
 /**Lennard-Jones parameter sigma */
 double sigma;
 
-/**Clone particle for periodic boundaries */
+/**Id of clone particle for periodic boundaries
+ * Value of 0 if there is no partner
+ */
 int partner;
 
 public:
@@ -109,6 +110,7 @@ public:
 
  void setPartner(int id);
  int getPartner();
+ /** Sets partner id to 0 */
  void removePartner();
 
  std::string toString() const;
