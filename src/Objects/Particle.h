@@ -15,6 +15,10 @@ class Particle {
 
 public:
 
+/** Enum class for particle state
+ * ALIVE: Particle is currently part of the simulation
+ * DEAD: Particle has been deleted from the simulation
+ */
 enum class State{
     ALIVE,
     DEAD
@@ -59,7 +63,6 @@ private:
 
  /** Id of the particle. New particles are created with ascending id numbers starting with 1.
   *  Every id is unique. 
-  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
  */
 
 int id;
@@ -70,11 +73,15 @@ double epsilon;
 /**Lennard-Jones parameter sigma */
 double sigma;
 
-/**Clone particle for periodic boundaries */
+/**Id of clone particle for periodic boundaries
+ * Value of 0 if there is no partner
+ */
 int partner;
 
+/**State of the particle, possible states are DEAD and ALIVE */
 State state;
 
+/**Position of the particle in the particles vector */
 int index;
 
 public:
@@ -121,6 +128,8 @@ public:
 
  void setPartner(int id);
  int getPartner();
+
+ /**Sets the partner id to zero */
  void removePartner();
 
 void setState(State s);
@@ -129,6 +138,10 @@ State getState() const;
  void setIndex(int index);
  int getIndex() const;
 
+/** Copies all values except the index and state from another particle to this particle
+ * The state is set to ALIVE
+ * @param p the particle whose values will be copied
+ */
  void copyValues(Particle p);
 
  std::string toString() const;

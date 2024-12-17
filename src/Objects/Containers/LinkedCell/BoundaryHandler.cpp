@@ -18,7 +18,6 @@ Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalcul
 BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& container) :
 type {t}, container {container}, 
 boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
-//SPDLOG_DEBUG("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
 };
 
 
@@ -132,7 +131,6 @@ void BoundaryHandler::handlePeriodic() {
                 newParticle.setPartner(particle -> getID());
                 particle -> setPartner(newParticle.getID()); //if newParticle moves into domain and particle leaves domain, they switch roles
                 container.addParticle(newParticle);
-                //container.updateParticlesInCell();
             }
 
         //if is corner cell

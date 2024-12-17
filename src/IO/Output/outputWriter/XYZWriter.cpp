@@ -26,6 +26,10 @@ namespace outputWriters {
         SPDLOG_TRACE("XYZ Writer plotParticlesFromContainer: plotting particles in iteration {}", iteration);
         for (auto it = particleContainer.begin(); it != particleContainer.end(); ++it) {
             const Particle &p = *it;
+
+            if (p.getState() == Particle::State::DEAD){
+           continue;}
+
             std::array<double, 3> x = p.getX();
             file << "Ar ";
             file.setf(std::ios_base::showpoint);

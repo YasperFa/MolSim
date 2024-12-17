@@ -88,7 +88,6 @@ namespace ParticleContainers {
         int index = particle.getIndex();
 
             if (index >= 0 && index < (int) particles.size()){
-            //particles.erase(std::find(particles.begin(), particles.end(), particle));
             Particle& fromContainer = particles.at(index);
             if(fromContainer.getID() == particle.getID()){
                 fromContainer.setState(Particle::State::DEAD);
@@ -146,7 +145,6 @@ namespace ParticleContainers {
         SPDLOG_DEBUG("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
 
         if (x < -1 || y < -1 || z < -1 || x > (numCellsInXDim) || y > (numCellsInYDim) || z > (numCellsInZDim)) { //flying out too far
-            //SPDLOG_ERROR("x {} y {} z {} {} {} {} {} ", x, y, z, numCellsInXDim, numCellsInYDim, numCellsInZDim, cellSizePerDimension[2]);
             return -1;
         }
 
@@ -163,7 +161,6 @@ namespace ParticleContainers {
             static_cast<int>(std::floor(particlePosition[1] / cellSizePerDimension[1])),
             static_cast<int>(std::floor(particlePosition[2] / cellSizePerDimension[2]))
         };
-        //SPDLOG_INFO("{} {}", particlePosition[0], cellSizePerDimension[0] );
         int cellInd = cellIndex(cellPosition[0], cellPosition[1], cellPosition[2]);
         if (cellInd >= (int)cells.size() || cellInd < 0) {
             SPDLOG_TRACE("The given particle does not belong to any cell!");
@@ -195,22 +192,6 @@ namespace ParticleContainers {
             }
         }
     }
-
-    /*void LinkedCellContainer::deleteHaloParticles() {
-        std::unordered_set<Particle *> particlesDelete;
-        for (auto &cell: haloCells) {
-            for (Particle *particle: cell.get().getParticlesInCell()) {
-                particlesDelete.insert(particle);
-            }
-        }
-
-        auto isInDelete = [&](Particle &particle) {
-            return particlesDelete.find(&particle) != particlesDelete.end();
-        };
-
-        particles.erase(std::remove_if(particles.begin(), particles.end(), isInDelete), particles.end());
-        updateParticlesInCell();
-    }*/
 
     void LinkedCellContainer::initializeNeighbours() {
          SPDLOG_DEBUG("Initializing neighbours...");
