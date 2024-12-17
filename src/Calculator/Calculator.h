@@ -47,8 +47,9 @@ namespace Calculators {
             std::array<double, 3> sigma = {0.0, 0.0, 0.0};
 
             for (auto &p: particleContainer) {
+
                 p.setOldF(p.getF());
-                sigma[1] = p.getM() * gravity; //add gravitaional force in y direction
+                sigma[1] = p.getM() * gravity; //add gravitational force in y direction
                 p.setF(sigma);
             }
 
@@ -91,11 +92,12 @@ namespace Calculators {
                 }
 
                 for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
-                    if (*itParticle1 == nullptr) {
+                    if (*itParticle1 == nullptr ||  (*itParticle1)->getState() == Particle::State::DEAD) {
                         continue;
                     }
+
                     for (auto itParticle2 = itParticle1 + 1; itParticle2 != itCell->endParticle(); ++itParticle2) {
-                        if (*itParticle2 == nullptr) {
+                        if (*itParticle2 == nullptr || (*itParticle2)->getState() == Particle::State::DEAD) {
                             continue;
                         }
 
@@ -123,9 +125,14 @@ namespace Calculators {
                         continue;
                     }
                     for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
+
+                        if ((*itParticle1)->getState() == Particle::State::DEAD){
+                            continue;
+                        }
+
                         for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
                          //   SPDLOG_INFO("PASSED 2.1");
-                            if (neighbourP == nullptr) {
+                            if (neighbourP == nullptr || (neighbourP)->getState() == Particle::State::DEAD) {
                                 continue;
                             }
 

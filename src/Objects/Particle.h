@@ -13,6 +13,13 @@
 
 class Particle {
 
+public:
+
+enum class State{
+    ALIVE,
+    DEAD
+};    
+
 private:
  /**
   * Position of the particle
@@ -66,7 +73,12 @@ double sigma;
 /**Clone particle for periodic boundaries */
 int partner;
 
+State state;
+
+int index;
+
 public:
+
  explicit Particle(int type = 0);
 
  Particle(const Particle &other);
@@ -110,6 +122,14 @@ public:
  void setPartner(int id);
  int getPartner();
  void removePartner();
+
+void setState(State s);
+State getState() const;
+
+ void setIndex(int index);
+ int getIndex() const;
+
+ void copyValues(Particle p);
 
  std::string toString() const;
 };

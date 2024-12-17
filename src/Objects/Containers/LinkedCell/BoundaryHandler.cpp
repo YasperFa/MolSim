@@ -18,7 +18,7 @@ Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalcul
 BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& container) :
 type {t}, container {container}, 
 boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
-SPDLOG_DEBUG("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
+//SPDLOG_DEBUG("type set to {} {} {} {}", type[0], type[1], type [2], type [3]);
 };
 
 
@@ -43,6 +43,10 @@ void BoundaryHandler::handleOutflow(){
 
             for (auto p : cell.get().getParticlesInCell()) {
 
+                if (p->getState() == Particle::State::DEAD){
+                    continue;
+                }
+
                 container.removeParticle(*p);
                 container.updateParticlesInCell();
             }
@@ -66,6 +70,10 @@ void BoundaryHandler::handleReflecting(){
             if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
         
             for (Particle * p : cell.get().getParticlesInCell()) {
+
+                if (p->getState() == Particle::State::DEAD){
+                    continue;
+                }
   
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
@@ -84,6 +92,10 @@ void BoundaryHandler::handleReflecting(){
             if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
         
             for (Particle * p : cell.get().getParticlesInCell()) {
+
+                if (p->getState() == Particle::State::DEAD){
+                    continue;
+                }
   
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
@@ -110,6 +122,10 @@ void BoundaryHandler::handlePeriodic() {
             if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
 
             for (auto particle : cell.get().getParticlesInCell()) {
+
+                if (particle->getState() == Particle::State::DEAD){
+                    continue;
+                }
                 
                 if (!movedIntoBoundary(i, particle -> getOldX())) {continue;} //only create clone particle if particle moved into boundary in this iteration
                 Particle newParticle = createCloneParticle(i, *particle);
@@ -224,6 +240,7 @@ Particle BoundaryHandler::createCloneParticle(int i, Particle particle){
     newParticle.setF(particle.getF());
     newParticle.setOldF(particle.getOldF());
     newParticle.setOldX(newFormerPosition);
+    newParticle.setState(Particle::State::ALIVE);
     return newParticle;
 }
 
@@ -294,6 +311,11 @@ void BoundaryHandler::handleCornersPeriodic(int i, Cell& cell) {
         }
 
         for (auto particle:cell.getParticlesInCell()){
+
+            if (particle->getState() == Particle::State::DEAD){
+                    continue;
+                }
+
             if (movedIntoBoundary(i, particle->getOldX()) && movedIntoBoundary (j, particle -> getOldX())){
                 Particle newParticle = createCloneParticle(i, j, *particle);
                 newParticle.setPartner(particle -> getID());
@@ -328,11 +350,16 @@ void BoundaryHandler::updatePartners(){
 
         for (auto particle: cell.get().getParticlesInCell()){
 
-            if (particle->getPartner() == 0){ //not a cloned particle
-                continue;
-            }
-            
+            if (particle->getState() == Particle::State::DEAD){
+                    continue;
+                }
+
             for (auto p : oppositeCell.getParticlesInCell()){
+
+                 if (p->getState() == Particle::State::DEAD){
+                    continue;
+                }
+
                 if (particle -> getPartner() == p ->getID()){
                     particle -> setF(p -> getF());
                     particle -> setOldF(p -> getOldF());

@@ -22,7 +22,7 @@ testContainer.addParticle(Particle({3, 2, 0}, {1.1, 0, 0}, 1, 0));
 
 testContainer.updateParticlesInCell();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 calculator.calculateXFV(testContainer, 0.5);
 handler.handleBoundaries();
@@ -80,7 +80,7 @@ for (auto cell: testContainer.getCells()) {
 
 //SPDLOG_INFO("Checkpoint3");
 
-EXPECT_EQ(testContainer.getParticles().size(), 0);
+EXPECT_EQ(testContainer.sizeParticles(), 0);
 }
 
 /**Test the function handleReflecting() from BoundaryHandler */
@@ -96,12 +96,12 @@ testContainer.addParticle(Particle({2, 1, 0}, {0, -0.1, 0}, 1, 0));
 testContainer.addParticle(Particle({1, 2, 0}, {-0.1, 0, 0}, 1, 0));
 testContainer.addParticle(Particle({3, 2, 0}, {0.1, 0, 0}, 1, 0));
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 calculator.calculateXFV(testContainer, 0.01);
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 calculator.calculateXFV(testContainer, 0.5);
 handler.handleBoundaries();
 
@@ -119,7 +119,7 @@ for (int i = 0; i < 100; i++){
 calculator.calculateXFV(testContainer, 0.01); 
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 }
 }
 
@@ -137,12 +137,12 @@ testContainer.addParticle(Particle({2, 3, 0}, {0, 1, 0}, 1, 0));
 testContainer.addParticle(Particle({2, 1, 0}, {0, -1, 0}, 1, 0));
 
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 calculator.calculateXFV(testContainer, 0.01);
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 calculator.calculateXFV(testContainer, 0.5);
 handler.handleBoundaries();
 
@@ -154,7 +154,7 @@ do {
 
 EXPECT_TRUE(testContainer.getParticles().at(0).getV()[0] < 0);
 EXPECT_TRUE(testContainer.getParticles().at(1).getV()[0] > 0);
-EXPECT_EQ(testContainer.getParticles().size(), 4); //when 1 and 2 get repelled, 3 and 4 have not been removed yet
+EXPECT_EQ(testContainer.sizeParticles(), 4); //when 1 and 2 get repelled, 3 and 4 have not been removed yet
 
 bool outflowed = false; 
 
@@ -163,13 +163,13 @@ calculator.calculateXFV(testContainer, 0.01);
 handler.handleBoundaries();
 
 
-if (testContainer.getParticles().size() == 2) {
+if (testContainer.sizeParticles() == 2) {
      outflowed = true;
 }
 
 
 if (outflowed) {
-     EXPECT_TRUE(testContainer.getParticles().size() == 2); //2 particles stay until the end
+     EXPECT_TRUE(testContainer.sizeParticles() == 2); //2 particles stay until the end
 
      for (int a = 1; a < 3; a++) {
      bool contains = false;
@@ -203,7 +203,7 @@ testContainer.addParticle(Particle({2.9, 2.9, 0}, {1.5, 0, 0}, 1, 0)); //moves r
 
 testContainer.updateParticlesInCell();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 calculator.calculateXFV(testContainer, 0.5);
 
@@ -223,7 +223,7 @@ for (int i = 1; i < 5; i++) {
      EXPECT_TRUE(contains); //particles are still in boundary cells
 }
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 for (auto p : testContainer.getParticles()){
      SPDLOG_DEBUG(p.toString());
@@ -235,7 +235,7 @@ for (auto p : testContainer.getParticles()){
      SPDLOG_DEBUG(p.toString());
 }
 
-EXPECT_EQ(testContainer.getParticles().size(), 8);
+EXPECT_EQ(testContainer.sizeParticles(), 8);
 
 for (int i = 5; i < 9; i++) {
      bool contains = false;
@@ -281,7 +281,7 @@ for (int i = 5; i < 9; i++) {
 
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 8); //clone particles should not be created for particles that move into boundary cell from halo cells
+EXPECT_EQ(testContainer.sizeParticles(), 8); //clone particles should not be created for particles that move into boundary cell from halo cells
 
 
 }
@@ -297,7 +297,7 @@ testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner 
 
 testContainer.updateParticlesInCell();
 
-EXPECT_EQ(testContainer.getParticles().size(), 1);
+EXPECT_EQ(testContainer.sizeParticles(), 1);
 
 
      bool contains = false;
@@ -312,7 +312,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
 
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 4);
+EXPECT_EQ(testContainer.sizeParticles(), 4);
 
 for (int i = 2; i < 5; i++) {
      bool contains = false;
@@ -337,7 +337,7 @@ testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner 
 
 testContainer.updateParticlesInCell();
 
-EXPECT_EQ(testContainer.getParticles().size(), 1);
+EXPECT_EQ(testContainer.sizeParticles(), 1);
 
 
      bool contains = false;
@@ -352,7 +352,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
 
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 2);
+EXPECT_EQ(testContainer.sizeParticles(), 2);
 
 
      contains = false;
@@ -378,7 +378,7 @@ testContainer.addParticle(Particle({0.5, 2, 0}, {0, 0.1, 0}, 1, 0)); //corner pa
 
 testContainer.updateParticlesInCell();
 
-EXPECT_EQ(testContainer.getParticles().size(), 1);
+EXPECT_EQ(testContainer.sizeParticles(), 1);
 
 
 
@@ -396,7 +396,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 1);
 
 handler.handleBoundaries();
 
-EXPECT_EQ(testContainer.getParticles().size(), 2);
+EXPECT_EQ(testContainer.sizeParticles(), 2);
 
 
      contains = false;
@@ -426,7 +426,7 @@ for (int i = 0; i < 10; i++){
      }
      EXPECT_TRUE(contains); //particle is still in boundary cells
 
-     EXPECT_EQ(testContainer.getParticles().size(), 2); //no more clone particle gets created
+     EXPECT_EQ(testContainer.sizeParticles(), 2); //no more clone particle gets created
 
 }
 }

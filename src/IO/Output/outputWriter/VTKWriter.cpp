@@ -98,7 +98,8 @@ namespace outputWriters {
         outputWriters::VTKWriter plotter;
         plotter.initializeOutput(particleContainer.sizeParticles());
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
-            plotter.plotParticle(*p);
+            if ((*p).getState() == Particle::State::ALIVE){
+            plotter.plotParticle(*p);}
         }
         plotter.writeFile(filename, iteration);
     }

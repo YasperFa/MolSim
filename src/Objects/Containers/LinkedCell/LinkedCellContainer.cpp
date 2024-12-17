@@ -53,8 +53,25 @@ namespace ParticleContainers {
         Cell *cellOfParticle = mapParticleToCell(particle);
         if (cellOfParticle != nullptr) {
 
+            //check if there is a dead particle that we can use
+            int index = 0;
+            for (auto &p : particles){
+                if (p.getState() == Particle::State::DEAD){
+                    p.copyValues(particle);
+                    cellOfParticle->addParticleToCell(&p);
+                    return;
+                }
+              index++;
+            }
+
+            //else: add in the back
+            //set index and state
+            Particle particleCopy = Particle(particle); //this is necessary because of const argument
+            particleCopy.setIndex(index);
+            particleCopy.setState(Particle::State::ALIVE);
+            
             size_t cap = particles.capacity();
-            particles.push_back(particle);
+            particles.push_back(particleCopy);
 
             if (cap != particles.capacity()) {
                 updateParticlesInCell();
@@ -63,21 +80,32 @@ namespace ParticleContainers {
             }
         } else {
             SPDLOG_WARN("Cell does not exist, particle is out of bounds!");
-            return;
         }
     }
 
     void LinkedCellContainer::removeParticle(const Particle &particle) {
         SPDLOG_DEBUG("removing {}", particle.toString());
-        Cell *cellOfParticle = mapParticleToCell(particle);
-        if (cellOfParticle != nullptr) {
+        int index = particle.getIndex();
 
-            particles.erase(std::find(particles.begin(), particles.end(), particle));
+            if (index >= 0 && index < (int) particles.size()){
+            //particles.erase(std::find(particles.begin(), particles.end(), particle));
+            Particle& fromContainer = particles.at(index);
+            if(fromContainer.getID() == particle.getID()){
+                fromContainer.setState(Particle::State::DEAD);
+                SPDLOG_DEBUG("removed particle via index");
+                return;
+            } }
 
-        } else {
-            SPDLOG_ERROR("Cell does not exist, particle to be removed is out of bounds!");
-            throw std::runtime_error("Cell does not exist, particle to be removed is out of bounds!");
-        }
+            for (auto &p : particles){
+                if (p.getID() == particle.getID()){
+                p.setState(Particle::State::DEAD);
+                SPDLOG_DEBUG("removed particle via serach");
+                return;
+            }
+            }
+            SPDLOG_ERROR("Tried removing particle which is not in Container"),
+            throw std::runtime_error("Tried removing particle which is not in Container");
+
     }
 
     void LinkedCellContainer::reserve(size_t numParticles) {
@@ -95,19 +123,16 @@ namespace ParticleContainers {
         }
 
         for (auto particle = begin(); particle!= end(); ++particle) {
+
+            if (particle -> getState() == Particle::State::DEAD) {
+                continue;
+            }
+
             Cell* cell = mapParticleToCell(*particle);
             if (cell != nullptr) {
                 cell->addParticleToCell(&(*particle));
             } else {
-                auto it = std::find(particles.begin(), particles.end(), *particle);
-                if (it != particles.end()) {
-                    particles.erase(it);
-                    //to prevent address sanitizer from failing, since we are modifying vector while iterating
-                    particle = particle - 1;
-                    SPDLOG_DEBUG("Particle erased successfully.");
-                } else {
-                    SPDLOG_WARN("Particle not found in container.");
-                }
+            removeParticle(*particle);
             SPDLOG_DEBUG("removed particle out of bounds");
            }
         }
@@ -171,7 +196,7 @@ namespace ParticleContainers {
         }
     }
 
-    void LinkedCellContainer::deleteHaloParticles() {
+    /*void LinkedCellContainer::deleteHaloParticles() {
         std::unordered_set<Particle *> particlesDelete;
         for (auto &cell: haloCells) {
             for (Particle *particle: cell.get().getParticlesInCell()) {
@@ -185,7 +210,7 @@ namespace ParticleContainers {
 
         particles.erase(std::remove_if(particles.begin(), particles.end(), isInDelete), particles.end());
         updateParticlesInCell();
-    }
+    }*/
 
     void LinkedCellContainer::initializeNeighbours() {
          SPDLOG_DEBUG("Initializing neighbours...");
@@ -241,7 +266,14 @@ namespace ParticleContainers {
 
     std::vector<Particle> LinkedCellContainer::getParticles() const { return particles; }
 
-    size_t LinkedCellContainer::sizeParticles() const { return particles.size(); }
+    size_t LinkedCellContainer::sizeParticles() const { 
+        int num = 0;
+        for (auto p : particles){
+            if (p.getState() == Particle::State::ALIVE){
+                num++;
+            }
+        }
+        return num;}
 
     std::vector<Cell> & LinkedCellContainer::getCells() { return cells; }
 
