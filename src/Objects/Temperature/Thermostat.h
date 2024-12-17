@@ -54,6 +54,11 @@ public:
  static double getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) {
     double total = 0;
     for (auto& particle : particleContainer) {
+
+      if(particle.getState() == Particle::State::DEAD){
+         continue;
+      }
+
      std::array<double, 3> v = particle.getV();
      total += particle.getM() * (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) * 0.5;
     }
@@ -68,6 +73,10 @@ public:
    std::array<double, 3> averageVelocity = {0, 0, 0};
    size_t count = 0;
    for (auto& particle : particleContainer) {
+      if(particle.getState() == Particle::State::DEAD){
+         continue;
+      }
+
       averageVelocity = averageVelocity + particle.getV();
       count++;
    }

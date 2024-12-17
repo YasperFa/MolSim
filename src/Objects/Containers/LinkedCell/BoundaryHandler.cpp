@@ -354,6 +354,10 @@ void BoundaryHandler::updatePartners(){
                     continue;
                 }
 
+            if (particle->getPartner() == 0){ //not a cloned particle
+                continue;
+            }    
+
             for (auto p : oppositeCell.getParticlesInCell()){
 
                  if (p->getState() == Particle::State::DEAD){
