@@ -5,6 +5,7 @@
 #pragma once
 
 #include <functional>
+#include <vector>
 #include "Objects/Particle.h"
 namespace ParticleContainers {
     class ParticleContainer {
