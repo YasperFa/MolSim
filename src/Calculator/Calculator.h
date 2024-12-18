@@ -48,6 +48,10 @@ namespace Calculators {
 
             for (auto &p: particleContainer) {
 
+                if (p.getState() == Particle::State::DEAD){
+                            continue;
+                        }
+
                 p.setOldF(p.getF());
                 sigma[1] = p.getM() * gravity; //add gravitational force in y direction
                 p.setF(sigma);
@@ -182,6 +186,10 @@ namespace Calculators {
         void calculateX(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p: particleContainer) {
+                if (p.getState() == Particle::State::DEAD){
+                            continue;
+                        }
+
                 p.setOldX(p.getX());
                 std::array<double, 3> newX = (
                     p.getX() + ((delta_t * p.getV()) +
@@ -198,6 +206,10 @@ namespace Calculators {
         void calculateV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateV");
             for (auto &particle: particleContainer) {
+
+                if (particle.getState() == Particle::State::DEAD){
+                            continue;
+                        }
                 std::array<double, 3> newV = (particle.getV() +
                                                        (delta_t * 0.5 / particle.getM() *
                                                                  (particle.getOldF() + particle.getF())));
