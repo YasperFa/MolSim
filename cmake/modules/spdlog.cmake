@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(spdlog)
 
 target_link_libraries(MolSim 
         PRIVATE
-        spdlog
+        spdlog::spdlog_header_only
 )
 
 if(LVL STREQUAL ERROR)
