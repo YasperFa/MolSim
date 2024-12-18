@@ -116,7 +116,6 @@ void BoundaryHandler::handlePeriodic() {
                 newParticle.setPartner(particle -> getID());
                 particle -> setPartner(newParticle.getID()); //if newParticle moves into domain and particle leaves domain, they switch roles
                 container.addParticle(newParticle);
-                //container.updateParticlesInCell();
             }
 
         //if is corner cell

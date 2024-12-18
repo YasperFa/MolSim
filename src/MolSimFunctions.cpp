@@ -182,7 +182,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         printHelp();
         return false;
     }
-    //SPDLOG_DEBUG("Domain size array is: {}", domainSize);
+    
     std::array<double, 3> domainSizeArray = {domainSize[0], domainSize[1], domainSize[2]};
 
     if (parseResult["cutoffRadius"].as<double>() <= 0) {

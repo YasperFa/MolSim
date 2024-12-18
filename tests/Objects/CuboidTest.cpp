@@ -1,5 +1,5 @@
 //
-// Created by Y Farahasmine on 12/11/2024.
+// Created by Yasmine Farah on 12/11/2024.
 //
 #include <gtest/gtest.h>
 

@@ -59,14 +59,12 @@ for (int i = 1; i < 5; i++) {
           }
      }
      EXPECT_TRUE(contains); //particles are in halo cells
-     //SPDLOG_INFO("Checkpoint");
+    
 }
 
 for (auto cell: testContainer.getBoundaryCells()) {
      EXPECT_EQ(cell.get().getParticlesInCell().size(), 0);
 }
-
-//SPDLOG_INFO("Checkpoint2");
 
 handler.handleBoundaries();
 
@@ -77,8 +75,6 @@ for (auto cell: testContainer.getHaloCells()) {
 for (auto cell: testContainer.getCells()) {
      EXPECT_EQ(cell.getParticlesInCell().size(), 0);
 }
-
-//SPDLOG_INFO("Checkpoint3");
 
 EXPECT_EQ(testContainer.getParticles().size(), 0);
 }

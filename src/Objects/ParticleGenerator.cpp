@@ -1,5 +1,5 @@
 //
-// Created by Sawsan Farah on 10/11/2024.
+// Created by Yasmine Farah on 10/11/2024.
 //
 
 #include "ParticleGenerator.h"
