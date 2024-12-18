@@ -400,15 +400,18 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
 
         iteration++;
 
+        /*
         if (iteration % freq == 0) {
             outputWriter->plotParticles(iteration, particleContainer, outName, inputFile, endTime, gravity, deltaT);
         }
+        */
 
         if (thermostat != nullptr) {
             if (iteration % thermostat->getNtimeSteps() == 0) {
                 thermostat->applyThermostat(particleContainer);
             }
         }
+
 
         SPDLOG_DEBUG("Iteration {} finished.", iteration);
         currentTime += deltaT;
