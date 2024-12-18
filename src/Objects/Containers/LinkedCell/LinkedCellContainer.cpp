@@ -171,22 +171,6 @@ namespace ParticleContainers {
         }
     }
 
-    void LinkedCellContainer::deleteHaloParticles() {
-        std::unordered_set<Particle *> particlesDelete;
-        for (auto &cell: haloCells) {
-            for (Particle *particle: cell.get().getParticlesInCell()) {
-                particlesDelete.insert(particle);
-            }
-        }
-
-        auto isInDelete = [&](Particle &particle) {
-            return particlesDelete.find(&particle) != particlesDelete.end();
-        };
-
-        particles.erase(std::remove_if(particles.begin(), particles.end(), isInDelete), particles.end());
-        updateParticlesInCell();
-    }
-
     void LinkedCellContainer::initializeNeighbours() {
          SPDLOG_DEBUG("Initializing neighbours...");
         const int numCellsInXDim = cellNumPerDimension[0];

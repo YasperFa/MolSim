@@ -236,9 +236,5 @@ namespace ParticleContainers {
    */
   int cellIndex(int x, int y, int z) const;
 
-  /**
- * @brief Remove particles that are contained in halo cells from the particle container.
- */
-  void deleteHaloParticles();
  };
 }
