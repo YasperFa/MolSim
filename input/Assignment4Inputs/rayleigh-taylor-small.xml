@@ -1,5 +1,5 @@
 <simulation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
+            xsi:noNamespaceSchemaLocation="MolSimIntel/MolSim/src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
         <writeFrequency>40</writeFrequency>
