@@ -4,16 +4,19 @@
 #include <gtest/gtest.h>
 #include "../../src/IO/Input/XMLfileReader.h"
 
+// check if parsing of the xml file MolSim/input/schemaTest1.xml
 TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     std::ifstream file("../input/schemaTest1.xml");
     double deltaT;
     double endTime;
+    double gravity;
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler);
+    std::unique_ptr<Thermostat> thermostat;
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, freq,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("XYZWriter",outputWriter->toString());
     EXPECT_EQ("LJC",calculator->toString());
     EXPECT_EQ(10, freq);
@@ -33,16 +36,19 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     }
 
 }
+// check if parsing of the xml file MolSim/input/schemaTest2.xml
 TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     std::ifstream file("../input/schemaTest2.xml");
-    double deltaT;
-    double endTime;
+    double deltaT = 0.0;
+    double endTime = 0.0;
+    double gravity = 0;
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, freq,outputWriter, calculator, particleContainer, boundaryHandler);
+    std::unique_ptr<Thermostat> thermostat;
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, freq,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("VTKWriter",outputWriter->toString());
    EXPECT_EQ("Default",calculator->toString());
     EXPECT_EQ(1, freq);

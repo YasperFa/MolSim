@@ -93,7 +93,8 @@ namespace outputWriters {
         pointsIterator->push_back(p.getX()[2]);
     }
 
-    void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer &particleContainer, const std::string &filename) {
+    void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
+            double &endTime, double& gravity, double &deltaT)  {
         outputWriters::VTKWriter plotter;
         plotter.initializeOutput(particleContainer.sizeParticles());
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
