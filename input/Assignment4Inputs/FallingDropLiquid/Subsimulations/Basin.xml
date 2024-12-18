@@ -49,7 +49,7 @@
             <distance>1.2</distance>
             <meanVelocity>0.1</meanVelocity>
             <mass>1.0</mass>
-            <type>0</type>
+            <type>1</type>
             <epsilon>1.0</epsilon>
             <sigma>1.2</sigma>
         </cuboid>

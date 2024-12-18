@@ -32,9 +32,10 @@ class XMLfileReader {
    * @param deltaT: delta_t
    * @param endTime: end_time
    * @param freq: frequency of output files
-   * @param outputWriter: outputWriter vtk/xyz
+   * @param outputWriter: outputWriter vtk/xyz/chk
    * @param calculator: calculator LJC/Default
    * @param particleContainer: particle container
+   * @param boundaryHandler: boundary handler
    * @param thermostat: thermostat
    */
    static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq,

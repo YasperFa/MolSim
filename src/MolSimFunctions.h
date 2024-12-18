@@ -60,7 +60,18 @@ namespace MolSim {
                 std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
                 std::string &inputFile);
 
+
+    /**
+     * @brief runs the sub-simulations specified in the input xml file
+     * @param mainInputFile: input file of the main simulation
+     * @return true if sub-simulations are ran successfully
+     */
     bool runSubSim(std::string &mainInputFile);
 
+    /**
+     * @brief checks the current directory and loads every .chk file into the particle container
+     * @param particleContainer: the particle container where the particles will be loaded into
+     * @return true if loading the checkpoints is successful
+     */
     bool loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContainer>& particleContainer);
 }

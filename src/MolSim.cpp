@@ -55,6 +55,7 @@ int main(int argc, char *argsv[]) {
 
         if (MolSim::runSubSim(inputFile)) {
             SPDLOG_INFO("Subsimulations completed successfully!");
+            MolSim::loadCheckpoints(particleContainer);
         }
 
     } else if (inputFile.compare(inputFile.length() - 4, 4, ".chk") == 0) {
@@ -64,7 +65,7 @@ int main(int argc, char *argsv[]) {
         fileReader.readFile(*particleContainer, inputFile);
     }
 
-    MolSim::loadCheckpoints(particleContainer);
+
 
 
     SPDLOG_INFO("Hello from MolSim for PSE!");
