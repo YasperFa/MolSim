@@ -51,7 +51,7 @@ target_include_directories(Test
 
 target_link_libraries(Test
         PUBLIC
-        xerces-c
+        ${XERCES_C_LIBRARY}
         PRIVATE
         gtest
         gtest_main

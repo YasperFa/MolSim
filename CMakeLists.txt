@@ -34,10 +34,20 @@ file(GLOB_RECURSE MY_SRC
         # header don't need to be included but this might be necessary for some IDEs
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
+# Find Xerces-C library and include path
+# Find Xerces-C library and include path
+find_library(XERCES_C_LIB xerces-c PATHS /dss/dsshome1/lxc09/di34mun/xerces-install/lib64)
+find_path(XERCES_C_INCLUDE xercesc/dom/DOM.hpp PATHS /dss/dsshome1/lxc09/di34mun/xerces-install/include)
 
-# create make target
+
+
 add_executable(MolSim ${MY_SRC}
 )
+include_directories(${XERCES_C_INCLUDE})
+link_directories(${XERCES_C_LIB})
+
+# Set the Xerces-C library path for linking
+set(XERCES_C_LIBRARY ${XERCES_C_LIB})
 
 # set cxx standard. You may raise this if you want.
 target_compile_features(MolSim
@@ -48,14 +58,14 @@ target_compile_features(MolSim
 target_include_directories(MolSim
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libs/libxsd
+        ${XERCES_C_INCLUDE}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-
 target_link_libraries(MolSim
         # stuff that is used in headers and source files
         PUBLIC
-        xerces-c
+        ${XERCES_C_LIBRARY}
         cxxopts
 )
 
