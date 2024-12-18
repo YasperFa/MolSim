@@ -13,9 +13,9 @@ FetchContent_MakeAvailable(spdlog)
 
 target_link_libraries(MolSim 
         PRIVATE
-        spdlog
+        spdlog::spdlog_header_only
 )
-
+2
 if(LVL STREQUAL ERROR)
         set(LOG_LEVEL SPDLOG_LEVEL_ERROR)
 elseif(LVL STREQUAL WARN)

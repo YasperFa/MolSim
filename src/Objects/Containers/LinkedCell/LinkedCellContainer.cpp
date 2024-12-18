@@ -5,6 +5,7 @@
 #include "LinkedCellContainer.h"
 
 #include "spdlog/spdlog.h"
+#include <algorithm>
 
 namespace ParticleContainers {
     LinkedCellContainer::LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff)
@@ -94,22 +95,15 @@ namespace ParticleContainers {
             cell.clearParticlesInCell();
         }
 
-        for (auto particle = begin(); particle!= end(); ++particle) {
-            Cell* cell = mapParticleToCell(*particle);
+        for (auto it = particles.begin(); it != particles.end();) {
+            Cell* cell = mapParticleToCell(*it);
             if (cell != nullptr) {
-                cell->addParticleToCell(&(*particle));
+                cell->addParticleToCell(&(*it));
+                ++it; // Advance the iterator
             } else {
-                auto it = std::find(particles.begin(), particles.end(), *particle);
-                if (it != particles.end()) {
-                    particles.erase(it);
-                    //to prevent address sanitizer from failing, since we are modifying vector while iterating
-                    particle = particle - 1;
-                    SPDLOG_DEBUG("Particle erased successfully.");
-                } else {
-                    SPDLOG_WARN("Particle not found in container.");
-                }
-            SPDLOG_DEBUG("removed particle out of bounds");
-           }
+                SPDLOG_DEBUG("Particle out of bounds.");
+                it = particles.erase(it); // Erase returns the next valid iterator
+            }
         }
     }
 
@@ -169,22 +163,6 @@ namespace ParticleContainers {
 
             }
         }
-    }
-
-    void LinkedCellContainer::deleteHaloParticles() {
-        std::unordered_set<Particle *> particlesDelete;
-        for (auto &cell: haloCells) {
-            for (Particle *particle: cell.get().getParticlesInCell()) {
-                particlesDelete.insert(particle);
-            }
-        }
-
-        auto isInDelete = [&](Particle &particle) {
-            return particlesDelete.find(&particle) != particlesDelete.end();
-        };
-
-        particles.erase(std::remove_if(particles.begin(), particles.end(), isInDelete), particles.end());
-        updateParticlesInCell();
     }
 
     void LinkedCellContainer::initializeNeighbours() {
