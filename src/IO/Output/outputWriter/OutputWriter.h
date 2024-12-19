@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../../../Objects/Containers/DirectSum/DirectSumContainer.h"
+#include "../../../Objects/Containers/LinkedCell/LinkedCellContainer.h"
 
 namespace outputWriters {
     class OutputWriter {

@@ -14,6 +14,8 @@
 #include <iostream>
 #include <string>
 
+int numParticles = 0;
+
 namespace outputWriters {
     void VTKWriter::initializeOutput(int numParticles) {
         vtkFile = new VTKFile_t("UnstructuredGrid");
@@ -96,12 +98,38 @@ namespace outputWriters {
     void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
             double &endTime, double& gravity, double &deltaT)  {
         outputWriters::VTKWriter plotter;
-        plotter.initializeOutput(particleContainer.sizeParticles());
+       if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) { //LCC: do not print halo particles
+
+        if (numParticles == 0){ //calculate number of particles only once, does not change over course of simulation
+        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
+            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
+            numParticles++;
+            }
+        }} 
+
+        plotter.initializeOutput(numParticles);
+        
+        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
+
+            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
+            plotter.plotParticle(*p);}
+        }
+
+       } else { //DSC: plot every particle
+
+       plotter.initializeOutput(particleContainer.sizeParticles());
+
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
             plotter.plotParticle(*p);
         }
+
+       }
+
         plotter.writeFile(filename, iteration);
     }
+
+
+    
     std::string VTKWriter::toString() {
         return std::string("VTKWriter");
     }
