@@ -11,7 +11,8 @@
 #include "spdlog/spdlog.h"
 
 namespace outputWriters {
-    void XYZWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer &particleContainer, const std::string &filename) {
+    void XYZWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
+            double &endTime, double& gravity, double &deltaT)  {
         SPDLOG_TRACE("XYZ Writer plotParticlesFromContainer: opening file in iteration {}", iteration);
         std::ofstream file;
         std::stringstream strstr;
@@ -24,7 +25,15 @@ namespace outputWriters {
                 << std::endl;
         SPDLOG_TRACE("XYZ Writer plotParticlesFromContainer: plotting particles in iteration {}", iteration);
         for (auto it = particleContainer.begin(); it != particleContainer.end(); ++it) {
+
             const Particle &p = *it;
+
+            if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
+                if ((lcCont->mapParticleToCell(p)) -> getCellType()== Cell::CType::HALO){
+                    continue;
+                }
+            }
+
             std::array<double, 3> x = p.getX();
             file << "Ar ";
             file.setf(std::ios_base::showpoint);
@@ -33,6 +42,7 @@ namespace outputWriters {
                 file << xi << " ";
             }
             file << std::endl;
+
         }
         file.close();
     }

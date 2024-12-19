@@ -1,22 +1,23 @@
 //
-// Created by Sawsan Farah on 10/11/2024.
+// Created by Yasmine Farah on 10/11/2024.
 //
 
 #include "ParticleGenerator.h"
 
+#include "Containers/ParticleContainer.h"
 #include "spdlog/spdlog.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 
-void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma, double initTemperature) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
     std::array<double,3> x = cuboid.getLowerFrontCorner();
     std::array<double,3> v = cuboid.getInitVelocity();
     double h = cuboid.getDistBetweenParticles();
-    double mv = cuboid.getMeanVelocity();
     double m = cuboid.getMass();
+    double mv = cuboid.getMeanVelocity();
     for (int k=0; k < N[2];++k) {
         for (int j=0; j < N[1];++j) {
             for (int i=0; i < N[0];++i) {
@@ -29,12 +30,17 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                 std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(mv,2);
                 // get the initial velocity
                 std::array<double, 3> vel = v;
-                // add maxwell velocity to initial velocity? --> I don't know if this is what we are supposed
+                //scale according to temperature
+                double scale = 1;
+                if(initTemperature != -1) {
+                    scale = std::sqrt(initTemperature/m);
+                }
+                // add maxwell velocity to initial velocity
                 for (int m = 0; m < 3; ++m) {
-                    vel[m] += maxwell_vel[m];
+                    vel[m] += scale * maxwell_vel[m];
                 }
                 // create new particle
-                Particle nParticle(particle_pos,vel,m,0);
+                Particle nParticle(particle_pos,vel,m, type, epsilon, sigma);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }
@@ -42,7 +48,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     }
 }
 
-void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc) {
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type, double epsilon, double sigma) {
     const std::array<double, 3> center = disc.getCenterCoordinate();
     const  std::array<double, 3> initVel = disc.getInitVelocity();
     const int r = disc.getRadius();
@@ -58,7 +64,7 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
                 SPDLOG_DEBUG("line {}", j);
                 const std::array<double, 3> particlePosition = {center[0] + j*h, center[1] + i*h, center[2]};
                 // create new particle
-                Particle nParticle(particlePosition,initVel, mass,0);
+                Particle nParticle(particlePosition,initVel, mass, type, epsilon, sigma);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }

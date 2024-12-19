@@ -73,7 +73,6 @@ namespace ParticleContainers {
  public:
   /**
    * @brief Constructor for a new Linked Cell Container
-   * BOUNDARIES FROM TASK 3 HAS TO BE ADDED!!!
    * @param domainSize size of the domain that will be used for the simulation
    * @param cutoff cut off radius for the simulation
    */
@@ -166,7 +165,7 @@ namespace ParticleContainers {
    *
    * @return a vector containing the cells
    */
-  std::vector<Cell> getCells() const;
+  std::vector<Cell> & getCells();
 
   /**
    *
@@ -237,9 +236,5 @@ namespace ParticleContainers {
    */
   int cellIndex(int x, int y, int z) const;
 
-  /**
- * @brief Remove particles that are contained in halo cells from the particle container.
- */
-  void deleteHaloParticles();
  };
 }

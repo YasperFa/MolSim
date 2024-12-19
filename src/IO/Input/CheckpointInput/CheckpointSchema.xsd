@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="../schema.xsd"/>
+
+    <!-- Root element -->
+    <xs:element name="Checkpoint" type="CheckpointType">
+        <xs:annotation>
+            <xs:documentation>
+                XML-schema for checkpoint file.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <!-- CheckpointType defines the structure of the checkpoint -->
+    <xs:complexType name="CheckpointType">
+        <xs:sequence>
+            <xs:element name="SimulationData" type="SimulationDataType"/>
+            <xs:element name="ParticleData" type="ParticleDataType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- SimulationDataType contains metadata about the simulation -->
+    <xs:complexType name="SimulationDataType">
+        <xs:sequence>
+            <xs:element name="inputFile" type="xs:string"/> <!-- Changed from xs:anyURI for compatibility -->
+            <xs:element name="endTime" type="xs:double"/>
+            <xs:element name="deltaT" type="xs:double"/>
+            <xs:element name="gravity" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ParticleDataType contains multiple particles -->
+    <xs:complexType name="ParticleDataType">
+        <xs:sequence>
+            <xs:element name="particle" type="ExtendedParticleType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ExtendedParticleType extends ParticleType -->
+    <xs:complexType name="ExtendedParticleType">
+        <xs:sequence>
+            <xs:element name="position" type="DoubleVectorType"/>
+            <xs:element name="velocity" type="DoubleVectorType"/>
+            <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/> <!-- Optional type -->
+            <xs:element name="force" type="DoubleVectorType"/>
+            <xs:element name="oldForce" type="DoubleVectorType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

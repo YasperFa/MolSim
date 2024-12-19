@@ -7,10 +7,13 @@
 # The second line not being a comment has to be one integer, indicating the number of
 # object data sets.
 #
-# Molecule data consists of 
+# Molecule data consists of
 # * xyz-coordinates (3 double values)
 # * velocities (2 or 3 double values)
 # * mass (1 double value)
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
 #------------------------------------
 # Cuboid data consists of
 # * left front -coordinates (3 double values)
@@ -19,6 +22,9 @@
 # * distance between particles (1 double value)
 # * mass (1 double values)
 # * mean velocity  (1 double value)
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
 # -------------------------------------------------------------------------------------
 # Disc data consists of
 # * center coordinate (3 double values)
@@ -26,12 +32,15 @@
 # * radius ( in terms of the number of molecules along the radius) (1 double values)
 # * distance between particles (1 double value)
 # * mass (1 double values)
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
 # xyz-coord      velocity        mass
-# left-coord     NumParticles     initial_velocity    distance    mass    mean_velocity
+# left-coord     NumParticles     initial_velocity    distance    mass    mean_velocity     type   epsilon   sigma
 1
 2
-0.0 0.0 0.0      40.0 8.0 1.0          0.0 0.0 0.0             1.1225         1.0      0.1
-15.0 15.0 0.0      8.0 8.0 1.0          0.0 -10.0 0.0             1.1225         1.0      0.1
+0.0 0.0 0.0      40.0 8.0 1.0          0.0 0.0 0.0             1.1225         1.0      0.1            0     5    1
+15.0 15.0 0.0      8.0 8.0 1.0          0.0 -10.0 0.0             1.1225         1.0      0.1          0     5    1
 
 
 

@@ -1,9 +1,9 @@
 //
-// Created by Y Farahasmine on 12/11/2024.
+// Created by Yasmine Farah on 12/11/2024.
 //
 #include <gtest/gtest.h>
 
-#include "../../src/Objects/Cuboid.h"
+#include "../../src/Objects/Shapes/Cuboid.h"
 
 /* tests if getters and constructor work correctly */
 TEST(CuboidTest, testGettersAndConstructor) {

@@ -5,7 +5,7 @@
 #include "Cell.h"
 
 #include "spdlog/spdlog.h"
-Cell::Cell(CType cellType) : cellType(cellType) {}
+Cell::Cell(CType cellType, std::array <int, 3> pos) : cellType(cellType), position(pos){}
 
 std::vector<Particle*>::iterator Cell::beginParticle() {
     return particlesInCell.begin();
@@ -48,19 +48,21 @@ void Cell::addInfluencedByCell(Cell* cell) {
     influencedBy.insert(cell);
 }
 
-std::vector<Particle*> Cell::getParticlesInCell(){return particlesInCell;}
+std::vector<Particle*> & Cell::getParticlesInCell(){return particlesInCell;}
 
-std::vector<Cell*> Cell::getNeighbourCells(){return neighbourCells;}
+std::vector<Cell*> & Cell::getNeighbourCells(){return neighbourCells;}
 
 Cell::CType Cell::getCellType(){ return cellType;}
 
-std::unordered_set<Cell *> Cell::getInfluencedByCells() {
+std::unordered_set<Cell *> & Cell::getInfluencedByCells() {
     return influencedBy;
 }
 
 void Cell::clearParticlesInCell() {
     particlesInCell.clear();
 }
+
+std::array<int, 3> Cell::getPosition(){return position;};
 
 
 
