@@ -91,8 +91,6 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
             if (sim->parameters().gravity().present()) {
                 gravity = sim->parameters().gravity().get();
                 SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
-            } else {
-                gravity = 0;
             }
             if (sim->output().baseName().present()) {
                 std::string output = sim->output().baseName().get();
