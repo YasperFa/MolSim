@@ -14,8 +14,6 @@
 #include <iostream>
 #include <string>
 
-int numParticles = 0;
-
 namespace outputWriters {
     void VTKWriter::initializeOutput(int numParticles) {
         vtkFile = new VTKFile_t("UnstructuredGrid");
@@ -100,12 +98,12 @@ namespace outputWriters {
         outputWriters::VTKWriter plotter;
        if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) { //LCC: do not print halo particles
 
-        if (numParticles == 0){ //calculate number of particles only once, does not change over course of simulation
+        int numParticles = 0;
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
             if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
             numParticles++;
             }
-        }} 
+        }
 
         plotter.initializeOutput(numParticles);
         
