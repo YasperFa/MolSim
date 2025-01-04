@@ -10,10 +10,11 @@
 #include <array>
 #include <string>
 #include "ParticleIdInitializer.h"
-
+#include <mutex>
 class Particle {
 
 private:
+ mutable std::mutex forceMutex;
  /**
   * Position of the particle
   */
@@ -107,7 +108,7 @@ public:
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
  bool operator==(const Particle &other);
-
+ Particle& operator=(const Particle& other);
  void setPartner(int id);
  int getPartner();
  /** Sets partner id to 0 */

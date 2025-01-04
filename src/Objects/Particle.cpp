@@ -83,9 +83,11 @@ double Particle::getSigma() {return sigma;}
  }
 
 void Particle::setF(const std::array<double, 3> &newF) {
+  forceMutex.lock();
   f[0] = newF[0];
   f[1] = newF[1];
   f[2] = newF[2];
+  forceMutex.unlock();
 }
 
 void Particle::setOldF(const std::array<double, 3> &newOldF) {
@@ -118,6 +120,20 @@ std::string Particle::toString() const {
   stream << "Particle: X:" << x << " v: " << v << " f: " << f
          << " old_f: " << old_f << " type: " << type << " id: " << id;
   return stream.str();
+}
+Particle& Particle::operator=(const Particle& other) {
+  x = other.x;
+  v = other.v;
+  f = other.f;
+  old_f = other.old_f;
+  old_x = other.old_x;
+  m = other.m;
+  type = other.type;
+  id = other.id;
+  sigma = other.sigma;
+  epsilon = other.epsilon;
+  partner = other.partner;
+  return *this;
 }
 
 bool Particle::operator==(Particle &other) {
