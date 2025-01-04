@@ -14,7 +14,7 @@
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
-                                    int &freq,
+                                    int &freq, bool &version2,
                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                     std::unique_ptr<Calculators::Calculator> &calculator,
                                     std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -56,7 +56,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
                 }
-                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, version2);
                 if(sim -> container().boundaryType().present()) {
                    std::array<BoundaryHandler::bCondition, 6> condition;
                     condition[0] = getConditionType(sim ->container().boundaryType().get().left());
@@ -91,6 +91,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
             if (sim->parameters().gravity().present()) {
                 gravity = sim->parameters().gravity().get();
                 SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
+            }
+            if (sim->parameters().parallelVersion().present()) {
+                version2 = sim->parameters().parallelVersion().get();
             }
             if (sim->output().baseName().present()) {
                 std::string output = sim->output().baseName().get();

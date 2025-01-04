@@ -39,6 +39,7 @@
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
             <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
             <xs:element name="gravity" type="xs:double" minOccurs="0"/>
+            <xs:element name="parallelVersion" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ShapeType">
