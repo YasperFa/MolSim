@@ -7,8 +7,8 @@
 #include "spdlog/spdlog.h"
 
 namespace ParticleContainers {
-    LinkedCellContainer::LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff)
-        : domainSize(domainSize), cutoff(cutoff) {
+    LinkedCellContainer::LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff, const bool version2)
+        : domainSize(domainSize), cutoff(cutoff), version2(version2) {
 
         SPDLOG_DEBUG("DOMAIN SIZE: {} {} {}", domainSize[0], domainSize[1], domainSize[2]);
         SPDLOG_DEBUG("CUTOFF: {}", cutoff);
@@ -38,6 +38,10 @@ namespace ParticleContainers {
         //initialize the neighbours vectors for the cells
         initializeNeighbours();
 
+        //initialize iteration order of parallel version 2
+        if (version2) {
+            initParallelV2();
+        }
         SPDLOG_DEBUG("LinkedCellContainer initialized with the domain [{},{},{}] and cutoff-radius", domainSize[0],
                      domainSize[1], domainSize[2], cutoff);
         SPDLOG_DEBUG("Number of cells per dimension: x: {}, y: {}, z: {}", cellNumPerDimension[0], cellNumPerDimension[1],
@@ -195,8 +199,33 @@ namespace ParticleContainers {
             }
         }
     }
+    void LinkedCellContainer::initParallelV2() {
+        SPDLOG_DEBUG("Initializing parallel V2...");
+        std::vector<std::array<int, 3>> startOffsets;
+        int dx = 2;
+        int dy = 2;
+       // int dz = 2;
 
+        for (int x = 0; x < dx; ++x) {
+            for (int y = 0; y < dy; ++y) {
+               // for (int z = 0; z < dz; ++z){
+                    std::vector<Cell*> order;
+                    for (int cx = x - 1; cx <= cellNumPerDimension[0]; cx += dx) {
+                        for (int cy = y - 1; cy <= cellNumPerDimension[1]; cy += dy) {
+                           // for (int cz = z - 1; cz <= cellNumPerDimension[2]; cz += dz) {
+                                order.push_back(&cells.at(cellIndex(cx, cy, 0)));
+                            //}
+                        }
+                    }
+                    iterationOrders.push_back(order);
+                //}
+            }
+        }
 
+    }
+    std::vector<std::vector<Cell*>> LinkedCellContainer::getIterationOrders() {
+        return iterationOrders;
+    }
     std::vector<Particle>::iterator LinkedCellContainer::begin() { return particles.begin(); }
 
     std::vector<Particle>::iterator LinkedCellContainer::end() { return particles.end(); }
