@@ -54,7 +54,7 @@ namespace MolSim {
      * @param thermostat to adjust the temperature of the simulation
     */
     void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
-                double &gravity, int &freq,
+                double &gravity, int &freq, bool &version2,
                 std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                 std::unique_ptr<Calculators::Calculator> &calculator,
                 std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,

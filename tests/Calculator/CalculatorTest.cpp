@@ -6,6 +6,7 @@
 #include "../../src/Calculator/GravityCalculator.h"
 #include "../../src/Calculator/LennardJonesCalculator.h"
 #include "../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
+#include "../../src/Objects/Containers/LinkedCell/LinkedCellContainer.h"
 #include "../../src/Objects/Particle.h"
 
 /*Checks that calculateX() correctly updates the position of a particle*/
@@ -135,7 +136,7 @@ TEST(CalculatorTest, correctLJcalculationsDirectSum) {
     testContainer.addParticle(k);
 
     Calculators::LennardJonesCalculator calc;
-    calc.calculateF(testContainer, 0); 
+    calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
         EXPECT_NEAR(0.01165109898, (testContainer.getParticle(i).getF())[in], 0.00001);
@@ -148,7 +149,7 @@ TEST(CalculatorTest, correctLJcalculationsDirectSum) {
 
  /*Checks that calculateF() of LJC correctly updates the force between particles for LinkedCellContainer*/
 TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
-    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{100, 100, 10}, 5);
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{100, 100, 10}, 5, false);
 
     Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
     testContainer.addParticle(i);
@@ -160,14 +161,28 @@ TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
     testContainer.addParticle(k);
 
     Calculators::LennardJonesCalculator calc;
-    calc.calculateF(testContainer, 0); 
+    calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
         EXPECT_NEAR(0.01165109898, (testContainer.getParticles().at(0).getF())[in], 0.00001);
         EXPECT_NEAR(0, testContainer.getParticles().at(1).getF()[in], 0.00001);
         EXPECT_NEAR(-0.01165109898, testContainer.getParticles().at(2).getF()[in], 0.00001);
     }
-    
+    // test version2
+    ParticleContainers::LinkedCellContainer testContainer2(std::array<double,3>{100, 100, 10}, 5, true);
 
+
+    testContainer.addParticle(i);
+
+    testContainer.addParticle(j);
+
+    testContainer.addParticle(k);
+
+    calc.calculateF(testContainer2, 0);
+    for (int in = 0; in < 3; in++) {
+        EXPECT_NEAR(0.01165109898, (testContainer.getParticles().at(0).getF())[in], 0.00001);
+        EXPECT_NEAR(0, testContainer.getParticles().at(1).getF()[in], 0.00001);
+        EXPECT_NEAR(-0.01165109898, testContainer.getParticles().at(2).getF()[in], 0.00001);
+    }
 }
     

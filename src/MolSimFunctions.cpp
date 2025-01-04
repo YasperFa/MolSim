@@ -204,7 +204,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         if (containerType == "DSC") {
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
-            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius);
+            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, false);
             std::array<BoundaryHandler::bCondition, 6> cond = {BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW};
             boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
             LCCset = true;
@@ -381,7 +381,7 @@ bool MolSim::loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContain
 
 
 void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
-                    double &gravity, int &freq,
+                    double &gravity, int &freq, bool &version2,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
                     std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
@@ -454,6 +454,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
 
             double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0;
             int subFreq = 20;
+            bool version2 = false;
             std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
             std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
             std::unique_ptr<Calculators::Calculator> subCalculator;
@@ -461,14 +462,14 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
             std::unique_ptr<Thermostat> subThermostat;
 
 
-            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, subFreq, subOutputWriter,
+            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, subFreq, version2, subOutputWriter,
                                                 subCalculator,
                                                 subParticleContainer, subBoundaryHandler, subThermostat) != 0) {
                 SPDLOG_ERROR("Could not parse input file!");
                 return false;
             }
 
-            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, subFreq, subOutputWriter,
+            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, subFreq, version2, subOutputWriter,
                            subCalculator,
                            subBoundaryHandler, subThermostat, subInputFile);
         }

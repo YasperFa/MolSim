@@ -28,6 +28,7 @@
         <tEnd>25</tEnd>
         <deltaT>0.0005</deltaT>
         <gravity>-12.44</gravity>
+        <parallelVersion>0</parallelVersion>
     </parameters>
     <shapes>
         <cuboid>

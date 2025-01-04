@@ -10,7 +10,7 @@
 
 /**Test the function handleOutflow() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionOutflow) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 ParticleIdInitializer::reset();
@@ -81,7 +81,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 0);
 
 /**Test the function handleReflecting() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionReflecting) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
@@ -121,7 +121,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 4);
 
 /**Test the functionionality to set different conditions for diffeent boundaries */
 TEST(BoundaryHandlerTest, conditionCombine) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 
@@ -187,7 +187,7 @@ EXPECT_TRUE(outflowed);
 
 /**Test the function handlePeriodic() from BoundaryHandler */
 TEST(BoundaryHandlerTest, conditionPeriodic) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 ParticleIdInitializer::reset();
@@ -284,7 +284,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8); //clone particles should not 
 
 /**Test that 3 clone particles get created for a corner particle*/
 TEST(BoundaryHandlerTest, PeriodicThreeClonesForCorner) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 ParticleIdInitializer::reset();
 
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
@@ -325,7 +325,7 @@ for (int i = 2; i < 5; i++) {
 
 /**Test that only one clone particle gets created for a corner particle if not both boundaries are periodic*/
 TEST(BoundaryHandlerTest, PeriodicOneCloneForCorner) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
 ParticleIdInitializer::reset();
 
@@ -365,7 +365,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 2);
 
 /**Test that only one clone particle gets created if a particle is in the boundary cells for several iterations*/
 TEST(BoundaryHandlerTest, OnlyCloneOnce) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
 ParticleIdInitializer::reset();

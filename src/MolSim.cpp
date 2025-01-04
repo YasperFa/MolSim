@@ -34,6 +34,7 @@ int main(int argc, char *argsv[]) {
     std::string inputFile;
     double deltaT;
     double endTime;
+    bool version2 = false;
     int freq = 20;
     double gravity;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
@@ -49,7 +50,7 @@ int main(int argc, char *argsv[]) {
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, gravity, freq, outputWriter, calculator, particleContainer, boundaryHandler, thermostat)) {
+        if (XMLfileReader::parseXMLFromFile(file,deltaT,endTime, gravity, freq, version2, outputWriter, calculator, particleContainer, boundaryHandler, thermostat)) {
             return 1;
         }
 
@@ -71,7 +72,7 @@ int main(int argc, char *argsv[]) {
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, freq, outputWriter, calculator, boundaryHandler, thermostat, inputFile);
+    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, freq, version2, outputWriter, calculator, boundaryHandler, thermostat, inputFile);
 
     SPDLOG_DEBUG("Simulation finished!");
 

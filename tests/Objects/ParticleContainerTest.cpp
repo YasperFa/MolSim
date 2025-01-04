@@ -26,7 +26,7 @@ TEST(DirectSumContainerTest, StrctureAfterAddParticle) {
 
 /** Checks if sizeParticles() and addParticle() of LinkedCellContainer work correctly and that particles are inserted in the correct cells*/
 TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
-    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{8,8,1}, 1.0);
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{8,8,1}, 1.0, false);
     Particle i({-1, -1, 0.0},{0.0, 0.0, 0.0},1.0,0);
     EXPECT_EQ(testContainer.sizeParticles(), 0);
     testContainer.addParticle(i);
@@ -57,7 +57,7 @@ TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
 
 /** Checks that cells in the LinkedCellContainer are initialized correctly */
 TEST(LinkedCellContainerTest, correctCellInitialization) {
-    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0);
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0, false);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 60);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 30);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[2], 1);
@@ -72,7 +72,7 @@ TEST(LinkedCellContainerTest, correctCellInitialization) {
 
 /** Checks that only neighboring cells are influenced during calculations */
 TEST(LinkedCellContainerTest, correctCalculations) {
-    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{5, 5, 1}, 1.0);
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{5, 5, 1}, 1.0, false);
     Calculators::LennardJonesCalculator calculator;
     
 
