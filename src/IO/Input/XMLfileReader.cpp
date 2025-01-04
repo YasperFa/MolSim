@@ -40,6 +40,10 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     freq = 10;
                 }
             }
+            if (sim->parameters().parallelVersion().present()) {
+                version2 = sim->parameters().parallelVersion().get();
+                SPDLOG_INFO("Parallel version from XML selected: {}", version2);
+            }
             SPDLOG_DEBUG("Reading container from file");
             if (sim->container().containerType() == "DSC") {
                 SPDLOG_DEBUG("DSC selected from xml file");
@@ -92,9 +96,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 gravity = sim->parameters().gravity().get();
                 SPDLOG_DEBUG("gravity from XML selected: {}", gravity);
             }
-            if (sim->parameters().parallelVersion().present()) {
-                version2 = sim->parameters().parallelVersion().get();
-            }
+
             if (sim->output().baseName().present()) {
                 std::string output = sim->output().baseName().get();
                 if (output == "VTK") {
