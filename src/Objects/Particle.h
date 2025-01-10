@@ -66,7 +66,7 @@ double sigma;
 /**Id of clone particle for periodic boundaries
  * Value of 0 if there is no partner
  */
-int partner;
+std::array<int, 3> partner;
 
 public:
  explicit Particle(int type = 0);
@@ -108,11 +108,9 @@ public:
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
  bool operator==(const Particle &other);
- Particle& operator=(const Particle& other);
- void setPartner(int id);
- int getPartner();
- /** Sets partner id to 0 */
- void removePartner();
+
+ void setPartner(int i, int id);
+ int getPartner(int i);
 
  std::string toString() const;
 };

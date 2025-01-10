@@ -101,6 +101,14 @@ class BoundaryHandler{
      */
     double minDist(double sigma);
 
+     /**Get opposite boundary cell on opposite side for a halo cell
+     * @param position position of the cell in the cell grid
+     * @param i boundary of halo cell
+     * @returns position of boundary cell on opposite side
+     */
+    
+    std::array<int, 3> oppositeCell(std::array<int, 3> position, int i);
+
     private:
 
     /** determines what condition is used on what border
@@ -134,14 +142,11 @@ class BoundaryHandler{
      */
     int oppositeSide(int i);
 
-    /**Get opposite boundary cell on opposite side for a halo cell
-     * @param position position of the cell in the cell grid
-     * @param i boundary of halo cell
-     * @returns position of boundary cell on opposite side
-     */
-    
-    std::array<int, 3> oppositeCell(std::array<int, 3> position, int i);
+    /**Must be updated last, particles copy from other halo particles (which are not in corner halo cells)*/
+    int isCornerHaloCell (std::array<int, 3> position);
 
+    void cloneOfCloneHelper(Particle& currentParticle, std::array <int, 3> newCellPosition, int i, int j, bool cont);
 
+    void updateCell(Cell& cell);
 
 };

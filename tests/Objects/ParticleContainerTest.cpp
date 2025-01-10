@@ -55,8 +55,8 @@ TEST(LinkedCellContainerTest, StrctureAfterAddParticle) {
 }
 }
 
-/** Checks that cells in the LinkedCellContainer are initialized correctly */
-TEST(LinkedCellContainerTest, correctCellInitialization) {
+/** Checks that cells in the LinkedCellContainer are initialized correctly for 2D simulations*/
+TEST(LinkedCellContainerTest, correctCellInitialization2D) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0, false);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 60);
     EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 30);
