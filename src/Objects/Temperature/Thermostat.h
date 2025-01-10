@@ -40,9 +40,9 @@ public:
  void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
    const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
-   const double scale  = getScale(currentTemperature, averageVelocity);
      for (auto &particle: particleContainer) {
-      std::array<double, 3> newV = operator*(scale, particle.getV());
+      if(particle.getFixed()) continue;
+      std::array<double, 3> newV = getNewVel(currentTemperature,particle.getV(),averageVelocity);
       particle.setV(newV);
      }
  }
@@ -76,10 +76,11 @@ public:
  }
  /**
   * @brief scales the velocity according to the desired method.
-  * @param  currentTemperature: current temperature of the container
-  * @param  averageVelocity: average velocity of particles in the container
+  * @param currentTemperature
+  * @param  particleVelocity: velocity of the particle which we want to scale
+  * @param averageVelocity
  */
- virtual double getScale(double currentTemperature, std::array<double, 3> averageVelocity) = 0;
+ virtual std::array<double, 3> getNewVel(double currentTemperature, std::array<double, 3> particleVelocity, std::array<double, 3> averageVelocity) = 0;
  /**
 * @return number of timesteps
 */

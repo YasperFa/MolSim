@@ -2544,6 +2544,71 @@ class CuboidType: public ::xml_schema::type
   //@}
 
   /**
+   * @name isFixed
+   *
+   * @brief Accessor and modifier functions for the %isFixed
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::boolean isFixed_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< isFixed_type > isFixed_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< isFixed_type, char > isFixed_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const isFixed_optional&
+  isFixed () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  isFixed_optional&
+  isFixed ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  isFixed (const isFixed_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  isFixed (const isFixed_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -2653,6 +2718,7 @@ class CuboidType: public ::xml_schema::type
   type_optional type_;
   epsilon_optional epsilon_;
   sigma_optional sigma_;
+  isFixed_optional isFixed_;
 
   //@endcond
 };
@@ -3118,6 +3184,71 @@ class DiscType: public ::xml_schema::type
   //@}
 
   /**
+   * @name isFixed
+   *
+   * @brief Accessor and modifier functions for the %isFixed
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::boolean isFixed_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< isFixed_type > isFixed_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< isFixed_type, char > isFixed_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const isFixed_optional&
+  isFixed () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  isFixed_optional&
+  isFixed ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  isFixed (const isFixed_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  isFixed (const isFixed_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -3224,6 +3355,7 @@ class DiscType: public ::xml_schema::type
   type_optional type_;
   epsilon_optional epsilon_;
   sigma_optional sigma_;
+  isFixed_optional isFixed_;
 
   //@endcond
 };
@@ -3595,6 +3727,71 @@ class ParticleType: public ::xml_schema::type
   //@}
 
   /**
+   * @name isFixed
+   *
+   * @brief Accessor and modifier functions for the %isFixed
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::boolean isFixed_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< isFixed_type > isFixed_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< isFixed_type, char > isFixed_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const isFixed_optional&
+  isFixed () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  isFixed_optional&
+  isFixed ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  isFixed (const isFixed_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  isFixed (const isFixed_optional& x);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -3695,6 +3892,7 @@ class ParticleType: public ::xml_schema::type
   type_optional type_;
   epsilon_optional epsilon_;
   sigma_optional sigma_;
+  isFixed_optional isFixed_;
 
   //@endcond
 };
@@ -3707,6 +3905,64 @@ class ParticleType: public ::xml_schema::type
 class TempType: public ::xml_schema::type
 {
   public:
+  /**
+   * @name ThermoType
+   *
+   * @brief Accessor and modifier functions for the %ThermoType
+   * required element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::string ThermoType_type;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< ThermoType_type, char > ThermoType_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element.
+   *
+   * @return A constant reference to the element.
+   */
+  const ThermoType_type&
+  ThermoType () const;
+
+  /**
+   * @brief Return a read-write reference to the element.
+   *
+   * @return A reference to the element.
+   */
+  ThermoType_type&
+  ThermoType ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  ThermoType (const ThermoType_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  ThermoType (::std::unique_ptr< ThermoType_type > p);
+
+  //@}
+
   /**
    * @name initialTemperature
    *
@@ -3940,7 +4196,8 @@ class TempType: public ::xml_schema::type
    * @brief Create an instance from the ultimate base and
    * initializers for required elements and attributes.
    */
-  TempType (const initialTemperature_type&,
+  TempType (const ThermoType_type&,
+            const initialTemperature_type&,
             const timeSteps_type&);
 
   /**
@@ -4013,6 +4270,7 @@ class TempType: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
+  ::xsd::cxx::tree::one< ThermoType_type > ThermoType_;
   ::xsd::cxx::tree::one< initialTemperature_type > initialTemperature_;
   ::xsd::cxx::tree::one< timeSteps_type > timeSteps_;
   targetTemperature_optional targetTemperature_;

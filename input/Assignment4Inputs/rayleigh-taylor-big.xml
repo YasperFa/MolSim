@@ -78,6 +78,7 @@
         </cuboid>
     </shapes>
     <temperature>
+        <ThermoType>direct</ThermoType>
         <initialTemperature>40.0</initialTemperature>
         <timeSteps>1000</timeSteps>
     </temperature>

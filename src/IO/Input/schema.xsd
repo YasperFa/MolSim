@@ -61,6 +61,7 @@
             <xs:element name="type" type="xs:int" minOccurs="0"/>
             <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
             <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DiscType">
@@ -73,6 +74,7 @@
             <xs:element name="type" type="xs:int" minOccurs="0"/>
             <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
             <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParticleType">
@@ -83,10 +85,12 @@
             <xs:element name="type" type="xs:int" minOccurs="0"/>
             <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
             <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
      <xs:complexType name="TempType">
         <xs:sequence>
+            <xs:element name="ThermoType" type="xs:string"/>
             <xs:element name="initialTemperature" type="xs:double"/>
             <xs:element name="timeSteps" type="xs:int"/>
             <xs:element name="targetTemperature" type="xs:double" minOccurs="0"/>

@@ -6,7 +6,7 @@
 #include "utils/ArrayUtils.h"
 
 
-double DirectThermostat::getScale(double currentTemperature, std::array<double, 3> averageVelocity) {
+std::array<double, 3> DirectThermostat::getNewVel(double currentTemperature, std::array<double, 3> particleVelocity, std::array<double, 3> averageVelocity) {
     double temperatureChange;
     if (targetTemperature > currentTemperature) {
          temperatureChange = std::min(targetTemperature - currentTemperature, maxDeltaT);
@@ -16,5 +16,6 @@ double DirectThermostat::getScale(double currentTemperature, std::array<double, 
 
     const double newTemperature = currentTemperature + temperatureChange;
     const double scaleFactor = std::sqrt(newTemperature / currentTemperature);
-    return scaleFactor;
+    std::array<double, 3> newV = operator*(scaleFactor, particleVelocity);
+    return newV;
 }

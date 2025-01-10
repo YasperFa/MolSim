@@ -12,12 +12,13 @@ public:
     DirectThermostat(const double targetTemperature,const double maxDeltaT,const
     bool is3D, const int n) : Thermostat(targetTemperature, maxDeltaT, is3D, n){}
     ~DirectThermostat() override = default;
-      /**
-       * @brief scales the velocity according to the desired method.
-       * @param  currentTemperature: current temperature of the container
-       * @param  averageVelocity: average velocity of particles in the container
-      */
-       double getScale(double currentTemperature, std::array<double, 3> averageVelocity) override;
+          /**
+         * @brief scales the velocity according to the desired method.
+         * @param currentTemperature
+         * @param  particleVelocity: velocity of the particle which we want to scale
+         * @param averageVelocity
+         */
+       std::array<double, 3> getNewVel(double currentTemperature, std::array<double, 3> particleVelocit, std::array<double, 3> averageVelocity) override;
 
 };
 

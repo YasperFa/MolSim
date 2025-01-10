@@ -47,6 +47,7 @@
         </disc>
     </shapes>
     <temperature>
+        <ThermoType>direct</ThermoType>
         <initialTemperature>10.0</initialTemperature>
         <timeSteps>10</timeSteps>
     </temperature>

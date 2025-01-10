@@ -11,6 +11,7 @@
 #include <float.h>
 
 #include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
+#include "Objects/Temperature/AverageThermostat.h"
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
@@ -142,6 +143,11 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
                 thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                if(sim->temperature().get().ThermoType() == "average") {
+                    thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                } else if (sim->temperature().get().ThermoType() != "direct") {
+                    SPDLOG_ERROR("Invalid Thermostat type");
+                }
                 SPDLOG_DEBUG("Direct thermostat is selected from xml");
 
             }
@@ -172,8 +178,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 if (sim->shapes().particle().at(i).sigma().present()) {
                     sigma = sim->shapes().particle().at(i).sigma().get();
                 }
+                bool isFixed = false;
+                if(sim->shapes().particle().at(i).isFixed().present()) {
+                    isFixed = sim->shapes().particle().at(i).isFixed().get();
+                }
 
-                Particle newParticle(x, v, m, type, epsilon, sigma);
+                Particle newParticle(x, v, m, type, epsilon, sigma, isFixed);
                 (particleContainer)->addParticle(newParticle);
             }
             for (int i = 0; i < (int) sim->shapes().cuboid().size(); i++) {
@@ -211,9 +221,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     sigma = sim->shapes().cuboid().at(i).sigma().get();
                 }
 
-
+                bool isFixed = false;
+                if(sim->shapes().cuboid().at(i).isFixed().present()) {
+                    isFixed = sim->shapes().cuboid().at(i).isFixed().get();
+                }
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature, isFixed);
             }
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -245,9 +258,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     sigma = sim->shapes().disc().at(i).sigma().get();
                 }
 
-
+                bool isFixed = false;
+                if(sim->shapes().disc().at(i).isFixed().present()) {
+                    isFixed = sim->shapes().disc().at(i).isFixed().get();
+                }
                 Disc disc(x, v, radius, h, m);
-                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma);
+                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma, isFixed);
             }
 
 

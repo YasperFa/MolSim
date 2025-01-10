@@ -609,6 +609,30 @@ sigma (const sigma_optional& x)
   this->sigma_ = x;
 }
 
+const CuboidType::isFixed_optional& CuboidType::
+isFixed () const
+{
+  return this->isFixed_;
+}
+
+CuboidType::isFixed_optional& CuboidType::
+isFixed ()
+{
+  return this->isFixed_;
+}
+
+void CuboidType::
+isFixed (const isFixed_type& x)
+{
+  this->isFixed_.set (x);
+}
+
+void CuboidType::
+isFixed (const isFixed_optional& x)
+{
+  this->isFixed_ = x;
+}
+
 
 // DiscType
 // 
@@ -787,6 +811,30 @@ sigma (const sigma_optional& x)
   this->sigma_ = x;
 }
 
+const DiscType::isFixed_optional& DiscType::
+isFixed () const
+{
+  return this->isFixed_;
+}
+
+DiscType::isFixed_optional& DiscType::
+isFixed ()
+{
+  return this->isFixed_;
+}
+
+void DiscType::
+isFixed (const isFixed_type& x)
+{
+  this->isFixed_.set (x);
+}
+
+void DiscType::
+isFixed (const isFixed_optional& x)
+{
+  this->isFixed_ = x;
+}
+
 
 // ParticleType
 // 
@@ -929,9 +977,57 @@ sigma (const sigma_optional& x)
   this->sigma_ = x;
 }
 
+const ParticleType::isFixed_optional& ParticleType::
+isFixed () const
+{
+  return this->isFixed_;
+}
+
+ParticleType::isFixed_optional& ParticleType::
+isFixed ()
+{
+  return this->isFixed_;
+}
+
+void ParticleType::
+isFixed (const isFixed_type& x)
+{
+  this->isFixed_.set (x);
+}
+
+void ParticleType::
+isFixed (const isFixed_optional& x)
+{
+  this->isFixed_ = x;
+}
+
 
 // TempType
 // 
+
+const TempType::ThermoType_type& TempType::
+ThermoType () const
+{
+  return this->ThermoType_.get ();
+}
+
+TempType::ThermoType_type& TempType::
+ThermoType ()
+{
+  return this->ThermoType_.get ();
+}
+
+void TempType::
+ThermoType (const ThermoType_type& x)
+{
+  this->ThermoType_.set (x);
+}
+
+void TempType::
+ThermoType (::std::unique_ptr< ThermoType_type > x)
+{
+  this->ThermoType_.set (std::move (x));
+}
 
 const TempType::initialTemperature_type& TempType::
 initialTemperature () const
@@ -2173,7 +2269,8 @@ CuboidType (const position_type& position,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2193,7 +2290,8 @@ CuboidType (::std::unique_ptr< position_type > position,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2210,7 +2308,8 @@ CuboidType (const CuboidType& x,
   mass_ (x.mass_, f, this),
   type_ (x.type_, f, this),
   epsilon_ (x.epsilon_, f, this),
-  sigma_ (x.sigma_, f, this)
+  sigma_ (x.sigma_, f, this),
+  isFixed_ (x.isFixed_, f, this)
 {
 }
 
@@ -2227,7 +2326,8 @@ CuboidType (const ::xercesc::DOMElement& e,
   mass_ (this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2354,6 +2454,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // isFixed
+    //
+    if (n.name () == "isFixed" && n.namespace_ ().empty ())
+    {
+      if (!this->isFixed_)
+      {
+        this->isFixed_.set (isFixed_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2422,6 +2533,7 @@ operator= (const CuboidType& x)
     this->type_ = x.type_;
     this->epsilon_ = x.epsilon_;
     this->sigma_ = x.sigma_;
+    this->isFixed_ = x.isFixed_;
   }
 
   return *this;
@@ -2449,7 +2561,8 @@ DiscType (const center_type& center,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2467,7 +2580,8 @@ DiscType (::std::unique_ptr< center_type > center,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2483,7 +2597,8 @@ DiscType (const DiscType& x,
   mass_ (x.mass_, f, this),
   type_ (x.type_, f, this),
   epsilon_ (x.epsilon_, f, this),
-  sigma_ (x.sigma_, f, this)
+  sigma_ (x.sigma_, f, this),
+  isFixed_ (x.isFixed_, f, this)
 {
 }
 
@@ -2499,7 +2614,8 @@ DiscType (const ::xercesc::DOMElement& e,
   mass_ (this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2612,6 +2728,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // isFixed
+    //
+    if (n.name () == "isFixed" && n.namespace_ ().empty ())
+    {
+      if (!this->isFixed_)
+      {
+        this->isFixed_.set (isFixed_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2672,6 +2799,7 @@ operator= (const DiscType& x)
     this->type_ = x.type_;
     this->epsilon_ = x.epsilon_;
     this->sigma_ = x.sigma_;
+    this->isFixed_ = x.isFixed_;
   }
 
   return *this;
@@ -2695,7 +2823,8 @@ ParticleType (const position_type& position,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2709,7 +2838,8 @@ ParticleType (::std::unique_ptr< position_type > position,
   mass_ (mass, this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
 }
 
@@ -2723,7 +2853,8 @@ ParticleType (const ParticleType& x,
   mass_ (x.mass_, f, this),
   type_ (x.type_, f, this),
   epsilon_ (x.epsilon_, f, this),
-  sigma_ (x.sigma_, f, this)
+  sigma_ (x.sigma_, f, this),
+  isFixed_ (x.isFixed_, f, this)
 {
 }
 
@@ -2737,7 +2868,8 @@ ParticleType (const ::xercesc::DOMElement& e,
   mass_ (this),
   type_ (this),
   epsilon_ (this),
-  sigma_ (this)
+  sigma_ (this),
+  isFixed_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2828,6 +2960,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // isFixed
+    //
+    if (n.name () == "isFixed" && n.namespace_ ().empty ())
+    {
+      if (!this->isFixed_)
+      {
+        this->isFixed_.set (isFixed_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2872,6 +3015,7 @@ operator= (const ParticleType& x)
     this->type_ = x.type_;
     this->epsilon_ = x.epsilon_;
     this->sigma_ = x.sigma_;
+    this->isFixed_ = x.isFixed_;
   }
 
   return *this;
@@ -2886,9 +3030,11 @@ ParticleType::
 //
 
 TempType::
-TempType (const initialTemperature_type& initialTemperature,
+TempType (const ThermoType_type& ThermoType,
+          const initialTemperature_type& initialTemperature,
           const timeSteps_type& timeSteps)
 : ::xml_schema::type (),
+  ThermoType_ (ThermoType, this),
   initialTemperature_ (initialTemperature, this),
   timeSteps_ (timeSteps, this),
   targetTemperature_ (this),
@@ -2901,6 +3047,7 @@ TempType (const TempType& x,
           ::xml_schema::flags f,
           ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
+  ThermoType_ (x.ThermoType_, f, this),
   initialTemperature_ (x.initialTemperature_, f, this),
   timeSteps_ (x.timeSteps_, f, this),
   targetTemperature_ (x.targetTemperature_, f, this),
@@ -2913,6 +3060,7 @@ TempType (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f,
           ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  ThermoType_ (this),
   initialTemperature_ (this),
   timeSteps_ (this),
   targetTemperature_ (this),
@@ -2934,6 +3082,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
+
+    // ThermoType
+    //
+    if (n.name () == "ThermoType" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< ThermoType_type > r (
+        ThermoType_traits::create (i, f, this));
+
+      if (!ThermoType_.present ())
+      {
+        this->ThermoType_.set (::std::move (r));
+        continue;
+      }
+    }
 
     // initialTemperature
     //
@@ -2982,6 +3144,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
+  if (!ThermoType_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "ThermoType",
+      "");
+  }
+
   if (!initialTemperature_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -3010,6 +3179,7 @@ operator= (const TempType& x)
   if (this != &x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
+    this->ThermoType_ = x.ThermoType_;
     this->initialTemperature_ = x.initialTemperature_;
     this->timeSteps_ = x.timeSteps_;
     this->targetTemperature_ = x.targetTemperature_;
