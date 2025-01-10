@@ -421,7 +421,7 @@ for (int i = 0; i < 10; i++){
 
 /**Test that clone particles are created and deleted correctly and that partners are set and updated correctly in 3D*/
 TEST(BoundaryHandlerTest, PeriodicCreatePartners3D) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 4}, 1);
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 4}, 1, false);
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
 ParticleIdInitializer::reset();
 
@@ -431,8 +431,8 @@ testContainer.addParticle(particle); //corner particle
 
 EXPECT_EQ(testContainer.getParticles().size(), 1);
 
-SPDLOG_INFO(testContainer.getParticles().at(0).toString());
-SPDLOG_INFO(testContainer.mapParticleToCell(particle)->getCellType() == Cell::CType::BOUNDARY);
+SPDLOG_DEBUG(testContainer.getParticles().at(0).toString());
+SPDLOG_DEBUG(testContainer.mapParticleToCell(particle)->getCellType() == Cell::CType::BOUNDARY);
 
      bool contains = false;
      for (auto cell : testContainer.getBoundaryCells()){
@@ -458,7 +458,7 @@ std::array<double,3> v = {-1, -1, -1};
 testContainer.getCells().at(testContainer.cellIndex(0, 0, 0)).getParticlesInCell().at(0) -> setV(v);
 
 for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
+     SPDLOG_DEBUG(p.toString());
 }
 
 handler.handleBoundaries();
@@ -466,7 +466,7 @@ handler.handleBoundaries();
 EXPECT_EQ(testContainer.getParticles().size(), 8); //now 7 clones in total
 
 for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
+     SPDLOG_DEBUG(p.toString());
 }
 
 for (int i = 2; i < 9; i++) {
@@ -508,7 +508,7 @@ handler.handleBoundaries();
 EXPECT_EQ(testContainer.getParticles().size(), 8);
 
  for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
+     SPDLOG_DEBUG(p.toString());
  }
 
      for (auto cell: testContainer.getInnerCells()){
@@ -545,7 +545,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8);
      handler.handleBoundaries();
 
      for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
+     SPDLOG_DEBUG(p.toString());
 }
 
      EXPECT_EQ(testContainer.getParticles().size(), 8);
@@ -578,7 +578,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 8);
      handler.handleBoundaries();
 
      for (auto p : testContainer.getParticles()){
-     SPDLOG_INFO(p.toString());
+     SPDLOG_DEBUG(p.toString());
 }
 
      EXPECT_EQ(testContainer.getParticles().size(), 4);
@@ -597,6 +597,28 @@ EXPECT_EQ(testContainer.getParticles().size(), 8);
      }
 
 
+}
+
+TEST(BoundaryHandlerTest, SpecialCells) {
+ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 4}, 1, false);
+
+BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
+
+for (auto i : handler.getSpecialCells()){
+
+     bool isHalo = false;
+     bool isBoundary = false;
+     auto pos = testContainer.getCells().at(i).getPosition();
+
+     for (int x = 0; x < 6; x++){
+          isHalo = isHalo || handler.isHaloCellofBoundary(x, pos);
+          isBoundary = isBoundary || handler.isBoundaryCellofBoundary(x, pos);
+     }
+
+     EXPECT_TRUE(isHalo && isBoundary);
+}
+
+EXPECT_EQ(handler.getSpecialCells().size(), 8 * 24 - 6 * 8);
 }
 
 

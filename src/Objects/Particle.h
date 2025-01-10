@@ -63,7 +63,7 @@ double epsilon;
 /**Lennard-Jones parameter sigma */
 double sigma;
 
-/**Id of clone particle for periodic boundaries
+/**Id of clone particles in x, y, and z direction for periodic boundaries
  * Value of 0 if there is no partner
  */
 std::array<int, 3> partner;
@@ -108,8 +108,19 @@ public:
  void setV(const std::array<double, 3> &V);
  bool operator==(Particle &other);
  bool operator==(const Particle &other);
+ Particle& operator=(const Particle& other);
 
+/** Set the clone partner particle in x, y or z direction
+ * @param i int to show the direction: 0 and 1 for x direction, 2 and 3 for y direction, 4 and 5 for z direction
+ * @param id the id of the partner
+ */
  void setPartner(int i, int id);
+
+ /** Retrieve the clone partner particle in x, y or z direction
+  * It is possible that the returned value is no longer valid, the existence of the partner must be checked
+ * @param i int to show the direction: 0 and 1 for x direction, 2 and 3 for y direction, 4 and 5 for z direction
+ * @returns id of the corresponding partner, 0 if there is no partner
+ */
  int getPartner(int i);
 
  std::string toString() const;
