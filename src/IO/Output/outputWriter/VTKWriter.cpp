@@ -99,18 +99,18 @@ namespace outputWriters {
        if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) { //LCC: do not print halo particles
 
         int numParticles = 0;
-        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
-            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
-            numParticles++;
-            }
+        for (auto cell: lcCont->getInnerCells()){
+        
+        numParticles = numParticles + cell.get().getParticlesInCell().size();
         }
 
         plotter.initializeOutput(numParticles);
         
-        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
-
-            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
-            plotter.plotParticle(*p);}
+        for (auto cell: lcCont->getInnerCells()){
+        
+        for (auto p : cell.get().getParticlesInCell()) {
+            plotter.plotParticle(*p);
+        }
         }
 
        } else { //DSC: plot every particle
