@@ -41,7 +41,6 @@ public:
    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
    const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
      for (auto &particle: particleContainer) {
-      if(particle.getFixed()) continue;
       std::array<double, 3> newV = getNewVel(currentTemperature,particle.getV(),averageVelocity);
       particle.setV(newV);
      }
