@@ -21,8 +21,10 @@ public:
    * @param epsilon
    * @param sigma
    * @param initTemperature initial temperature
+   * @param isFixed
    */
-   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature);
+   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
+      isFixed =false);
    /**
    * @brief generates particles from a given disc
    * @param particles empty Particle container where particles will be inserted
@@ -30,8 +32,10 @@ public:
    * @param type defines the type of the particles
    * @param epsilon
    * @param sigma
+   * @param isFixed
    */
-   static void generateDisc(ParticleContainers::ParticleContainer &particles, Disc& disc, int type, double epsilon, double sigma);
+   static void generateDisc(ParticleContainers::ParticleContainer &particles, Disc& disc, int type, double epsilon, double sigma, bool
+      isFixed =false);
 };
 
 

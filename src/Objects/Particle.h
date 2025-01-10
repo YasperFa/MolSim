@@ -68,6 +68,8 @@ double sigma;
  */
 std::array<int, 3> partner;
 
+ bool isFixed;
+
 public:
  explicit Particle(int type = 0);
 
@@ -77,7 +79,7 @@ public:
      // for visualization, we need always 3 coordinates
      // -> in case of 2d, we use only the first and the second
      std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-     int type = 0, double epsilon_arg = 5, double sigma_arg = 1);
+     int type = 0, double epsilon_arg = 5, double sigma_arg = 1, bool isFixed = false);
 
  virtual ~Particle();
 
@@ -100,12 +102,13 @@ public:
  double getM() const;
 
  int getType() const;
-
+ bool getFixed() const;
  void setF(const std::array<double, 3> &newF);
  void setOldF(const std::array<double, 3> &newOldF);
  void setX(const std::array<double, 3> &X);
  void setOldX(const std::array<double, 3> &newOldX);
  void setV(const std::array<double, 3> &V);
+ void fixParticle();
  bool operator==(Particle &other);
  bool operator==(const Particle &other);
  Particle& operator=(const Particle& other);

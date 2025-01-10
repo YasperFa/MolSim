@@ -81,11 +81,11 @@ namespace Calculators {
                     std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1-> getEpsilon(), it2->getEpsilon(), it1 -> getSigma(), it2-> getSigma());
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
-
-                    it1->setF(it1->getF() + fij);
+                    if(!it1->getFixed())
+                      it1->setF(it1->getF() + fij);
                     // make use of Newton's third law and add the negative force calculated above to particle 2
-
-                    it2->setF(it2->getF() - fij);
+                    if(!it2->getFixed())
+                      it2->setF(it2->getF() - fij);
                 }
             }
         }
@@ -121,10 +121,11 @@ namespace Calculators {
                         SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                      (*itParticle2)->getID());
                         // add force of this pair to the overall force of particle 1
-
-                        (*itParticle1)->setF((*itParticle1)->getF() + fij);
+                        if(!(*itParticle1)->getFixed())
+                          (*itParticle1)->setF((*itParticle1)->getF() + fij);
                         // make use of Newton's third law and add the negative force calculated above to particle 2
-                        (*itParticle2)->setF((*itParticle2)->getF() - fij);
+                        if(!(*itParticle2)->getFixed())
+                          (*itParticle2)->setF((*itParticle2)->getF() - fij);
 
                     }
 
@@ -139,7 +140,6 @@ namespace Calculators {
                     }
                     for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
                         for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
-                         //   SPDLOG_INFO("PASSED 2.1");
                             if (neighbourP == nullptr) {
                                 continue;
                             }
@@ -154,12 +154,12 @@ namespace Calculators {
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
-                            (*itParticle1)->setF(((*itParticle1)->getF() + fij));
+                            if(!(*itParticle1)->getFixed())
+                                (*itParticle1)->setF(((*itParticle1)->getF() + fij));
                             // make use of Newton's third law and add the negative force calculated above to particle 2
-
-                            neighbourP->setF((neighbourP->getF() - fij));
+                            if(!neighbourP->getFixed())
+                              neighbourP->setF((neighbourP->getF() - fij));
                         }
-                       // SPDLOG_INFO("PASSED 2.2");
                     }
                 }
             }
@@ -197,9 +197,11 @@ namespace Calculators {
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          (*itParticle2)->getID());
                             // add force of this pair to the overall force of particle 1
-                            (*itParticle1)->setF((*itParticle1)->getF() + fij);
+                            if(!(*itParticle1)->getFixed())
+                              (*itParticle1)->setF((*itParticle1)->getF() + fij);
                             // make use of Newton's third law and add the negative force calculated above to particle 2
-                            (*itParticle2)->setF((*itParticle2)->getF() - fij);
+                            if(!(*itParticle2)->getFixed())
+                              (*itParticle2)->setF((*itParticle2)->getF() - fij);
 
                         }
 
@@ -214,7 +216,6 @@ namespace Calculators {
                         }
                         for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
                             for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
-                                //   SPDLOG_INFO("PASSED 2.1");
                                 if (neighbourP == nullptr) {
                                     continue;
                                 }
@@ -229,12 +230,12 @@ namespace Calculators {
                                 SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                              neighbourP->getID());
                                 // add force of this pair to the overall force of particle 1
-                                (*itParticle1)->setF(((*itParticle1)->getF() + fij));
+                                if(!(*itParticle1)->getFixed())
+                                    (*itParticle1)->setF(((*itParticle1)->getF() + fij));
                                 // make use of Newton's third law and add the negative force calculated above to particle 2
-
-                                neighbourP->setF((neighbourP->getF() - fij));
+                                if(!neighbourP->getFixed())
+                                  neighbourP->setF((neighbourP->getF() - fij));
                             }
-                            // SPDLOG_INFO("PASSED 2.2");
                         }
                     }
                 }
@@ -264,6 +265,7 @@ namespace Calculators {
         void calculateX(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p: particleContainer) {
+                if(p.getFixed()) continue;
                 p.setOldX(p.getX());
                 std::array<double, 3> newX = (
                     p.getX() + ((delta_t * p.getV()) +
@@ -280,6 +282,7 @@ namespace Calculators {
         void calculateV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateV");
             for (auto &particle: particleContainer) {
+                if(particle.getFixed()) continue;
                 std::array<double, 3> newV = (particle.getV() +
                                                        (delta_t * 0.5 / particle.getM() *
                                                                  (particle.getOldF() + particle.getF())));

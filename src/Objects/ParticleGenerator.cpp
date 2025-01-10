@@ -9,7 +9,7 @@
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 
-void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma, double initTemperature) {
+void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type, double epsilon, double sigma, double initTemperature, bool isFixed) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double,3> N = cuboid.getNumOfParticlesPerDimension();
@@ -40,7 +40,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                     vel[m] += scale * maxwell_vel[m];
                 }
                 // create new particle
-                Particle nParticle(particle_pos,vel,m, type, epsilon, sigma);
+                Particle nParticle(particle_pos,vel,m, type, epsilon, sigma, isFixed);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }
@@ -48,7 +48,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     }
 }
 
-void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type, double epsilon, double sigma) {
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type, double epsilon, double sigma, bool isFixed) {
     const std::array<double, 3> center = disc.getCenterCoordinate();
     const  std::array<double, 3> initVel = disc.getInitVelocity();
     const int r = disc.getRadius();
@@ -64,7 +64,7 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
                 SPDLOG_DEBUG("line {}", j);
                 const std::array<double, 3> particlePosition = {center[0] + j*h, center[1] + i*h, center[2]};
                 // create new particle
-                Particle nParticle(particlePosition,initVel, mass, type, epsilon, sigma);
+                Particle nParticle(particlePosition,initVel, mass, type, epsilon, sigma, isFixed);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }

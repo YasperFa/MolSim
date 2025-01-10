@@ -19,17 +19,17 @@ TEST(ParticleGeneratorTest, checkContainerSize1) {
     double mv = 0.5 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1);
+    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1, false);
     // size should be 1*1*1
     EXPECT_EQ(1,pc.sizeParticles());
     N = {2.0, 1.0, 1.0};
     Cuboid cuboid2(x,N, h, m,V,mv);
-    ParticleGenerator::generateCuboid(pc,cuboid2, 0, 5, 1, -1);
+    ParticleGenerator::generateCuboid(pc,cuboid2, 0, 5, 1, -1, false);
     // size should be 2*1*1 plus existing particles
     EXPECT_EQ(3,pc.sizeParticles());
     N = {2.0, 4.0, 3.0};
     Cuboid cuboid3(x,N, h, m,V,mv);
-    ParticleGenerator::generateCuboid(pc,cuboid3, 0, 5, 1, -1);
+    ParticleGenerator::generateCuboid(pc,cuboid3, 0, 5, 1, -1, false);
     // size should be 2*4*3 plus existing particles
     EXPECT_EQ(27,pc.sizeParticles());
 }
@@ -42,17 +42,17 @@ TEST(ParticleGeneratorTest, checkContainerSize2) {
     double h = 1.0;
     Disc disc(center,initVel,r,h,mass);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1);
+    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1, false);
     // size should be 1
     EXPECT_EQ(1,pc.sizeParticles());
     r = 1;
     Disc disc2(center,initVel,r,mass,h);
-    ParticleGenerator::generateDisc(pc,disc2, 0, 5, 1);
+    ParticleGenerator::generateDisc(pc,disc2, 0, 5, 1, false);
     // size should be 1 + 5
     EXPECT_EQ(6,pc.sizeParticles());
     r = 2;
     Disc disc3(center,initVel,r,mass,h);
-    ParticleGenerator::generateDisc(pc,disc3, 0, 5, 1);
+    ParticleGenerator::generateDisc(pc,disc3, 0, 5, 1, false);
     // size should be 1 + 5 + 13
     EXPECT_EQ(19 ,pc.sizeParticles());
 
@@ -67,7 +67,7 @@ TEST(ParticleGeneratorTest, checkParticlePositions1) {
     double mv = 0.5 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1);
+    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1, false);
     std::array<std::array<double,3>,8> expected = {std::array<double,3>{0.0,0.0,0.0},std::array<double,3>{0.5,0.0,0.0},std::array<double,3>{0.0,0.5,0.0},std::array<double,3>{0.5,0.5,0.0},std::array<double,3>{0.0,0.0,0.5},std::array<double,3>{0.5,0.0,0.5},std::array<double,3>{0.0,0.5,0.5},std::array<double,3>{0.5,0.5,0.5}};
     int i = 0;
     for (Particle &p : pc) {
@@ -86,7 +86,7 @@ TEST(ParticleGeneratorTest, checkParticlePositions2) {
     double h = 1.0;
     Disc disc(center,initVel,r,h,mass);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1);
+    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1, false);
     std::array<std::array<double,3>,5> expected = {std::array<double,3>{1.0,0.0,0.0},std::array<double,3>{0.0,1.0,0.0},std::array<double,3>{1.0,1.0,0.0},std::array<double,3>{2.0,1.0,0.0},
         std::array<double,3>{1.0,2.0,0.0}};
     int i = 0;
@@ -109,7 +109,7 @@ TEST(ParticleGeneratorTest, checkOtherVariables) {
     double mv = 1.0 ;
     Cuboid cuboid1(x,N, h, m,V,mv);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1);
+    ParticleGenerator::generateCuboid(pc,cuboid1, 0, 5, 1, -1, false);
     for (Particle &p : pc) {
         //check X
         EXPECT_EQ(0.7 , p.getX()[0]);

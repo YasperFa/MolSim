@@ -123,7 +123,7 @@ void BoundaryHandler::handleReflecting(){
             if (!isBoundaryCellofBoundary(i, cell.get().getPosition())) {continue;}
         
             for (Particle * p : cell.get().getParticlesInCell()) {
-  
+                if(p->getFixed()) continue;
                 //calculate distance from boundary
                 double dist = calculateDistance(*p, i);
                 if (dist < minDist(p -> getSigma())/2) { //must be closer
@@ -198,7 +198,7 @@ void BoundaryHandler::handlePeriodic() {
             if (!isBoundaryCellofBoundary(i, currentCellPos)) {continue;}
 
             for (auto particle : cell.get().getParticlesInCell()) {
-                
+                if(particle->getFixed()) continue;
                 if (!movedIntoBoundary(i, particle -> getOldX())) {continue;} //only create clone particle if particle moved into boundary in this iteration
                 Particle newParticle = createCloneParticle(i, *particle);
                 std::array<int, 3> cellPos = oppositeCell(currentCellPos, i);
