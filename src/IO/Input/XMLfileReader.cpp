@@ -28,7 +28,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
     try {
         // Parse the XML file into a DOM object
         std::unique_ptr<simulation> sim = simulation_(fileStream);
-
+        bool is3d = false;
         // Access the parsed data
         if (sim.get() != nullptr) {
             // Check if parsing succeeded
@@ -60,6 +60,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     domainSizeArray[0] = sim->container().domainSize().get().x();
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
+                    if(domainSizeArray[2] > 1) {
+                        is3d = true;
+                    }
                 }
                 particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, version2);
                 if(sim -> container().boundaryType().present()) {
@@ -142,9 +145,9 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 if (sim->temperature().get().maxDeltaTemperature().present()) {
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
-                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
                 if(sim->temperature().get().ThermoType() == "average") {
-                    thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                    thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
                 } else if (sim->temperature().get().ThermoType() != "direct") {
                     SPDLOG_ERROR("Invalid Thermostat type");
                 }
