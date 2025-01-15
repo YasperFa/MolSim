@@ -24,7 +24,7 @@ public:
    * @param isFixed
    */
    static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
-      isFixed =false);
+      isFixed =false, bool assignNeighbours = false);
    /**
    * @brief generates particles from a given disc
    * @param particles empty Particle container where particles will be inserted
