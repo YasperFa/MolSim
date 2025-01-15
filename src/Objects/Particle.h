@@ -9,6 +9,7 @@
 
 #include <array>
 #include <string>
+#include <vector>
 #include "ParticleIdInitializer.h"
 #include <mutex>
 class Particle {
@@ -70,6 +71,17 @@ std::array<int, 3> partner;
 
  bool isFixed;
 
+ /**
+  * @brief Ids of the direct neighbours of the current particle (up, down, right or left).
+  */
+ std::vector<int> directNeighbourIds;
+
+ /**
+  * @brief Ids of the diagonal neighbours of the current particle.
+  */
+ std::vector<int> diagonalNeighbourIds;
+
+
 public:
  explicit Particle(int type = 0);
 
@@ -125,6 +137,53 @@ public:
  * @returns id of the corresponding partner, 0 if there is no partner
  */
  int getPartner(int i);
+
+ //Neighbour functions
+
+ /**
+  *
+  * @return a vector of direct neighbours of the current particle.
+  */
+ const std::vector<int>& getDirectNeighbourIds() const;
+
+ /**
+  *
+  * @return a vector of diagonal neighbours of the current particle.
+  */
+ const std::vector<int>& getDiagonalNeighbourIds() const;
+
+ /**
+  * @brief adds the given particle id to the vector of direct neighbours
+  * @param neighbourID the id of the particle to be added
+  */
+ void addDirectNeighbour(int neighbourID);
+
+ /**
+  * @brief adds the given particle id to the vector of diagonal neighbours
+  * @param neighbourID the id of the particle to be added
+  */
+ void addDiagonalNeighbour(int neighbourID);
+
+ /**
+  * @brief checks if the given particle is a direct neighbour of the current particle
+  * @param other particle to be checked
+  * @return true if the particles are direct neighbours vector, else false
+  */
+ bool isDirectNeighbour(const Particle &other) const;
+
+ /**
+ * @brief checks if the given particle is a diagonal neighbour of the current particle
+ * @param other particle to be checked
+ * @return true if the particles are diagonal neighbours vector, else false
+ */
+ bool isDiagonalNeighbour(const Particle &other) const;
+
+ /**
+ * @brief checks if the given particle is a neighbour of the current particle
+ * @param other particle to be checked
+ * @return true if the particles are neighbours, else false
+ */
+ bool isNeighbour(const Particle &other) const;
 
  std::string toString() const;
 };

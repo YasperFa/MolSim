@@ -172,3 +172,37 @@ void Particle::fixParticle() {
   isFixed = true;
 }
 
+// neighbour functions
+const std::vector<int>& Particle::getDiagonalNeighbourIds() const {
+  return diagonalNeighbourIds;
+}
+
+const std::vector<int> &Particle::getDirectNeighbourIds() const {
+  return diagonalNeighbourIds;
+}
+
+void Particle::addDiagonalNeighbour(int neighbourID) {
+  diagonalNeighbourIds.push_back(neighbourID);
+}
+
+void Particle::addDirectNeighbour(int neighbourID) {
+  diagonalNeighbourIds.push_back(neighbourID);
+}
+
+bool Particle::isDiagonalNeighbour(const Particle &other) const {
+  return std::find(diagonalNeighbourIds.begin(), diagonalNeighbourIds.end(), other.getID()) != diagonalNeighbourIds.end();
+}
+
+bool Particle::isDirectNeighbour(const Particle &other) const {
+  return std::find(directNeighbourIds.begin(), directNeighbourIds.end(), other.getID()) != directNeighbourIds.end();
+}
+
+bool Particle::isNeighbour(const Particle &other) const {
+  return isDiagonalNeighbour(other) || isDirectNeighbour(other);
+}
+
+
+
+
+
+
