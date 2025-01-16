@@ -11,7 +11,7 @@
 
 void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type,
                                        double epsilon, double sigma, double initTemperature, bool isFixed,
-                                       bool assignNeighbours) {
+                                       bool assignNeighbours, bool is3d) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double, 3> N = cuboid.getNumOfParticlesPerDimension();
@@ -28,26 +28,29 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
         )
     );
 
-    for (int k = 0; k < N[2]; ++k) {
-        for (int j = 0; j < N[1]; ++j) {
-            for (int i = 0; i < N[0]; ++i) {
+    int dimensions = is3d ? 3 : 2;
+    for (int k=0; k < N[2];++k) {
+        for (int j=0; j < N[1];++j) {
+            for (int i=0; i < N[0];++i) {
                 // calculate x,y,z coordinates
                 std::array<double, 3> particle_pos = {
                     x[0] + i * h,
                     x[1] + j * h,
                     x[2] + k * h};
                 // get the maxwell velocity
-                std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(mv, 2);
+                std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(mv,dimensions);
                 // get the initial velocity
                 std::array<double, 3> vel = v;
                 //scale according to temperature
-                double scale = 1;
-                if (initTemperature != -1) {
-                    scale = std::sqrt(initTemperature / m);
+
+                if(initTemperature != -1) {
+                   double scale = 1;
+                    scale = std::sqrt(initTemperature/m);
+                    maxwell_vel = maxwellBoltzmannDistributedVelocity(scale,dimensions);
                 }
                 // add maxwell velocity to initial velocity
                 for (int m = 0; m < 3; ++m) {
-                    vel[m] += scale * maxwell_vel[m];
+                    vel[m] += maxwell_vel[m];
                 }
                 // create new particle
                 Particle nParticle(particle_pos, vel, m, type, epsilon, sigma, isFixed);
@@ -98,27 +101,36 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     }
 }
 
-void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type,
-                                     double epsilon, double sigma, bool isFixed) {
+void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &particles, Disc &disc, int type, double epsilon, double sigma,double initTemperature, bool isFixed, bool is3d) {
     const std::array<double, 3> center = disc.getCenterCoordinate();
-    const std::array<double, 3> initVel = disc.getInitVelocity();
+    std::array<double, 3> initVel = disc.getInitVelocity();
     const int r = disc.getRadius();
     const double mass = disc.getMass();
     const double h = disc.getDistanceBetweenParticles();
+    int dimensions = is3d ? 3 : 2;
     SPDLOG_DEBUG("generating disc particles");
     SPDLOG_DEBUG("r: {}", r);
-    for (int i = -r; i <= r; ++i) {
+    for (int i = -r ; i <= r ; ++i) {
         SPDLOG_DEBUG("column {}", i);
         // check if position is inside the circle j*j + i*i <= r*r
-        for (int j = -r; j <= r; ++j) {
-            if (((j * j) + (i * i) <= r * r)) {
+        for (int j = -r ; j <= r; ++j) {
+            if (((j*j) + (i*i) <= r*r)) {
+                if(initTemperature != -1) {
+                    double scale = std::sqrt(initTemperature/mass);
+                   std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(scale,dimensions);
+                    for (int m = 0; m < 3; ++m) {
+                        initVel[m] += maxwell_vel[m];
+                    }
+                }
                 SPDLOG_DEBUG("line {}", j);
-                const std::array<double, 3> particlePosition = {center[0] + j * h, center[1] + i * h, center[2]};
+                const std::array<double, 3> particlePosition = {center[0] + j*h, center[1] + i*h, center[2]};
                 // create new particle
-                Particle nParticle(particlePosition, initVel, mass, type, epsilon, sigma, isFixed);
+                Particle nParticle(particlePosition,initVel, mass, type, epsilon, sigma, isFixed);
                 // add new particle to container
                 particles.addParticle(nParticle);
             }
         }
     }
+
+
 }
