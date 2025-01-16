@@ -15,7 +15,7 @@ namespace Calculators {
 
     public:
         HarmonicForceCalculator(double stiffnessConstant, double avgBondLength);
-        std::array<double,3> calculateFIJ(const std::array<double,3>& sub, Particle& current, Particle& other);
+        std::array<double,3> calculateFIJ(const std::array<double,3>& sub, Particle& current, Particle& other, double boundLengthMultiplier);
         std::string toString();
     };
 }

@@ -10,6 +10,10 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     double deltaT;
     double endTime;
     double gravity;
+    bool assignNeighbours;
+    bool harmonicOn;
+    double stiffnessConstant;
+    double avgBondLength;
     int freq;
     bool version2 = false;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
@@ -17,7 +21,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1){
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, freq,version2,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn, stiffnessConstant, avgBondLength, freq,version2,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("XYZWriter",outputWriter->toString());
     EXPECT_EQ("LJC",calculator->toString());
     EXPECT_EQ(10, freq);
@@ -43,6 +47,10 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     double deltaT = 0.0;
     double endTime = 0.0;
     double gravity = 0;
+    bool assignNeighbours = false;
+    bool harmonicOn = false;
+    double stiffnessConstant = 0.0;
+    double avgBondLength = 0.0;
     bool version2 = false;
     int freq;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
@@ -50,7 +58,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, freq,version2,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn, stiffnessConstant, avgBondLength, freq,version2,outputWriter, calculator, particleContainer, boundaryHandler,thermostat);
     EXPECT_EQ("VTKWriter",outputWriter->toString());
    EXPECT_EQ("Default",calculator->toString());
     EXPECT_EQ(1, freq);

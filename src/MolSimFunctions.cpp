@@ -17,6 +17,7 @@
 #include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
 
 #include <chrono>
+
 void MolSim::printHelp() {
     std::cout << R"(
 Welcome to MolSim helper!
@@ -25,7 +26,7 @@ If you want to execute the simulation, the program call has to follow this forma
     './MolSim -i .{INPUT_PATH} -c {CALCULATOR} -p {PARTICLE_CONTAINER} -d {DELTA_T} -e {END_TIME} -o {OUTPUT_WRITER} -l {LOG_LEVEL} -s {DOMAIN_SIZE} -r {CUTOFF_RADIUS} -b {BOUNDARY_CONDITION} -g {GRAVITY}
 or
 
-        './MolSim --input=.{INPUT_PATH} --calculator={CALCULATOR} --particleContainer={PARTICLE_CONTAINER} --deltaT={DELTA_T} -endTime={END_TIME} --output={OUTPUT_WRITER} --logLevel={LOG_LEVEL}' 
+        './MolSim --input=.{INPUT_PATH} --calculator={CALCULATOR} --particleContainer={PARTICLE_CONTAINER} --deltaT={DELTA_T} -endTime={END_TIME} --output={OUTPUT_WRITER} --logLevel={LOG_LEVEL}'
         --domainSize={DOMAIN_SIZE} --cutoffRadius={CUTOFF_RADIUS} --boundaryCondition={BOUNDARY_CONDITION} --g={GRAVITY}
 
 Example calls:
@@ -64,27 +65,27 @@ Optional arguments:
         following the format: '-e {positive number}' or '--endTime {positive number}'
         If -e is not specified while executing the program, the value e = 1000 will be used.
 
-        '{LOG_LEVEL}': The log level that is to be used. It is not possible to set a log level higher than the compile-time 
-        log level at runtime (see 2.). 
-        Possible values are, in ascending order: 'off', 'error', 'warn', 'info', 'debug' and 'trace' / 'all'. 
+        '{LOG_LEVEL}': The log level that is to be used. It is not possible to set a log level higher than the compile-time
+        log level at runtime (see 2.).
+        Possible values are, in ascending order: 'off', 'error', 'warn', 'info', 'debug' and 'trace' / 'all'.
         If -l is not specified, the log level specified at compile time will be used.
-        The argument has to be passed with the following format: '-l {logLevel}' or '--logLevel {logLevel}'. 
+        The argument has to be passed with the following format: '-l {logLevel}' or '--logLevel {logLevel}'.
 
-        '{DOMAIN_SIZE'}: The size of the domain used. This is only effective when using LCC as particle container. 
-        The domain size must consist of three positive values seperated by commas. If no domain size is specified and LCC is chosen, 
-        a default size of 180,90,1 will be used. 
-        The argument has to be passed with the following format: '-s {domainSize} or '--domainSize {domainSize}', 
+        '{DOMAIN_SIZE'}: The size of the domain used. This is only effective when using LCC as particle container.
+        The domain size must consist of three positive values seperated by commas. If no domain size is specified and LCC is chosen,
+        a default size of 180,90,1 will be used.
+        The argument has to be passed with the following format: '-s {domainSize} or '--domainSize {domainSize}',
         where domain has the format {x},{y},{z}.
 
         '{CUTOFF_RADIUS}': The cutoff radius that will be used by the LinkedCellContainer. The argument has to be passed with a positive number
         following the format: '-r {radius}' or '--cutoffRadius {radius}'. If no radius is specified, a default radius of 3 will be used.
 
-        '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error. 
+        '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error.
         The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are o for outflow, r for reflecting and p for periodic.
         The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', where boundaryCondition has the following format:
         {left},{right},{top},{bottom},{front},{back}. If no value is specified, outflow will be used for all boundaries.
 
-        
+
         '{GRAVITY}': The gravitatonal acceleration in y-direction. Passed as a positive or negative double value. If no value is given, the defult value of 0 will be used.
 
     )" << std::endl;
@@ -92,7 +93,10 @@ Optional arguments:
 
 
 bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
-                            double &gravity,
+                            double &gravity, bool assignNeighbours,
+                            bool harmonicOn,
+                            double stiffnessConstant,
+                            double avgBondLenght,
                             std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                             std::unique_ptr<Calculators::Calculator> &calculator,
                             std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -110,10 +114,15 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("p, particleContainer", "Set particle container", cxxopts::value<std::string>())
             ("s, domainSize", "Set domain size", cxxopts::value<std::vector<double> >()->default_value("180,90,1"))
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
-            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<char>>())
-            ("g, gravity","Set gravity", cxxopts::value<double>()->default_value("0"))
-
-    ;
+            ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<char> >())
+            ("g, gravity", "Set gravity", cxxopts::value<double>()->default_value("0"))
+            ("n, neighbour", "Choose if the neighbours will be assigned",
+             cxxopts::value<bool>()->default_value("false"))
+            ("harmonic", "Activate the harmonic force", cxxopts::value<bool>()->default_value("false"))
+            ("stiffnessConstant", "Set stiffness constant for harmonic force",
+             cxxopts::value<double>()->default_value("0.0"))
+            ("bondLength", "Set the average bond length for harmonic force",
+             cxxopts::value<double>()->default_value("0.0"));
 
 
     auto parseResult = options.parse(argc, argv);
@@ -186,7 +195,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         printHelp();
         return false;
     }
-    
+
     std::array<double, 3> domainSizeArray = {domainSize[0], domainSize[1], domainSize[2]};
 
     if (parseResult["cutoffRadius"].as<double>() <= 0) {
@@ -204,9 +213,15 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
         if (containerType == "DSC") {
             particleContainer = std::make_unique<ParticleContainers::DirectSumContainer>();
         } else if (containerType == "LCC") {
-            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, false);
-            std::array<BoundaryHandler::bCondition, 6> cond = {BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW,BoundaryHandler::bCondition::OUTFLOW};
-            boundaryHandler = std::make_unique<BoundaryHandler>(cond , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //default
+            particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(
+                domainSizeArray, cutoffRadius, false);
+            std::array<BoundaryHandler::bCondition, 6> cond = {
+                BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW,
+                BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW,
+                BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW
+            };
+            boundaryHandler = std::make_unique<BoundaryHandler>(
+                cond, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer)))); //default
             LCCset = true;
         } else {
             SPDLOG_ERROR("Invalid container type!");
@@ -223,36 +238,44 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             return false;
         }
 
-        try{
-        std::vector<char> condition = parseResult["boundaryCondition"].as<std::vector<char>>();
+        try {
+            std::vector<char> condition = parseResult["boundaryCondition"].as<std::vector<char> >();
 
-        if (condition.size() != 6) {
-        SPDLOG_ERROR("invalid boundary parameter! Length must be 6");
-        printHelp();
-        return false;
-        }
-
-        for (int i = 0; i < 6; i++){
-        int t = condition[i];
-        if (t!='o' && t != 'r' && t != 'p'){
-        SPDLOG_ERROR("invalid boundary parameter!");
-        printHelp();
-        return false;
-     }
-}
-
-        std::array<BoundaryHandler::bCondition, 6> conditionArray;
-
-        for (int i = 0; i < 6; i++){
-            switch(condition[i]){
-                case 'o': conditionArray[i] = BoundaryHandler::bCondition::OUTFLOW; break;
-                case 'r': conditionArray[i] = BoundaryHandler::bCondition::REFLECTING; break;
-                case 'p': conditionArray[i] = BoundaryHandler::bCondition::PERIODIC; break;
-                default: SPDLOG_ERROR("invalid boundary parameter! Only 'o', 'r' and 'p' allowed"); printHelp(); return false;
+            if (condition.size() != 6) {
+                SPDLOG_ERROR("invalid boundary parameter! Length must be 6");
+                printHelp();
+                return false;
             }
-        }
-        
-        boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray, *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer)))); //sigma is hardcoded for now
+
+            for (int i = 0; i < 6; i++) {
+                int t = condition[i];
+                if (t != 'o' && t != 'r' && t != 'p') {
+                    SPDLOG_ERROR("invalid boundary parameter!");
+                    printHelp();
+                    return false;
+                }
+            }
+
+            std::array<BoundaryHandler::bCondition, 6> conditionArray;
+
+            for (int i = 0; i < 6; i++) {
+                switch (condition[i]) {
+                    case 'o': conditionArray[i] = BoundaryHandler::bCondition::OUTFLOW;
+                        break;
+                    case 'r': conditionArray[i] = BoundaryHandler::bCondition::REFLECTING;
+                        break;
+                    case 'p': conditionArray[i] = BoundaryHandler::bCondition::PERIODIC;
+                        break;
+                    default: SPDLOG_ERROR("invalid boundary parameter! Only 'o', 'r' and 'p' allowed");
+                        printHelp();
+                        return false;
+                }
+            }
+
+            boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray,
+                                                                *(dynamic_cast<ParticleContainers::LinkedCellContainer
+                                                                    *>(&(*particleContainer))));
+            //sigma is hardcoded for now
 
             boundaryHandler = std::make_unique<BoundaryHandler>(conditionArray,
                                                                 *(dynamic_cast<ParticleContainers::LinkedCellContainer
@@ -284,6 +307,12 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     gravity = parseResult["gravity"].as<double>();
     outputWriter = std::make_unique<outputWriters::VTKWriter>();
     calculator = std::make_unique<Calculators::GravityCalculator>();
+
+    assignNeighbours = parseResult["neighbour"].as<bool>();
+    harmonicOn = parseResult["harmonic"].as<bool>();
+    stiffnessConstant = parseResult["stiffnessConstant"].as<double>();
+    avgBondLenght = parseResult["bondLength"].as<double>();
+
 
 
     //set the output writer
@@ -381,7 +410,10 @@ bool MolSim::loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContain
 
 
 void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
-                    double &gravity, int &freq, bool &version2,
+                    double &gravity,
+                    bool harmonicOn,
+                    double stiffnessConstant,
+                    double avgBondLenght, int &freq, bool &version2,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
                     std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
@@ -392,11 +424,11 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     // get start time
     auto start = std::chrono::high_resolution_clock::now();
     if (boundaryHandler != nullptr) {
-            SPDLOG_DEBUG("handling initial boundaries");
-            boundaryHandler->handleBoundaries();
-        }
+        SPDLOG_DEBUG("handling initial boundaries");
+        boundaryHandler->handleBoundaries();
+    }
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT, gravity);
+        calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght);
         if (boundaryHandler != nullptr) {
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();
@@ -452,9 +484,9 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
                 return false;
             }
 
-            double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0;
+            double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0, subStiffnessConstant = 0.0, subAvgBondLength = 0.0;
             int subFreq = 20;
-            bool version2 = false;
+            bool version2 = false, assignNeighbors = false, harmonicOn = false;
             std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
             std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
             std::unique_ptr<Calculators::Calculator> subCalculator;
@@ -462,14 +494,15 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
             std::unique_ptr<Thermostat> subThermostat;
 
 
-            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, subFreq, version2, subOutputWriter,
+            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, assignNeighbors, harmonicOn, subStiffnessConstant, subAvgBondLength, subFreq, version2,
+                                                subOutputWriter,
                                                 subCalculator,
                                                 subParticleContainer, subBoundaryHandler, subThermostat) != 0) {
                 SPDLOG_ERROR("Could not parse input file!");
                 return false;
             }
 
-            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, subFreq, version2, subOutputWriter,
+            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, harmonicOn, subStiffnessConstant, subAvgBondLength, subFreq, version2, subOutputWriter,
                            subCalculator,
                            subBoundaryHandler, subThermostat, subInputFile);
         }

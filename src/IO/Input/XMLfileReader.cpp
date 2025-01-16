@@ -15,6 +15,10 @@
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
+                                    bool &assignNeighbours,
+                                    bool &harmonicOn,
+                                    double &stiffnessConstant,
+                                    double &avgBondLength,
                                     int &freq, bool &version2,
                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                     std::unique_ptr<Calculators::Calculator> &calculator,
@@ -41,6 +45,35 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     freq = 10;
                 }
             }
+
+            if (sim->parameters().assignNeighbours().present()) {
+                assignNeighbours = sim->parameters().assignNeighbours().get();
+            } else {
+                assignNeighbours = false;
+            }
+
+            harmonicOn = false;
+            stiffnessConstant = 0.0;
+            avgBondLength = 0.0;
+
+            if (sim->parameters().harmonicForce().present()) {
+                const auto& harmonicForce = sim->parameters().harmonicForce().get();
+
+                // Read harmonicOn (default to false if not provided)
+                harmonicOn = harmonicForce.harmonicOn();
+
+                if (harmonicForce.stiffnessConstant().present()) {
+                    stiffnessConstant = harmonicForce.stiffnessConstant().get();
+                }
+
+                if (harmonicForce.avgBondLength().present()) {
+                    avgBondLength = harmonicForce.avgBondLength().get();
+                }
+            }
+
+            SPDLOG_DEBUG("HarmonicOn: {}, StiffnessConstant: {}, AvgBondLength: {}",
+                         harmonicOn, stiffnessConstant, avgBondLength);
+
             if (sim->parameters().parallelVersion().present()) {
                 version2 = sim->parameters().parallelVersion().get();
                 SPDLOG_INFO("Parallel version from XML selected: {}", version2);
@@ -61,20 +94,20 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
                 }
-                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, version2);
-                if(sim -> container().boundaryType().present()) {
-                   std::array<BoundaryHandler::bCondition, 6> condition;
-                    condition[0] = getConditionType(sim ->container().boundaryType().get().left());
-                    condition[1] = getConditionType(sim ->container().boundaryType().get().right());
-                    condition[2] = getConditionType(sim ->container().boundaryType().get().top());
-                    condition[3] = getConditionType(sim ->container().boundaryType().get().bottom());
-                    condition[4] = getConditionType(sim ->container().boundaryType().get().front());
-                    condition[5] = getConditionType(sim ->container().boundaryType().get().back());
-                    boundaryHandler = std::make_unique<BoundaryHandler>(condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(
+                    domainSizeArray, cutoffRadius, version2);
+                if (sim->container().boundaryType().present()) {
+                    std::array<BoundaryHandler::bCondition, 6> condition;
+                    condition[0] = getConditionType(sim->container().boundaryType().get().left());
+                    condition[1] = getConditionType(sim->container().boundaryType().get().right());
+                    condition[2] = getConditionType(sim->container().boundaryType().get().top());
+                    condition[3] = getConditionType(sim->container().boundaryType().get().bottom());
+                    condition[4] = getConditionType(sim->container().boundaryType().get().front());
+                    condition[5] = getConditionType(sim->container().boundaryType().get().back());
+                    boundaryHandler = std::make_unique<BoundaryHandler>(
+                        condition, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer))));
                 }
-
-            }
-            else {
+            } else {
                 SPDLOG_ERROR("Invalid container type! choose one of the following: DSC / LCC");
             }
             if (sim->parameters().deltaT().present()) {
@@ -142,14 +175,15 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 if (sim->temperature().get().maxDeltaTemperature().present()) {
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
-                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
-                if(sim->temperature().get().ThermoType() == "average") {
-                    thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, initialTemperature, timeSteps);
+                thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, initialTemperature,
+                                                                timeSteps);
+                if (sim->temperature().get().ThermoType() == "average") {
+                    thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, initialTemperature,
+                                                                     timeSteps);
                 } else if (sim->temperature().get().ThermoType() != "direct") {
                     SPDLOG_ERROR("Invalid Thermostat type");
                 }
                 SPDLOG_DEBUG("Direct thermostat is selected from xml");
-
             }
             for (int i = 0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
@@ -179,7 +213,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     sigma = sim->shapes().particle().at(i).sigma().get();
                 }
                 bool isFixed = false;
-                if(sim->shapes().particle().at(i).isFixed().present()) {
+                if (sim->shapes().particle().at(i).isFixed().present()) {
                     isFixed = sim->shapes().particle().at(i).isFixed().get();
                 }
 
@@ -222,11 +256,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
                 bool isFixed = false;
-                if(sim->shapes().cuboid().at(i).isFixed().present()) {
+                if (sim->shapes().cuboid().at(i).isFixed().present()) {
                     isFixed = sim->shapes().cuboid().at(i).isFixed().get();
                 }
-                Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature, isFixed);
+                Cuboid cuboid(x, N, h, m, v, mv);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature,
+                                                  isFixed);
             }
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -259,7 +294,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
                 bool isFixed = false;
-                if(sim->shapes().disc().at(i).isFixed().present()) {
+                if (sim->shapes().disc().at(i).isFixed().present()) {
                     isFixed = sim->shapes().disc().at(i).isFixed().get();
                 }
                 Disc disc(x, v, radius, h, m);
@@ -282,10 +317,10 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
     }
 }
 
-BoundaryHandler::bCondition XMLfileReader::getConditionType(std::string input){
-    if (input == "reflecting"){
+BoundaryHandler::bCondition XMLfileReader::getConditionType(std::string input) {
+    if (input == "reflecting") {
         return BoundaryHandler::bCondition::REFLECTING;
-    } else if (input == "periodic"){
+    } else if (input == "periodic") {
         return BoundaryHandler::bCondition::PERIODIC;
     } else return BoundaryHandler::bCondition::OUTFLOW; //xs enumeration prevents other values
 };

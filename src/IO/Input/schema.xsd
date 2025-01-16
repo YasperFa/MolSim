@@ -39,7 +39,16 @@
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
             <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
             <xs:element name="gravity" type="xs:double" minOccurs="0"/>
-            <xs:element name="parallelVersion" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="parallelVersion2" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="assignNeighbours" type="xs:boolean" minOccurs="0" default="false"/>
+            <xs:element name="harmonicForce" type="HarmonicForceType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HarmonicForceType">
+        <xs:sequence>
+            <xs:element name="harmonicOn" type="xs:boolean" default="false"/>
+            <xs:element name="stiffnessConstant" type="xs:double" default="0.0" minOccurs="0"/>
+            <xs:element name="avgBondLength" type="xs:double" default="0.0" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ShapeType">

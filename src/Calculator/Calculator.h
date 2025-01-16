@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "HarmonicForceCalculator.h"
 #include "Objects/Containers/LinkedCell/LinkedCellContainer.h"
 class Particle;
 #include <Objects/Particle.h>
@@ -27,10 +28,12 @@ namespace Calculators {
         * @param delta_t timestep between iterations
         * @param gravity the gravitational acceleration
         */
-        void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t, double gravity = 0.0) {
+        void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t,
+                          double gravity = 0.0, bool harmonicOn = false,
+                          double stiffnessConstant = 0.0, double avgBondLength = 0.0) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
-            calculateF(particleContainer, gravity);
+            calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength);
             calculateV(particleContainer, delta_t);
             if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 lcCont->updateParticlesInCell();
@@ -40,8 +43,12 @@ namespace Calculators {
         /**
         * calculate the force for all particles
         * @param particleContainer the container that is operated on
+        * @param gravity
+        * @param stiffnessConstant
+        * @param avgBondLength
         */
-        void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0) {
+        void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0, bool harmonicOn = false,
+                        double stiffnessConstant = 0.0, double avgBondLength = 0.0) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0, 0.0, 0.0};
@@ -57,49 +64,54 @@ namespace Calculators {
             } else if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 if (lcCont->version2) {
                     calculateFLinkedCellV2(*lcCont);
-                }
-                else {
+                } else {
                     calculateFLinkedCell(*lcCont);
                 }
             }
+
+            if (harmonicOn) {
+                HarmonicForceCalculator harmonicForceCalculator(stiffnessConstant, avgBondLength);
+                applyHarmonicForces(particleContainer, harmonicForceCalculator);
+            }
         }
 
-        /**Calculates the force for all particles in a DirectSumContainer 
+        /**Calculates the force for all particles in a DirectSumContainer
          * @param particleContainer the DirectSumContainer that is operated on
         */
-        
+
         void calculateFDirectSum(ParticleContainers::DirectSumContainer &particleContainer) {
-       #ifdef _OPENMP
+#ifdef _OPENMP
         #pragma omp parallel for schedule(dynamic)
-        #endif
+#endif
             for (auto it1 = particleContainer.begin(); it1 != particleContainer.end(); ++it1) {
                 for (auto it2 = it1 + 1; it2 != particleContainer.end(); ++it2) {
                     std::array<double, 3> sub = it2->getX() - it1->getX();
                     double norm = ArrayUtils::L2Norm(sub);
 
                     // calculate Force between the current pair of particles
-                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1-> getEpsilon(), it2->getEpsilon(), it1 -> getSigma(), it2-> getSigma());
+                    std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1->getEpsilon(),
+                                                             it2->getEpsilon(), it1->getSigma(), it2->getSigma());
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
-                    if(!it1->getFixed())
-                      it1->setF(it1->getF() + fij);
+                    if (!it1->getFixed())
+                        it1->setF(it1->getF() + fij);
                     // make use of Newton's third law and add the negative force calculated above to particle 2
-                    if(!it2->getFixed())
-                      it2->setF(it2->getF() - fij);
+                    if (!it2->getFixed())
+                        it2->setF(it2->getF() - fij);
                 }
             }
         }
 
-         /**Calculates the force for all particles in a LinkedCellContainer 
-         * @param particleContainer the LinkedCellContainer that is operated on
-         */
+        /**Calculates the force for all particles in a LinkedCellContainer
+        * @param lcCon the LinkedCellContainer that is operated on
+        */
         void calculateFLinkedCell(ParticleContainers::LinkedCellContainer &lcCon) {
-        #ifdef _OPENMP
+#ifdef _OPENMP
         #pragma omp parallel for schedule(dynamic)
-        #endif
+#endif
             for (auto itCell = lcCon.beginCells(); itCell != lcCon.endCells(); ++itCell) {
-
-                if(itCell ->getCellType() == Cell::CType::HALO){ //halo cells copy behaviour of opposite boundary cells
+                if (itCell->getCellType() == Cell::CType::HALO) {
+                    //halo cells copy behaviour of opposite boundary cells
                     continue;
                 }
 
@@ -117,18 +129,19 @@ namespace Calculators {
 
                         // calculate Force between the current pair of particles
                         std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), (*itParticle2)->getM(),
-                                                                 normCubed, (*itParticle1)->getEpsilon(), (*itParticle2)->getEpsilon(), (*itParticle1)->getSigma(), (*itParticle2)->getSigma());
+                                                                 normCubed, (*itParticle1)->getEpsilon(),
+                                                                 (*itParticle2)->getEpsilon(),
+                                                                 (*itParticle1)->getSigma(),
+                                                                 (*itParticle2)->getSigma());
                         SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                      (*itParticle2)->getID());
                         // add force of this pair to the overall force of particle 1
-                        if(!(*itParticle1)->getFixed())
-                          (*itParticle1)->setF((*itParticle1)->getF() + fij);
+                        if (!(*itParticle1)->getFixed())
+                            (*itParticle1)->setF((*itParticle1)->getF() + fij);
                         // make use of Newton's third law and add the negative force calculated above to particle 2
-                        if(!(*itParticle2)->getFixed())
-                          (*itParticle2)->setF((*itParticle2)->getF() - fij);
-
+                        if (!(*itParticle2)->getFixed())
+                            (*itParticle2)->setF((*itParticle2)->getF() - fij);
                     }
-
                 }
                 for (Cell *neighbourCell: itCell->getNeighbourCells()) {
                     if (neighbourCell == nullptr) {
@@ -138,48 +151,53 @@ namespace Calculators {
                     if (neighbourCell < &(*itCell)) {
                         continue;
                     }
-                    for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
+                    for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++
+                         itParticle1) {
                         for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
                             if (neighbourP == nullptr) {
                                 continue;
                             }
 
-                            std::array<double, 3> sub = (neighbourP->getX() -(*itParticle1)->getX());
+                            std::array<double, 3> sub = (neighbourP->getX() - (*itParticle1)->getX());
                             double normL2 = ArrayUtils::L2Norm(sub);
                             if (normL2 > lcCon.getCutoff()) {
                                 continue;
                             }
                             std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), neighbourP->getM(),
-                                                                     normL2, (*itParticle1)->getEpsilon(), neighbourP->getEpsilon(), (*itParticle1)->getSigma(), neighbourP->getSigma());
+                                                                     normL2, (*itParticle1)->getEpsilon(),
+                                                                     neighbourP->getEpsilon(),
+                                                                     (*itParticle1)->getSigma(),
+                                                                     neighbourP->getSigma());
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
-                            if(!(*itParticle1)->getFixed())
+                            if (!(*itParticle1)->getFixed())
                                 (*itParticle1)->setF(((*itParticle1)->getF() + fij));
                             // make use of Newton's third law and add the negative force calculated above to particle 2
-                            if(!neighbourP->getFixed())
-                              neighbourP->setF((neighbourP->getF() - fij));
+                            if (!neighbourP->getFixed())
+                                neighbourP->setF((neighbourP->getF() - fij));
                         }
                     }
                 }
             }
         }
 
-         /**Calculates the force for all particles in a LinkedCellContainer accodring to version 2 of parallelization
-         * @param particleContainer the LinkedCellContainer that is operated on
-         */
+        /**Calculates the force for all particles in a LinkedCellContainer accodring to version 2 of parallelization
+        * @param lcCon the LinkedCellContainer that is operated on
+        */
         void calculateFLinkedCellV2(ParticleContainers::LinkedCellContainer &lcCon) {
-            for (auto order : lcCon.getIterationOrders()) {
+            for (auto order: lcCon.getIterationOrders()) {
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
 #endif
-                for (auto itCell : order) {
-
-                    if(itCell->getCellType() == Cell::CType::HALO){ //halo cells copy behaviour of opposite boundary cells
+                for (auto itCell: order) {
+                    if (itCell->getCellType() == Cell::CType::HALO) {
+                        //halo cells copy behaviour of opposite boundary cells
                         continue;
                     }
 
-                    for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
+                    for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++
+                         itParticle1) {
                         if (*itParticle1 == nullptr) {
                             continue;
                         }
@@ -192,19 +210,21 @@ namespace Calculators {
                             double normCubed = ArrayUtils::L2Norm(sub);
 
                             // calculate Force between the current pair of particles
-                            std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), (*itParticle2)->getM(),
-                                                                     normCubed, (*itParticle1)->getEpsilon(), (*itParticle2)->getEpsilon(), (*itParticle1)->getSigma(), (*itParticle2)->getSigma());
+                            std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(),
+                                                                     (*itParticle2)->getM(),
+                                                                     normCubed, (*itParticle1)->getEpsilon(),
+                                                                     (*itParticle2)->getEpsilon(),
+                                                                     (*itParticle1)->getSigma(),
+                                                                     (*itParticle2)->getSigma());
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          (*itParticle2)->getID());
                             // add force of this pair to the overall force of particle 1
-                            if(!(*itParticle1)->getFixed())
-                              (*itParticle1)->setF((*itParticle1)->getF() + fij);
+                            if (!(*itParticle1)->getFixed())
+                                (*itParticle1)->setF((*itParticle1)->getF() + fij);
                             // make use of Newton's third law and add the negative force calculated above to particle 2
-                            if(!(*itParticle2)->getFixed())
-                              (*itParticle2)->setF((*itParticle2)->getF() - fij);
-
+                            if (!(*itParticle2)->getFixed())
+                                (*itParticle2)->setF((*itParticle2)->getF() - fij);
                         }
-
                     }
                     for (Cell *neighbourCell: itCell->getNeighbourCells()) {
                         if (neighbourCell == nullptr) {
@@ -214,27 +234,30 @@ namespace Calculators {
                         if (neighbourCell < &(*itCell)) {
                             continue;
                         }
-                        for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
+                        for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++
+                             itParticle1) {
                             for (Particle *neighbourP: neighbourCell->getParticlesInCell()) {
                                 if (neighbourP == nullptr) {
                                     continue;
                                 }
 
-                                std::array<double, 3> sub = (neighbourP->getX() -(*itParticle1)->getX());
+                                std::array<double, 3> sub = (neighbourP->getX() - (*itParticle1)->getX());
                                 double normL2 = ArrayUtils::L2Norm(sub);
                                 if (normL2 > lcCon.getCutoff()) {
                                     continue;
                                 }
-                                std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), neighbourP->getM(),
-                                                                         normL2, (*itParticle1)->getEpsilon(), neighbourP->getEpsilon(), (*itParticle1)->getSigma(), neighbourP->getSigma());
+                                std::array<double, 3> fij = calculateFIJ(
+                                    sub, (*itParticle1)->getM(), neighbourP->getM(),
+                                    normL2, (*itParticle1)->getEpsilon(), neighbourP->getEpsilon(),
+                                    (*itParticle1)->getSigma(), neighbourP->getSigma());
                                 SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                              neighbourP->getID());
                                 // add force of this pair to the overall force of particle 1
-                                if(!(*itParticle1)->getFixed())
+                                if (!(*itParticle1)->getFixed())
                                     (*itParticle1)->setF(((*itParticle1)->getF() + fij));
                                 // make use of Newton's third law and add the negative force calculated above to particle 2
-                                if(!neighbourP->getFixed())
-                                  neighbourP->setF((neighbourP->getF() - fij));
+                                if (!neighbourP->getFixed())
+                                    neighbourP->setF((neighbourP->getF() - fij));
                             }
                         }
                     }
@@ -243,7 +266,7 @@ namespace Calculators {
         }
 
         /**
-        * calculate the force between particle i and j 
+        * calculate the force between particle i and j
         * @param sub difference of the positions of j and i
         * @param m1 mass of i
         * @param m2 mass of j
@@ -255,7 +278,8 @@ namespace Calculators {
         * @return force between i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
-                                                   double normCubed, double epsilon1, double epsilon2, double sigma1, double sigma2) = 0;
+                                                   double normCubed, double epsilon1, double epsilon2, double sigma1,
+                                                   double sigma2) = 0;
 
         /**
          * calculate the position for all particles
@@ -265,11 +289,11 @@ namespace Calculators {
         void calculateX(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p: particleContainer) {
-                if(p.getFixed()) continue;
+                if (p.getFixed()) continue;
                 p.setOldX(p.getX());
                 std::array<double, 3> newX = (
                     p.getX() + ((delta_t * p.getV()) +
-                                        (0.5 * pow(delta_t, 2) / p.getM()* p.getF())));
+                                (0.5 * pow(delta_t, 2) / p.getM() * p.getF())));
                 p.setX(newX);
             }
         }
@@ -282,13 +306,48 @@ namespace Calculators {
         void calculateV(ParticleContainers::ParticleContainer &particleContainer, double delta_t) {
             SPDLOG_TRACE("executing calculateV");
             for (auto &particle: particleContainer) {
-                if(particle.getFixed()) continue;
+                if (particle.getFixed()) continue;
                 std::array<double, 3> newV = (particle.getV() +
-                                                       (delta_t * 0.5 / particle.getM() *
-                                                                 (particle.getOldF() + particle.getF())));
+                                              (delta_t * 0.5 / particle.getM() *
+                                               (particle.getOldF() + particle.getF())));
                 particle.setV(newV);
             }
         }
+
         virtual std::string toString() = 0;
+
+        void applyHarmonicForces(ParticleContainers::ParticleContainer &particleContainer,
+                                 HarmonicForceCalculator &harmonicForceCalculator) {
+            SPDLOG_TRACE("Applying harmonic forces");
+
+            auto processNeighbours = [&harmonicForceCalculator](Particle &particle,
+                                                                const std::vector<int> &neigbourIds,
+                                                                ParticleContainers::ParticleContainer &
+                                                                particleContainer,
+                                                                double bondLengthMultiplier) {
+                for (int neighbourId: neigbourIds) {
+                    Particle &neighbour = *std::find_if(particleContainer.begin(), particleContainer.end(),
+                                                        [&neighbourId](const Particle &p) {
+                                                            return p.getID() == neighbourId;
+                                                        });
+                    std::array<double, 3> sub = neighbour.getX() - particle.getX();
+                    std::array<double, 3> force = harmonicForceCalculator.calculateFIJ(
+                        sub, particle, neighbour, bondLengthMultiplier);
+
+                    if (!particle.getFixed()) {
+                        particle.setF(particle.getF() + force);
+                    }
+                    if (!neighbour.getFixed()) {
+                        neighbour.setF(neighbour.getF() - force);
+                    }
+                }
+            };
+
+            for (auto &particle: particleContainer) {
+                processNeighbours(particle, particle.getDirectNeighbourIds(), particleContainer, 1.0);
+
+                processNeighbours(particle, particle.getDirectNeighbourIds(), particleContainer, sqrt(2.0));
+            }
+        }
     };
 }

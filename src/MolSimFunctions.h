@@ -37,6 +37,10 @@ namespace MolSim {
      */
     bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                         double &gravity,
+                        bool assignNeighbours,
+                        bool harmonicOn,
+                        double stiffnessConstant,
+                        double avgBondLength,
                         std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                         std::unique_ptr<Calculators::Calculator> &calculator,
                         std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -54,7 +58,10 @@ namespace MolSim {
      * @param thermostat to adjust the temperature of the simulation
     */
     void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
-                double &gravity, int &freq, bool &version2,
+                double &gravity,
+                bool harmonicOn,
+                double stiffnessConstant,
+                double avgBondLength, int &freq, bool &version2,
                 std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                 std::unique_ptr<Calculators::Calculator> &calculator,
                 std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
@@ -73,5 +80,5 @@ namespace MolSim {
      * @param particleContainer: the particle container where the particles will be loaded into
      * @return true if loading the checkpoints is successful
      */
-    bool loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContainer>& particleContainer);
+    bool loadCheckpoints(std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer);
 }

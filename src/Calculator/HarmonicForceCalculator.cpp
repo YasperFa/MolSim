@@ -12,11 +12,11 @@ namespace Calculators {
         : stiffnessConstant(stiffnessConstant), avgBondLength(avgBondLength) {}
 
     std::array<double, 3> HarmonicForceCalculator::calculateFIJ(const std::array<double, 3> &sub, Particle &current,
-                                                                Particle &other) {
+                                                                Particle &other, double boundLengthMultiplier) {
         SPDLOG_TRACE("Executing calculateFIJ with HarmonicForceCalculator");
 
         double distance = ArrayUtils::L2Norm(sub);
-        double bondLength = current.isDirectNeighbour(other) ? avgBondLength : sqrt(2.0) * avgBondLength;
+        double bondLength = boundLengthMultiplier * avgBondLength;
 
         double multiplier = stiffnessConstant * (distance - bondLength) / distance;
         return multiplier * sub;

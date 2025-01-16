@@ -19,7 +19,7 @@ FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
 
-void FileReader::readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename) {
+void FileReader::readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename, bool assignNeighbours) {
     SPDLOG_DEBUG("reading file {}", filename);
 
     std::ifstream input_file(filename);
@@ -42,7 +42,7 @@ void FileReader::readFile(ParticleContainers::ParticleContainer &particles, cons
                 readParticles(particles, input_file);
                 break;
             case 1:
-                readCuboids(particles, input_file);
+                readCuboids(particles, input_file, assignNeighbours);
                 break;
             case 2:
                 readDiscs(particles, input_file);
@@ -98,7 +98,7 @@ void FileReader::readParticles(ParticleContainers::ParticleContainer &particles,
     }
 }
 
-void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file) {
+void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file, bool assignNeighbours) {
     SPDLOG_DEBUG("reading cuboids from file");
     // define all Cuboid parameters
     std::array<double, 3> x;
@@ -158,7 +158,7 @@ void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, s
         Cuboid cuboid(x, N, h, m, v, mv);
         SPDLOG_DEBUG("Cuboid created!: ");
         // generates the particles in the cuboid
-        ParticleGenerator::generateCuboid(particles,cuboid, t, epsilon, sigma, -1);
+        ParticleGenerator::generateCuboid(particles,cuboid, t, epsilon, sigma, -1, assignNeighbours);
         // read another line (if more cuboids follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);

@@ -22,11 +22,10 @@
 
 /**Class for parsing xml input from a file */
 class XMLfileReader {
-   private:
+private:
+    static BoundaryHandler::bCondition getConditionType(std::string input);
 
-   static BoundaryHandler::bCondition getConditionType(std::string input);
-
-   public:
+public:
     /**Parses data from an xml file
    * @param fileStream: stream of the xml file
    * @param deltaT: delta_t
@@ -38,10 +37,14 @@ class XMLfileReader {
    * @param boundaryHandler: boundary handler
    * @param thermostat: thermostat
    */
-   static int parseXMLFromFile(std::ifstream& fileStream,double &deltaT, double &endTime, double& gravity, int &freq, bool &version2,
-                               std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
-                               std::unique_ptr<Calculators::Calculator> &calculator, std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer, std::unique_ptr<BoundaryHandler> &boundaryHandler,
-                               std::unique_ptr<Thermostat> &thermostat);
+    static int parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
+                                bool &assignNeighbours,
+                                bool &harmonicOn,
+                                double &stiffnessConstant,
+                                double &avgBondLength, int &freq, bool &version2,
+                                std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
+                                std::unique_ptr<Calculators::Calculator> &calculator,
+                                std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
+                                std::unique_ptr<BoundaryHandler> &boundaryHandler,
+                                std::unique_ptr<Thermostat> &thermostat);
 };
-
-
