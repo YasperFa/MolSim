@@ -86,7 +86,7 @@ TEST(ParticleGeneratorTest, checkParticlePositions2) {
     double h = 1.0;
     Disc disc(center,initVel,r,h,mass);
     ParticleContainers::DirectSumContainer pc;
-    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1, false);
+    ParticleGenerator::generateDisc(pc,disc, 0, 5, 1, -1);
     std::array<std::array<double,3>,5> expected = {std::array<double,3>{1.0,0.0,0.0},std::array<double,3>{0.0,1.0,0.0},std::array<double,3>{1.0,1.0,0.0},std::array<double,3>{2.0,1.0,0.0},
         std::array<double,3>{1.0,2.0,0.0}};
     int i = 0;

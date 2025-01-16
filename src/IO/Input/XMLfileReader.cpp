@@ -229,7 +229,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     isFixed = sim->shapes().cuboid().at(i).isFixed().get();
                 }
                 Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature, isFixed);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature, isFixed, is3d);
             }
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -266,7 +266,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     isFixed = sim->shapes().disc().at(i).isFixed().get();
                 }
                 Disc disc(x, v, radius, h, m);
-                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma, isFixed);
+                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma, initialTemperature, isFixed, is3d);
             }
 
 
