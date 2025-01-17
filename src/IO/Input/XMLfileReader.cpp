@@ -19,6 +19,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                                     bool &harmonicOn,
                                     double &stiffnessConstant,
                                     double &avgBondLength,
+                                    double &upwardsForce, int &activeTimesteps,
                                     int &freq, bool &version2,
                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                     std::unique_ptr<Calculators::Calculator> &calculator,
@@ -57,7 +58,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
             avgBondLength = 0.0;
 
             if (sim->parameters().harmonicForce().present()) {
-                const auto& harmonicForce = sim->parameters().harmonicForce().get();
+                const auto &harmonicForce = sim->parameters().harmonicForce().get();
 
                 // Read harmonicOn (default to false if not provided)
                 harmonicOn = harmonicForce.harmonicOn();
@@ -93,24 +94,24 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     domainSizeArray[0] = sim->container().domainSize().get().x();
                     domainSizeArray[1] = sim->container().domainSize().get().y();
                     domainSizeArray[2] = sim->container().domainSize().get().z();
-                    if(domainSizeArray[2] > 1) {
+                    if (domainSizeArray[2] > 1) {
                         is3d = true;
                     }
                 }
-                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(domainSizeArray, cutoffRadius, version2);
-                if(sim -> container().boundaryType().present()) {
-                   std::array<BoundaryHandler::bCondition, 6> condition;
-                    condition[0] = getConditionType(sim ->container().boundaryType().get().left());
-                    condition[1] = getConditionType(sim ->container().boundaryType().get().right());
-                    condition[2] = getConditionType(sim ->container().boundaryType().get().top());
-                    condition[3] = getConditionType(sim ->container().boundaryType().get().bottom());
-                    condition[4] = getConditionType(sim ->container().boundaryType().get().front());
-                    condition[5] = getConditionType(sim ->container().boundaryType().get().back());
-                    boundaryHandler = std::make_unique<BoundaryHandler>(condition , *(dynamic_cast <ParticleContainers::LinkedCellContainer*>(&(*particleContainer))));
+                particleContainer = std::make_unique<ParticleContainers::LinkedCellContainer>(
+                    domainSizeArray, cutoffRadius, version2);
+                if (sim->container().boundaryType().present()) {
+                    std::array<BoundaryHandler::bCondition, 6> condition;
+                    condition[0] = getConditionType(sim->container().boundaryType().get().left());
+                    condition[1] = getConditionType(sim->container().boundaryType().get().right());
+                    condition[2] = getConditionType(sim->container().boundaryType().get().top());
+                    condition[3] = getConditionType(sim->container().boundaryType().get().bottom());
+                    condition[4] = getConditionType(sim->container().boundaryType().get().front());
+                    condition[5] = getConditionType(sim->container().boundaryType().get().back());
+                    boundaryHandler = std::make_unique<BoundaryHandler>(
+                        condition, *(dynamic_cast<ParticleContainers::LinkedCellContainer *>(&(*particleContainer))));
                 }
-
-            }
-            else {
+            } else {
                 SPDLOG_ERROR("Invalid container type! choose one of the following: DSC / LCC");
             }
             if (sim->parameters().deltaT().present()) {
@@ -151,10 +152,23 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     return 1;
                 }
             }
+
+            bool repulsiveOnly = false;
+            bool nonNeighboursOnly = false;
+
+            if (sim->calculator().repulsiveOnly().present()) {
+                repulsiveOnly = sim->calculator().repulsiveOnly().get();
+            }
+
+            if (sim->calculator().nonNeighboursOnly().present()) {
+                nonNeighboursOnly = sim->calculator().nonNeighboursOnly().get();
+            }
+
             if (sim->calculator().calculatorForce().present()) {
                 std::string calculatorType = sim->calculator().calculatorForce().get();
                 if (calculatorType == "LJC") {
-                    calculator = std::make_unique<Calculators::LennardJonesCalculator>();
+                    calculator = std::make_unique<
+                        Calculators::LennardJonesCalculator>(repulsiveOnly, nonNeighboursOnly);
                     SPDLOG_DEBUG("LJC is selected from xml");
                 } else if (calculatorType == "Default") {
                     calculator = std::make_unique<Calculators::GravityCalculator>();
@@ -179,13 +193,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     maxDeltaT = sim->temperature().get().maxDeltaTemperature().get();
                 }
                 thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
-                if(sim->temperature().get().ThermoType() == "average") {
+                if (sim->temperature().get().ThermoType() == "average") {
                     thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
                 } else if (sim->temperature().get().ThermoType() != "direct") {
                     SPDLOG_ERROR("Invalid Thermostat type");
                 }
                 SPDLOG_DEBUG("Direct thermostat is selected from xml");
-
             }
             for (int i = 0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
@@ -215,13 +228,35 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     sigma = sim->shapes().particle().at(i).sigma().get();
                 }
                 bool isFixed = false;
-                if(sim->shapes().particle().at(i).isFixed().present()) {
+                if (sim->shapes().particle().at(i).isFixed().present()) {
                     isFixed = sim->shapes().particle().at(i).isFixed().get();
                 }
 
                 Particle newParticle(x, v, m, type, epsilon, sigma, isFixed);
+
+                if (sim->parameters().specialForce().present()) {
+                    for (const auto &markedParticle: sim->parameters().specialForce().get().markedParticles().
+                         coordinates()) {
+                        if (std::abs(x[0] - markedParticle.x()) < 1e-6 && std::abs(x[1] - markedParticle.y()) < 1e-6) {
+                            newParticle.markForUpwardForce(); // Mark the particle
+                            SPDLOG_DEBUG("Particle at ({:.2f}, {:.2f}) marked for upward force", x[0], x[1]);
+                            break;
+                        }
+                    }
+                }
+
                 (particleContainer)->addParticle(newParticle);
             }
+
+            upwardsForce = 0.0;
+            activeTimesteps = 0;
+
+            if (sim->parameters().specialForce().present()) {
+                upwardsForce = sim->parameters().specialForce().get().upwardForce();
+                activeTimesteps = sim->parameters().specialForce().get().activeTimeSteps();
+            }
+
+
             for (int i = 0; i < (int) sim->shapes().cuboid().size(); i++) {
                 SPDLOG_DEBUG("reading cuboids from xml file");
                 // define all Cuboid parameters
@@ -258,11 +293,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
                 bool isFixed = false;
-                if(sim->shapes().cuboid().at(i).isFixed().present()) {
+                if (sim->shapes().cuboid().at(i).isFixed().present()) {
                     isFixed = sim->shapes().cuboid().at(i).isFixed().get();
                 }
-                Cuboid cuboid(x,N,h,m,v,mv);
-                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature, isFixed, is3d);
+                Cuboid cuboid(x, N, h, m, v, mv);
+                ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature,
+                                                  isFixed,assignNeighbours, is3d);
             }
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
@@ -295,11 +331,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
                 bool isFixed = false;
-                if(sim->shapes().disc().at(i).isFixed().present()) {
+                if (sim->shapes().disc().at(i).isFixed().present()) {
                     isFixed = sim->shapes().disc().at(i).isFixed().get();
                 }
                 Disc disc(x, v, radius, h, m);
-                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma, initialTemperature, isFixed, is3d);
+                ParticleGenerator::generateDisc(*particleContainer, disc, type, epsilon, sigma, initialTemperature,
+                                                isFixed, is3d);
             }
 
 
@@ -318,10 +355,10 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
     }
 }
 
-BoundaryHandler::bCondition XMLfileReader::getConditionType(std::string input){
-    if (input == "reflecting"){
+BoundaryHandler::bCondition XMLfileReader::getConditionType(std::string input) {
+    if (input == "reflecting") {
         return BoundaryHandler::bCondition::REFLECTING;
-    } else if (input == "periodic"){
+    } else if (input == "periodic") {
         return BoundaryHandler::bCondition::PERIODIC;
     } else return BoundaryHandler::bCondition::OUTFLOW; //xs enumeration prevents other values
 };

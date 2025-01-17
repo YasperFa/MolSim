@@ -219,7 +219,7 @@ void FileReader::readDiscs(ParticleContainers::ParticleContainer &particles, std
        Disc disc(centerCoord, initVel, radius, h, m);
         SPDLOG_DEBUG("Disc created!: ");
         // generates the particles in the disc
-        ParticleGenerator::generateDisc(particles,disc, t, epsilon, sigma);
+        ParticleGenerator::generateDisc(particles,disc, t, epsilon, sigma, -1);
         // read another line (if more discs follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);

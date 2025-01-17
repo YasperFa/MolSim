@@ -137,6 +137,54 @@ calculatorForce (::std::unique_ptr< calculatorForce_type > x)
   this->calculatorForce_.set (std::move (x));
 }
 
+const CalculatorType::repulsiveOnly_optional& CalculatorType::
+repulsiveOnly () const
+{
+  return this->repulsiveOnly_;
+}
+
+CalculatorType::repulsiveOnly_optional& CalculatorType::
+repulsiveOnly ()
+{
+  return this->repulsiveOnly_;
+}
+
+void CalculatorType::
+repulsiveOnly (const repulsiveOnly_type& x)
+{
+  this->repulsiveOnly_.set (x);
+}
+
+void CalculatorType::
+repulsiveOnly (const repulsiveOnly_optional& x)
+{
+  this->repulsiveOnly_ = x;
+}
+
+const CalculatorType::nonNeighboursOnly_optional& CalculatorType::
+nonNeighboursOnly () const
+{
+  return this->nonNeighboursOnly_;
+}
+
+CalculatorType::nonNeighboursOnly_optional& CalculatorType::
+nonNeighboursOnly ()
+{
+  return this->nonNeighboursOnly_;
+}
+
+void CalculatorType::
+nonNeighboursOnly (const nonNeighboursOnly_type& x)
+{
+  this->nonNeighboursOnly_.set (x);
+}
+
+void CalculatorType::
+nonNeighboursOnly (const nonNeighboursOnly_optional& x)
+{
+  this->nonNeighboursOnly_ = x;
+}
+
 
 // ContainerType
 //
@@ -407,6 +455,36 @@ void ParametersType::
 harmonicForce (::std::unique_ptr< harmonicForce_type > x)
 {
   this->harmonicForce_.set (std::move (x));
+}
+
+const ParametersType::specialForce_optional& ParametersType::
+specialForce () const
+{
+  return this->specialForce_;
+}
+
+ParametersType::specialForce_optional& ParametersType::
+specialForce ()
+{
+  return this->specialForce_;
+}
+
+void ParametersType::
+specialForce (const specialForce_type& x)
+{
+  this->specialForce_.set (x);
+}
+
+void ParametersType::
+specialForce (const specialForce_optional& x)
+{
+  this->specialForce_ = x;
+}
+
+void ParametersType::
+specialForce (::std::unique_ptr< specialForce_type > x)
+{
+  this->specialForce_.set (std::move (x));
 }
 
 
@@ -1645,6 +1723,92 @@ inputFile (::std::unique_ptr< inputFile_type > x)
 }
 
 
+// UpwardForceMarkType
+//
+
+const UpwardForceMarkType::coordinates_sequence& UpwardForceMarkType::
+coordinates () const
+{
+  return this->coordinates_;
+}
+
+UpwardForceMarkType::coordinates_sequence& UpwardForceMarkType::
+coordinates ()
+{
+  return this->coordinates_;
+}
+
+void UpwardForceMarkType::
+coordinates (const coordinates_sequence& s)
+{
+  this->coordinates_ = s;
+}
+
+
+// SpecialForceType
+//
+
+const SpecialForceType::upwardForce_type& SpecialForceType::
+upwardForce () const
+{
+  return this->upwardForce_.get ();
+}
+
+SpecialForceType::upwardForce_type& SpecialForceType::
+upwardForce ()
+{
+  return this->upwardForce_.get ();
+}
+
+void SpecialForceType::
+upwardForce (const upwardForce_type& x)
+{
+  this->upwardForce_.set (x);
+}
+
+const SpecialForceType::activeTimeSteps_type& SpecialForceType::
+activeTimeSteps () const
+{
+  return this->activeTimeSteps_.get ();
+}
+
+SpecialForceType::activeTimeSteps_type& SpecialForceType::
+activeTimeSteps ()
+{
+  return this->activeTimeSteps_.get ();
+}
+
+void SpecialForceType::
+activeTimeSteps (const activeTimeSteps_type& x)
+{
+  this->activeTimeSteps_.set (x);
+}
+
+const SpecialForceType::markedParticles_type& SpecialForceType::
+markedParticles () const
+{
+  return this->markedParticles_.get ();
+}
+
+SpecialForceType::markedParticles_type& SpecialForceType::
+markedParticles ()
+{
+  return this->markedParticles_.get ();
+}
+
+void SpecialForceType::
+markedParticles (const markedParticles_type& x)
+{
+  this->markedParticles_.set (x);
+}
+
+void SpecialForceType::
+markedParticles (::std::unique_ptr< markedParticles_type > x)
+{
+  this->markedParticles_.set (std::move (x));
+}
+
+
 // simulation
 //
 
@@ -1829,6 +1993,46 @@ subSimulations (::std::unique_ptr< subSimulations_type > x)
 }
 
 
+// coordinates
+//
+
+const coordinates::x_type& coordinates::
+x () const
+{
+  return this->x_.get ();
+}
+
+coordinates::x_type& coordinates::
+x ()
+{
+  return this->x_.get ();
+}
+
+void coordinates::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const coordinates::y_type& coordinates::
+y () const
+{
+  return this->y_.get ();
+}
+
+coordinates::y_type& coordinates::
+y ()
+{
+  return this->y_.get ();
+}
+
+void coordinates::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 // OutputType
@@ -1937,7 +2141,9 @@ OutputType::
 CalculatorType::
 CalculatorType ()
 : ::xml_schema::type (),
-  calculatorForce_ (this)
+  calculatorForce_ (this),
+  repulsiveOnly_ (this),
+  nonNeighboursOnly_ (this)
 {
 }
 
@@ -1946,7 +2152,9 @@ CalculatorType (const CalculatorType& x,
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
-  calculatorForce_ (x.calculatorForce_, f, this)
+  calculatorForce_ (x.calculatorForce_, f, this),
+  repulsiveOnly_ (x.repulsiveOnly_, f, this),
+  nonNeighboursOnly_ (x.nonNeighboursOnly_, f, this)
 {
 }
 
@@ -1955,7 +2163,9 @@ CalculatorType (const ::xercesc::DOMElement& e,
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  calculatorForce_ (this)
+  calculatorForce_ (this),
+  repulsiveOnly_ (this),
+  nonNeighboursOnly_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1988,6 +2198,28 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // repulsiveOnly
+    //
+    if (n.name () == "repulsiveOnly" && n.namespace_ ().empty ())
+    {
+      if (!this->repulsiveOnly_)
+      {
+        this->repulsiveOnly_.set (repulsiveOnly_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // nonNeighboursOnly
+    //
+    if (n.name () == "nonNeighboursOnly" && n.namespace_ ().empty ())
+    {
+      if (!this->nonNeighboursOnly_)
+      {
+        this->nonNeighboursOnly_.set (nonNeighboursOnly_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 }
@@ -2006,6 +2238,8 @@ operator= (const CalculatorType& x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
     this->calculatorForce_ = x.calculatorForce_;
+    this->repulsiveOnly_ = x.repulsiveOnly_;
+    this->nonNeighboursOnly_ = x.nonNeighboursOnly_;
   }
 
   return *this;
@@ -2170,7 +2404,8 @@ ParametersType ()
   gravity_ (this),
   parallelVersion2_ (this),
   assignNeighbours_ (this),
-  harmonicForce_ (this)
+  harmonicForce_ (this),
+  specialForce_ (this)
 {
 }
 
@@ -2184,7 +2419,8 @@ ParametersType (const ParametersType& x,
   gravity_ (x.gravity_, f, this),
   parallelVersion2_ (x.parallelVersion2_, f, this),
   assignNeighbours_ (x.assignNeighbours_, f, this),
-  harmonicForce_ (x.harmonicForce_, f, this)
+  harmonicForce_ (x.harmonicForce_, f, this),
+  specialForce_ (x.specialForce_, f, this)
 {
 }
 
@@ -2198,7 +2434,8 @@ ParametersType (const ::xercesc::DOMElement& e,
   gravity_ (this),
   parallelVersion2_ (this),
   assignNeighbours_ (this),
-  harmonicForce_ (this)
+  harmonicForce_ (this),
+  specialForce_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2286,6 +2523,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // specialForce
+    //
+    if (n.name () == "specialForce" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< specialForce_type > r (
+        specialForce_traits::create (i, f, this));
+
+      if (!this->specialForce_)
+      {
+        this->specialForce_.set (::std::move (r));
+        continue;
+      }
+    }
+
     break;
   }
 }
@@ -2309,6 +2560,7 @@ operator= (const ParametersType& x)
     this->parallelVersion2_ = x.parallelVersion2_;
     this->assignNeighbours_ = x.assignNeighbours_;
     this->harmonicForce_ = x.harmonicForce_;
+    this->specialForce_ = x.specialForce_;
   }
 
   return *this;
@@ -4258,6 +4510,237 @@ SubSimulationType::
 {
 }
 
+// UpwardForceMarkType
+//
+
+UpwardForceMarkType::
+UpwardForceMarkType ()
+: ::xml_schema::type (),
+  coordinates_ (this)
+{
+}
+
+UpwardForceMarkType::
+UpwardForceMarkType (const UpwardForceMarkType& x,
+                     ::xml_schema::flags f,
+                     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  coordinates_ (x.coordinates_, f, this)
+{
+}
+
+UpwardForceMarkType::
+UpwardForceMarkType (const ::xercesc::DOMElement& e,
+                     ::xml_schema::flags f,
+                     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  coordinates_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void UpwardForceMarkType::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // coordinates
+    //
+    if (n.name () == "coordinates" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< coordinates_type > r (
+        coordinates_traits::create (i, f, this));
+
+      this->coordinates_.push_back (::std::move (r));
+      continue;
+    }
+
+    break;
+  }
+}
+
+UpwardForceMarkType* UpwardForceMarkType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class UpwardForceMarkType (*this, f, c);
+}
+
+UpwardForceMarkType& UpwardForceMarkType::
+operator= (const UpwardForceMarkType& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->coordinates_ = x.coordinates_;
+  }
+
+  return *this;
+}
+
+UpwardForceMarkType::
+~UpwardForceMarkType ()
+{
+}
+
+// SpecialForceType
+//
+
+SpecialForceType::
+SpecialForceType (const upwardForce_type& upwardForce,
+                  const activeTimeSteps_type& activeTimeSteps,
+                  const markedParticles_type& markedParticles)
+: ::xml_schema::type (),
+  upwardForce_ (upwardForce, this),
+  activeTimeSteps_ (activeTimeSteps, this),
+  markedParticles_ (markedParticles, this)
+{
+}
+
+SpecialForceType::
+SpecialForceType (const upwardForce_type& upwardForce,
+                  const activeTimeSteps_type& activeTimeSteps,
+                  ::std::unique_ptr< markedParticles_type > markedParticles)
+: ::xml_schema::type (),
+  upwardForce_ (upwardForce, this),
+  activeTimeSteps_ (activeTimeSteps, this),
+  markedParticles_ (std::move (markedParticles), this)
+{
+}
+
+SpecialForceType::
+SpecialForceType (const SpecialForceType& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  upwardForce_ (x.upwardForce_, f, this),
+  activeTimeSteps_ (x.activeTimeSteps_, f, this),
+  markedParticles_ (x.markedParticles_, f, this)
+{
+}
+
+SpecialForceType::
+SpecialForceType (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  upwardForce_ (this),
+  activeTimeSteps_ (this),
+  markedParticles_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void SpecialForceType::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // upwardForce
+    //
+    if (n.name () == "upwardForce" && n.namespace_ ().empty ())
+    {
+      if (!upwardForce_.present ())
+      {
+        this->upwardForce_.set (upwardForce_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // activeTimeSteps
+    //
+    if (n.name () == "activeTimeSteps" && n.namespace_ ().empty ())
+    {
+      if (!activeTimeSteps_.present ())
+      {
+        this->activeTimeSteps_.set (activeTimeSteps_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // markedParticles
+    //
+    if (n.name () == "markedParticles" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< markedParticles_type > r (
+        markedParticles_traits::create (i, f, this));
+
+      if (!markedParticles_.present ())
+      {
+        this->markedParticles_.set (::std::move (r));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!upwardForce_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "upwardForce",
+      "");
+  }
+
+  if (!activeTimeSteps_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "activeTimeSteps",
+      "");
+  }
+
+  if (!markedParticles_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "markedParticles",
+      "");
+  }
+}
+
+SpecialForceType* SpecialForceType::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class SpecialForceType (*this, f, c);
+}
+
+SpecialForceType& SpecialForceType::
+operator= (const SpecialForceType& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->upwardForce_ = x.upwardForce_;
+    this->activeTimeSteps_ = x.activeTimeSteps_;
+    this->markedParticles_ = x.markedParticles_;
+  }
+
+  return *this;
+}
+
+SpecialForceType::
+~SpecialForceType ()
+{
+}
+
 // simulation
 //
 
@@ -4504,6 +4987,118 @@ operator= (const simulation& x)
 
 simulation::
 ~simulation ()
+{
+}
+
+// coordinates
+//
+
+coordinates::
+coordinates (const x_type& x,
+             const y_type& y)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this)
+{
+}
+
+coordinates::
+coordinates (const coordinates& x,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this)
+{
+}
+
+coordinates::
+coordinates (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void coordinates::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+}
+
+coordinates* coordinates::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class coordinates (*this, f, c);
+}
+
+coordinates& coordinates::
+operator= (const coordinates& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+  }
+
+  return *this;
+}
+
+coordinates::
+~coordinates ()
 {
 }
 

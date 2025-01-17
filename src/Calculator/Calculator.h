@@ -30,10 +30,11 @@ namespace Calculators {
         */
         void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t,
                           double gravity = 0.0, bool harmonicOn = false,
-                          double stiffnessConstant = 0.0, double avgBondLength = 0.0) {
+                          double stiffnessConstant = 0.0, double avgBondLength = 0.0, double upwardsForce = 0.0,
+                        int activeTimesteps = 0) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
-            calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength);
+            calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength, upwardsForce, activeTimesteps);
             calculateV(particleContainer, delta_t);
             if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 lcCont->updateParticlesInCell();
@@ -47,8 +48,10 @@ namespace Calculators {
         * @param stiffnessConstant
         * @param avgBondLength
         */
-        void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0, bool harmonicOn = false,
-                        double stiffnessConstant = 0.0, double avgBondLength = 0.0) {
+        void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0,
+                        bool harmonicOn = false,
+                        double stiffnessConstant = 0.0, double avgBondLength = 0.0, double upwardsForce = 0.0,
+                        int activeTimesteps = 0) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0, 0.0, 0.0};
@@ -56,6 +59,11 @@ namespace Calculators {
             for (auto &p: particleContainer) {
                 p.setOldF(p.getF());
                 sigma[1] = p.getM() * gravity; //add gravitaional force in y direction
+
+                if (activeTimesteps > 0 && p.upwardForceMarked()) {
+                    sigma[2] += upwardsForce;
+                }
+
                 p.setF(sigma);
             }
 
@@ -73,6 +81,10 @@ namespace Calculators {
                 HarmonicForceCalculator harmonicForceCalculator(stiffnessConstant, avgBondLength);
                 applyHarmonicForces(particleContainer, harmonicForceCalculator);
             }
+
+            if (activeTimesteps > 0) {
+                activeTimesteps--;
+            }
         }
 
         /**Calculates the force for all particles in a DirectSumContainer
@@ -88,9 +100,11 @@ namespace Calculators {
                     std::array<double, 3> sub = it2->getX() - it1->getX();
                     double norm = ArrayUtils::L2Norm(sub);
 
+                    bool neighbour = it1->isNeighbour(*it2);
                     // calculate Force between the current pair of particles
                     std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1->getEpsilon(),
-                                                             it2->getEpsilon(), it1->getSigma(), it2->getSigma());
+                                                             it2->getEpsilon(), it1->getSigma(), it2->getSigma(),
+                                                             neighbour);
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
                     if (!it1->getFixed())
@@ -127,12 +141,15 @@ namespace Calculators {
                         std::array<double, 3> sub = (*itParticle2)->getX() - (*itParticle1)->getX();
                         double normCubed = ArrayUtils::L2Norm(sub);
 
+                        bool neighbour = (*itParticle1)->isNeighbour(**itParticle2);
+
+
                         // calculate Force between the current pair of particles
                         std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), (*itParticle2)->getM(),
                                                                  normCubed, (*itParticle1)->getEpsilon(),
                                                                  (*itParticle2)->getEpsilon(),
                                                                  (*itParticle1)->getSigma(),
-                                                                 (*itParticle2)->getSigma());
+                                                                 (*itParticle2)->getSigma(), neighbour);
                         SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                      (*itParticle2)->getID());
                         // add force of this pair to the overall force of particle 1
@@ -163,11 +180,13 @@ namespace Calculators {
                             if (normL2 > lcCon.getCutoff()) {
                                 continue;
                             }
+
+                            bool neighbourParticles = (*itParticle1)->isNeighbour(*neighbourP);
                             std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(), neighbourP->getM(),
                                                                      normL2, (*itParticle1)->getEpsilon(),
                                                                      neighbourP->getEpsilon(),
                                                                      (*itParticle1)->getSigma(),
-                                                                     neighbourP->getSigma());
+                                                                     neighbourP->getSigma(), neighbourParticles);
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
@@ -209,13 +228,16 @@ namespace Calculators {
                             std::array<double, 3> sub = (*itParticle2)->getX() - (*itParticle1)->getX();
                             double normCubed = ArrayUtils::L2Norm(sub);
 
+                            bool neighbour = (*itParticle1)->isNeighbour(**itParticle2);
+
                             // calculate Force between the current pair of particles
                             std::array<double, 3> fij = calculateFIJ(sub, (*itParticle1)->getM(),
                                                                      (*itParticle2)->getM(),
                                                                      normCubed, (*itParticle1)->getEpsilon(),
                                                                      (*itParticle2)->getEpsilon(),
                                                                      (*itParticle1)->getSigma(),
-                                                                     (*itParticle2)->getSigma());
+                                                                     (*itParticle2)->getSigma(),
+                                                                     neighbour);
                             SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                          (*itParticle2)->getID());
                             // add force of this pair to the overall force of particle 1
@@ -246,10 +268,14 @@ namespace Calculators {
                                 if (normL2 > lcCon.getCutoff()) {
                                     continue;
                                 }
+
+                                bool neighbourParticles = (*itParticle1)->isNeighbour(*neighbourP);
+
+
                                 std::array<double, 3> fij = calculateFIJ(
                                     sub, (*itParticle1)->getM(), neighbourP->getM(),
                                     normL2, (*itParticle1)->getEpsilon(), neighbourP->getEpsilon(),
-                                    (*itParticle1)->getSigma(), neighbourP->getSigma());
+                                    (*itParticle1)->getSigma(), neighbourP->getSigma(), neighbourParticles);
                                 SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
                                              neighbourP->getID());
                                 // add force of this pair to the overall force of particle 1
@@ -275,11 +301,12 @@ namespace Calculators {
         * @param epsilon2 the Lennard-Jones parameter epsilon of j
         * @param sigma1 the Lennard-Jones parameter sigma of i
         * @param sigma2 the Lennard-Jones parameter sigma of j
+        * @param neighbours true if the two particles are neighbours
         * @return force between i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
                                                    double normCubed, double epsilon1, double epsilon2, double sigma1,
-                                                   double sigma2) = 0;
+                                                   double sigma2, bool neighbours) = 0;
 
         /**
          * calculate the position for all particles

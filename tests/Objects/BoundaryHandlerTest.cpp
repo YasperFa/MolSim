@@ -12,7 +12,7 @@
 TEST(BoundaryHandlerTest, conditionOutflow) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 ParticleIdInitializer::reset();
 
 testContainer.addParticle(Particle({2, 3, 0}, {0, 1.1, 0}, 1, 0));
@@ -82,7 +82,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 0);
 TEST(BoundaryHandlerTest, conditionReflecting) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false,false);
 
 ParticleIdInitializer::reset();
 
@@ -122,7 +122,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 4);
 TEST(BoundaryHandlerTest, conditionCombine) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::REFLECTING, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false,false);
 
 ParticleIdInitializer::reset();
 
@@ -188,7 +188,7 @@ EXPECT_TRUE(outflowed);
 TEST(BoundaryHandlerTest, conditionPeriodic) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 ParticleIdInitializer::reset();
 
 testContainer.addParticle(Particle({1.1, 2.9, 0}, {0, 1.5, 0}, 1, 0)); //moves up
@@ -359,7 +359,7 @@ EXPECT_EQ(testContainer.getParticles().size(), 2);
 /**Test that only one clone particle gets created if a particle is in the boundary cells for several iterations*/
 TEST(BoundaryHandlerTest, OnlyCloneOnce) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
 ParticleIdInitializer::reset();
 
@@ -422,7 +422,7 @@ for (int i = 0; i < 10; i++){
 /**Test that clone particles are created and deleted correctly and that partners are set and updated correctly in 3D*/
 TEST(BoundaryHandlerTest, PeriodicCreatePartners3D) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 4}, 1, false);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 ParticleIdInitializer::reset();
 
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);

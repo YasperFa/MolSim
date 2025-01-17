@@ -13,10 +13,10 @@
 #include "../../../Calculator/Calculator.h"
 #include "../../../Calculator/LennardJonesCalculator.h"
 
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator();
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 
 BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& container) :
-type {t}, container {container}, 
+type {t}, container {container},
 boundaries {{0, container.getDomainSize()[0], container.getDomainSize()[1], 0, container.getDomainSize()[2], 0}} {
 
     //initialize specialCells
@@ -129,7 +129,7 @@ void BoundaryHandler::handleReflecting(){
                 if (dist < minDist(p -> getSigma())/2) { //must be closer
                     std::array<double, 3> sub = (ghostParticleLocation(*p, i, dist) - p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
-                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
+                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma(), false); //ghost particle has same epsilon and sigma
                     p->setF(p -> getF() + force);
                     
                 }
@@ -153,7 +153,7 @@ void BoundaryHandler::handleReflecting(){
                 if (dist < minDist(p -> getSigma())/2) { //must be closer
                     std::array<double, 3> sub = (ghostParticleLocation(*p, i, dist) - p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
-                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma()); //ghost particle has same epsilon and sigma
+                    std::array <double, 3UL> force = calculator.calculateFIJ(sub, 0, 0, norm, p-> getEpsilon(), p-> getEpsilon(), p -> getSigma(), p-> getSigma(), true); //ghost particle has same epsilon and sigma
                     p->setF(p -> getF() + force);
                     
                 }

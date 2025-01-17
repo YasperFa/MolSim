@@ -122,7 +122,10 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("stiffnessConstant", "Set stiffness constant for harmonic force",
              cxxopts::value<double>()->default_value("0.0"))
             ("bondLength", "Set the average bond length for harmonic force",
-             cxxopts::value<double>()->default_value("0.0"));
+             cxxopts::value<double>()->default_value("0.0"))
+            ("repulsive", "Set the force calulation to repulsive only", cxxopts::value<bool>()->default_value("false"))
+            ("nonNeighbours", "Set the force calculation to non neighbouring particles only",
+             cxxopts::value<bool>()->default_value("false"));
 
 
     auto parseResult = options.parse(argc, argv);
@@ -313,6 +316,8 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     stiffnessConstant = parseResult["stiffnessConstant"].as<double>();
     avgBondLenght = parseResult["bondLength"].as<double>();
 
+    bool repulsiveOnly = parseResult["repulsive"].as<bool>();
+    bool nonNeighboursOnly = parseResult["nonNeighbours"].as<bool>();
 
 
     //set the output writer
@@ -337,7 +342,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     if (parseResult.count("calculator")) {
         std::string calculatorTemp = parseResult["calculator"].as<std::string>();
         if (calculatorTemp == "LJC") {
-            calculator = std::make_unique<Calculators::LennardJonesCalculator>();
+            calculator = std::make_unique<Calculators::LennardJonesCalculator>(repulsiveOnly, nonNeighboursOnly);
             SPDLOG_DEBUG("{} is selected as the calculator", calculatorTemp);
         } else if (calculatorTemp == "Default") {
             calculator = std::make_unique<Calculators::GravityCalculator>();
@@ -413,7 +418,9 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
                     double &gravity,
                     bool harmonicOn,
                     double stiffnessConstant,
-                    double avgBondLenght, int &freq, bool &version2,
+                    double avgBondLenght,
+                    double &upwardsForce, int &activeTimesteps,
+                    int &freq, bool &version2,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
                     std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
@@ -428,7 +435,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         boundaryHandler->handleBoundaries();
     }
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght);
+        calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght, upwardsForce, activeTimesteps);
         if (boundaryHandler != nullptr) {
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();
@@ -484,8 +491,9 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
                 return false;
             }
 
-            double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0, subStiffnessConstant = 0.0, subAvgBondLength = 0.0;
-            int subFreq = 20;
+            double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0, subStiffnessConstant = 0.0, subAvgBondLength =
+                    0.0, subUpwardforce = 0.0;
+            int subFreq = 20, subActiveTimesetps = 0;
             bool version2 = false, assignNeighbors = false, harmonicOn = false;
             std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
             std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
@@ -494,7 +502,9 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
             std::unique_ptr<Thermostat> subThermostat;
 
 
-            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, assignNeighbors, harmonicOn, subStiffnessConstant, subAvgBondLength, subFreq, version2,
+            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, assignNeighbors, harmonicOn,
+                                                subStiffnessConstant, subAvgBondLength, subUpwardforce,
+                                                subActiveTimesetps, subFreq, version2,
                                                 subOutputWriter,
                                                 subCalculator,
                                                 subParticleContainer, subBoundaryHandler, subThermostat) != 0) {
@@ -502,7 +512,9 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
                 return false;
             }
 
-            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, harmonicOn, subStiffnessConstant, subAvgBondLength, subFreq, version2, subOutputWriter,
+            MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, harmonicOn, subStiffnessConstant,
+                           subAvgBondLength, subUpwardforce,
+                           subActiveTimesetps, subFreq, version2, subOutputWriter,
                            subCalculator,
                            subBoundaryHandler, subThermostat, subInputFile);
         }

@@ -20,6 +20,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/LennardJonesCalculator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/GravityCalculator.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/HarmonicForceCalculator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/XMLfileReader.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/schema.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/CheckpointInput/CheckpointSchema.cpp"

@@ -41,6 +41,8 @@ int main(int argc, char *argsv[]) {
     bool harmonicOn;
     double stiffnessConstant;
     double avgBondLength;
+    double upwardsForce;
+    int activeTimesteps;
     std::unique_ptr<outputWriters::OutputWriter> outputWriter;
     std::unique_ptr<Calculators::Calculator> calculator;
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
@@ -57,7 +59,7 @@ int main(int argc, char *argsv[]) {
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
         if (XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn,
-                                            stiffnessConstant, avgBondLength, freq, version2, outputWriter, calculator,
+                                            stiffnessConstant, avgBondLength, upwardsForce, activeTimesteps, freq, version2, outputWriter, calculator,
                                             particleContainer, boundaryHandler, thermostat)) {
             return 1;
         }
@@ -77,7 +79,7 @@ int main(int argc, char *argsv[]) {
     SPDLOG_INFO("Hello from MolSim for PSE!");
     SPDLOG_INFO("Simulation starting! deltaT = {}, endTime = {}", deltaT, endTime);
 
-    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, harmonicOn, stiffnessConstant, avgBondLength, freq,
+    MolSim::runSim(*particleContainer, deltaT, endTime, gravity, harmonicOn, stiffnessConstant, avgBondLength, upwardsForce, activeTimesteps, freq,
                    version2, outputWriter, calculator, boundaryHandler, thermostat, inputFile);
 
     SPDLOG_DEBUG("Simulation finished!");

@@ -3,7 +3,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="output" type="OutputType"/>
-                <xs:element name="calculator" type="CalculatorType" />
+                <xs:element name="calculator" type="CalculatorType"/>
                 <xs:element name="container" type="ContainerType"/>
                 <xs:element name="parameters" type="ParametersType"/>
                 <xs:element name="shapes" type="ShapeType"/>
@@ -23,6 +23,8 @@
     <xs:complexType name="CalculatorType">
         <xs:sequence>
             <xs:element name="calculatorForce" type="xs:string" minOccurs="0"/>
+            <xs:element name="repulsiveOnly" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="nonNeighboursOnly" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -42,6 +44,7 @@
             <xs:element name="parallelVersion2" type="xs:boolean" minOccurs="0"/>
             <xs:element name="assignNeighbours" type="xs:boolean" minOccurs="0" default="false"/>
             <xs:element name="harmonicForce" type="HarmonicForceType" minOccurs="0"/>
+            <xs:element name="specialForce" type="SpecialForceType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="HarmonicForceType">
@@ -97,7 +100,7 @@
             <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-     <xs:complexType name="TempType">
+    <xs:complexType name="TempType">
         <xs:sequence>
             <xs:element name="ThermoType" type="xs:string"/>
             <xs:element name="initialTemperature" type="xs:double"/>
@@ -131,12 +134,12 @@
             <xs:element name="z" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
-     <xs:simpleType name="ConditionType">
+    <xs:simpleType name="ConditionType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="outflow"/>
             <xs:enumeration value="reflecting"/>
             <xs:enumeration value="periodic"/>
-         </xs:restriction>
+        </xs:restriction>
     </xs:simpleType>
 
     <xs:complexType name="SubSimulationsType">
@@ -151,4 +154,26 @@
             <xs:element name="inputFile" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:complexType name="UpwardForceMarkType">
+        <xs:sequence>
+            <xs:element name="coordinates" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="x" type="xs:double"/>
+                        <xs:element name="y" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SpecialForceType">
+        <xs:sequence>
+            <xs:element name="upwardForce" type="xs:double" minOccurs="1"/>
+            <xs:element name="activeTimeSteps" type="xs:int" minOccurs="1"/>
+            <xs:element name="markedParticles" type="UpwardForceMarkType" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

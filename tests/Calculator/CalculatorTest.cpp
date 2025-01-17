@@ -135,7 +135,7 @@ TEST(CalculatorTest, correctLJcalculationsDirectSum) {
     Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
     testContainer.addParticle(k);
 
-    Calculators::LennardJonesCalculator calc;
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false,false);
     calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
@@ -160,7 +160,7 @@ TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
     Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
     testContainer.addParticle(k);
 
-    Calculators::LennardJonesCalculator calc;
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false,false);
     calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
