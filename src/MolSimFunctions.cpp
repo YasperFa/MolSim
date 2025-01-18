@@ -436,6 +436,7 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     }
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght, upwardsForce, activeTimesteps);
+        activeTimesteps--;
         if (boundaryHandler != nullptr) {
             SPDLOG_DEBUG("handling boundaries");
             boundaryHandler->handleBoundaries();

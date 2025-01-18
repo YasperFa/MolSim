@@ -61,7 +61,7 @@ namespace Calculators {
                 sigma[1] = p.getM() * gravity; //add gravitaional force in y direction
 
                 if (activeTimesteps > 0 && p.upwardForceMarked()) {
-                    sigma[2] += upwardsForce;
+                    sigma[1] += upwardsForce;
                 }
 
                 p.setF(sigma);
@@ -80,10 +80,6 @@ namespace Calculators {
             if (harmonicOn) {
                 HarmonicForceCalculator harmonicForceCalculator(stiffnessConstant, avgBondLength);
                 applyHarmonicForces(particleContainer, harmonicForceCalculator);
-            }
-
-            if (activeTimesteps > 0) {
-                activeTimesteps--;
             }
         }
 
@@ -349,14 +345,22 @@ namespace Calculators {
 
             auto processNeighbours = [&harmonicForceCalculator](Particle &particle,
                                                                 const std::vector<int> &neigbourIds,
-                                                                ParticleContainers::ParticleContainer &
+                                                                ParticleContainers::ParticleContainer&
                                                                 particleContainer,
                                                                 double bondLengthMultiplier) {
                 for (int neighbourId: neigbourIds) {
-                    Particle &neighbour = *std::find_if(particleContainer.begin(), particleContainer.end(),
-                                                        [&neighbourId](const Particle &p) {
-                                                            return p.getID() == neighbourId;
-                                                        });
+                    auto it = std::find_if(particleContainer.begin(), particleContainer.end(),
+                                   [&neighbourId](const Particle &p) {
+                                       return p.getID() == neighbourId;
+                                   });
+
+                    if (it == particleContainer.end()) {
+                        SPDLOG_ERROR("Neighbour with ID {} not found", neighbourId);
+                        continue;
+                    }
+
+                    Particle& neighbour = *it;
+
                     std::array<double, 3> sub = neighbour.getX() - particle.getX();
                     std::array<double, 3> force = harmonicForceCalculator.calculateFIJ(
                         sub, particle, neighbour, bondLengthMultiplier);
@@ -373,7 +377,7 @@ namespace Calculators {
             for (auto &particle: particleContainer) {
                 processNeighbours(particle, particle.getDirectNeighbourIds(), particleContainer, 1.0);
 
-                processNeighbours(particle, particle.getDirectNeighbourIds(), particleContainer, sqrt(2.0));
+                processNeighbours(particle, particle.getDiagonalNeighbourIds(), particleContainer, sqrt(2.0));
             }
         }
     };

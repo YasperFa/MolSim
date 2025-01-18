@@ -233,37 +233,20 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
 
                 Particle newParticle(x, v, m, type, epsilon, sigma, isFixed);
-
-                if (sim->parameters().specialForce().present()) {
-                    for (const auto &markedParticle: sim->parameters().specialForce().get().markedParticles().
-                         coordinates()) {
-                        if (std::abs(x[0] - markedParticle.x()) < 1e-6 && std::abs(x[1] - markedParticle.y()) < 1e-6) {
-                            newParticle.markForUpwardForce(); // Mark the particle
-                            SPDLOG_DEBUG("Particle at ({:.2f}, {:.2f}) marked for upward force", x[0], x[1]);
-                            break;
-                        }
-                    }
-                }
-
                 (particleContainer)->addParticle(newParticle);
             }
 
-            upwardsForce = 0.0;
-            activeTimesteps = 0;
 
-            if (sim->parameters().specialForce().present()) {
-                upwardsForce = sim->parameters().specialForce().get().upwardForce();
-                activeTimesteps = sim->parameters().specialForce().get().activeTimeSteps();
-            }
+            std::array<double, 3> cuboidX;
+            double cuboidH;
 
 
             for (int i = 0; i < (int) sim->shapes().cuboid().size(); i++) {
                 SPDLOG_DEBUG("reading cuboids from xml file");
                 // define all Cuboid parameters
-                std::array<double, 3> x;
-                x[0] = sim->shapes().cuboid().at(i).position().x();
-                x[1] = sim->shapes().cuboid().at(i).position().y();
-                x[2] = sim->shapes().cuboid().at(i).position().z();
+                cuboidX[0] = sim->shapes().cuboid().at(i).position().x();
+                cuboidX[1] = sim->shapes().cuboid().at(i).position().y();
+                cuboidX[2] = sim->shapes().cuboid().at(i).position().z();
                 std::array<double, 3> N;
                 N[0] = sim->shapes().cuboid().at(i).dimensions().x();
                 N[1] = sim->shapes().cuboid().at(i).dimensions().y();
@@ -272,7 +255,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 v[0] = sim->shapes().cuboid().at(i).initialVelocity().x();
                 v[1] = sim->shapes().cuboid().at(i).initialVelocity().y();
                 v[2] = sim->shapes().cuboid().at(i).initialVelocity().z();
-                double h = sim->shapes().cuboid().at(i).distance();
+                cuboidH = sim->shapes().cuboid().at(i).distance();
                 double m = sim->shapes().cuboid().at(i).mass();
                 double mv = sim->shapes().cuboid().at(i).meanVelocity();
 
@@ -296,10 +279,42 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 if (sim->shapes().cuboid().at(i).isFixed().present()) {
                     isFixed = sim->shapes().cuboid().at(i).isFixed().get();
                 }
-                Cuboid cuboid(x, N, h, m, v, mv);
+                Cuboid cuboid(cuboidX, N, cuboidH, m, v, mv);
                 ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature,
-                                                  isFixed,assignNeighbours, is3d);
+                                                  isFixed, assignNeighbours, is3d);
             }
+
+            upwardsForce = 0.0;
+            activeTimesteps = 0;
+            std::vector<std::array<double, 2> > toBeMarked = {};
+
+            if (sim->parameters().specialForce().present()) {
+                upwardsForce = sim->parameters().specialForce().get().upwardForce();
+                activeTimesteps = sim->parameters().specialForce().get().activeTimeSteps();
+                for (const auto &coordinate: sim->parameters().specialForce().get().markedParticles().coordinates()) {
+                    toBeMarked.push_back({
+                        cuboidX[0] + coordinate.x() * cuboidH, cuboidX[1] + coordinate.y() * cuboidH
+                    });
+                }
+
+                for (auto &p: *particleContainer) {
+                    const auto &pos = p.getX();
+
+                    for (const auto &target: toBeMarked) {
+                        double dx = std::abs(pos[0] - target[0]);
+                        double dy = std::abs(pos[1] - target[1]);
+
+                        if (dx < 1e-6 && dy < 1e-6) {
+                            p.markForUpwardForce(); // Mark the particle
+                            SPDLOG_DEBUG("Marked particle at ({:.2f}, {:.2f}) near target ({:.2f}, {:.2f})",
+                                        pos[0], pos[1], target[0], target[1]);
+                            break; // No need to check further targets for this particle
+                        }
+                    }
+                }
+            }
+
+
             for (int i = 0; i < (int) sim->shapes().disc().size(); i++) {
                 SPDLOG_DEBUG("reading discs from xml file");
                 // define all disc parameters

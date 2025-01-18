@@ -21,15 +21,8 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
     double m = cuboid.getMass();
     double mv = cuboid.getMeanVelocity();
 
-    std::vector<std::vector<std::vector<std::shared_ptr<Particle> > > > grid(
-        static_cast<size_t>(N[0]),
-        std::vector<std::vector<std::shared_ptr<Particle> > >(static_cast<size_t>(N[1]),
-                                                              std::vector<std::shared_ptr<Particle> >(
-                                                                  static_cast<size_t>(N[2]), nullptr)
-        )
-    );
-
     int dimensions = is3d ? 3 : 2;
+
     for (int k = 0; k < N[2]; ++k) {
         for (int j = 0; j < N[1]; ++j) {
             for (int i = 0; i < N[0]; ++i) {
@@ -51,23 +44,66 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                     maxwell_vel = maxwellBoltzmannDistributedVelocity(scale, dimensions);
                 }
                 // add maxwell velocity to initial velocity
-                for (int m = 0; m < 3; ++m) {
-                    vel[m] += maxwell_vel[m];
+                for (int d = 0; d < 3; ++d) {
+                    vel[d] += maxwell_vel[d];
                 }
 
                 auto newParticle = std::make_shared<Particle>(particle_pos, vel, m, type, epsilon, sigma, isFixed);
                 particles.addParticle(*newParticle);
-                grid[i][j][k] = newParticle;
             }
         }
     }
 
     if (assignNeighbours) {
-        static const std::array<std::array<int, 3>, 26> neighbourOffsets = {
+        SPDLOG_DEBUG("Assigning neighbors for particles");
+
+        const auto &allParticles = particles.getParticles();
+
+        auto assignNeighbors = [&](const std::vector<std::array<int, 3>> &offsets,
+                               void (Particle::*addNeighborFunc)(int)) {
+            for (auto currentIt = particles.begin(); currentIt != particles.end(); ++currentIt) {
+                Particle &current = *currentIt;
+
+                // Calculate 3D indices from the 1D index
+                int currentIdx = std::distance(particles.begin(), currentIt);
+                int xIndex = currentIdx % static_cast<int>(N[0]);
+                int yIndex = (currentIdx / static_cast<int>(N[0])) % static_cast<int>(N[1]);
+                int zIndex = currentIdx / (static_cast<int>(N[0]) * static_cast<int>(N[1]));
+
+                // Assign neighbors using offsets
+                for (const auto &offset : offsets) {
+                    int ni = xIndex + offset[0];
+                    int nj = yIndex + offset[1];
+                    int nk = zIndex + offset[2];
+
+                    if (ni >= 0 && ni < N[0] && nj >= 0 && nj < N[1] && nk >= 0 && nk < N[2]) {
+                        int neighborIdx = ni + nj * N[0] + nk * N[0] * N[1];
+
+                        // Find neighbor by its index
+                        auto neighborIt = particles.begin();
+                        std::advance(neighborIt, neighborIdx);
+
+                        Particle &neighbour = *neighborIt;
+
+                        if (!current.getFixed()) {
+                            (current.*addNeighborFunc)(neighbour.getID());
+                        }
+                    }
+                }
+            }
+        };
+
+        static const std::vector<std::array<int, 3>> directOffsets = {
             {
                 {-1, 0, 0}, {1, 0, 0}, // direct neighbours on the x-axis
                 {0, -1, 0}, {0, 1, 0}, // direct neighbours on the y-axis
-                {0, 0, -1}, {0, 0, 1}, // direct neighbours on the z-axis
+                {0, 0, -1}, {0, 0, 1} // direct neighbours on the z-axis
+            }
+        };
+
+
+        static const std::vector<std::array<int, 3>> diagonalOffsets = {
+            {
                 {-1, -1, 0}, {-1, 1, 0}, {1, -1, 0}, {1, 1, 0}, // diagonal neighbours on the XY plane
                 {-1, 0, -1}, {-1, 0, 1}, {1, 0, -1}, {1, 0, 1}, // diagonal neighbours on the XZ plane
                 {0, -1, -1}, {0, -1, 1}, {0, 1, -1}, {0, 1, 1}, // diagonal neighbours on the YZ plane
@@ -76,37 +112,8 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
             }
         };
 
-        for (int k = 0; k < N[2]; ++k) {
-            for (int j = 0; j < N[1]; ++j) {
-                for (int i = 0; i < N[0]; ++i) {
-                    Particle *current = grid[i][j][k].get();
-                    if (!current) {
-                        SPDLOG_ERROR("Null particle pointer at grid[{}][{}][{}]", i, j, k);
-                        continue; // Skip null pointers
-                    }
-
-                    for (const auto &offset: neighbourOffsets) {
-                        int ni = i + offset[0];
-                        int nj = j + offset[1];
-                        int nk = k + offset[2];
-
-                        if (ni >= 0 && nj >= 0 && nk >= 0 && ni < N[0] && nj < N[1] && nk < N[2]) {
-                            Particle *neighbour = grid[ni][nj][nk].get();
-                            if (!neighbour) {
-                                SPDLOG_WARN("Null neighbour pointer at grid[{}][{}][{}]", ni, nj, nk);
-                                continue; // Skip null pointers
-                            }
-
-                            if (grid[ni][nj][nk]) {
-                                current->addDirectNeighbour(neighbour->getID());
-                            } else {
-                                current->addDiagonalNeighbour(neighbour->getID());
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        assignNeighbors(directOffsets, &Particle::addDirectNeighbour);
+        assignNeighbors(diagonalOffsets, &Particle::addDiagonalNeighbour);
     }
 }
 
