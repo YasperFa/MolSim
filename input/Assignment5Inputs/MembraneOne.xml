@@ -30,6 +30,7 @@
         <tEnd>500</tEnd>
         <deltaT>0.01</deltaT>
         <gravity>-0.001</gravity>
+        <gravityAxis>Z</gravityAxis>
         <parallelVersion2>0</parallelVersion2>
         <assignNeighbours>true</assignNeighbours>
         <harmonicForce>
@@ -39,6 +40,7 @@
         </harmonicForce>
         <specialForce>
             <upwardForce>0.8</upwardForce>
+            <forceAxis>Z</forceAxis>
             <activeTimeSteps>15000</activeTimeSteps>
             <markedParticles>
                 <coordinates>

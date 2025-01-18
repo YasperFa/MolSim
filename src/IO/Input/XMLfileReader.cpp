@@ -20,7 +20,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                                     double &stiffnessConstant,
                                     double &avgBondLength,
                                     double &upwardsForce, int &activeTimesteps,
-                                    int &freq, bool &version2,
+                                    int &freq, int &gravityAxis, int &specialForceAxis, bool &version2,
                                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                     std::unique_ptr<Calculators::Calculator> &calculator,
                                     std::unique_ptr<ParticleContainers::ParticleContainer> &particleContainer,
@@ -71,6 +71,24 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     avgBondLength = harmonicForce.avgBondLength().get();
                 }
             }
+
+            gravityAxis = 1;
+            specialForceAxis = 1;
+
+            if (sim->parameters().gravityAxis().present()) {
+                std::string axis = static_cast<std::string>(sim->parameters().gravityAxis().get());
+                if (axis == "X") {
+                    gravityAxis = 0;
+                } else if (axis == "Y") {
+                    gravityAxis = 1;
+                } else if (axis == "Z") {
+                    gravityAxis = 2;
+                } else {
+                    SPDLOG_ERROR("Invalid axis, setting gravity axis to the y axis!");
+                    gravityAxis = 1;
+                }
+            }
+
 
             SPDLOG_DEBUG("HarmonicOn: {}, StiffnessConstant: {}, AvgBondLength: {}",
                          harmonicOn, stiffnessConstant, avgBondLength);
@@ -290,6 +308,20 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
 
             if (sim->parameters().specialForce().present()) {
                 upwardsForce = sim->parameters().specialForce().get().upwardForce();
+
+                std::string axis = static_cast<std::string>(sim->parameters().specialForce().get().forceAxis());
+                if (axis == "X") {
+                    specialForceAxis = 0;
+                } else if (axis == "Y") {
+                    specialForceAxis = 1;
+                } else if (axis == "Z") {
+                    specialForceAxis = 2;
+                } else {
+                    SPDLOG_ERROR("Invalid axis, setting special force axis to the y axis!");
+                    specialForceAxis = 1;
+                }
+
+
                 activeTimesteps = sim->parameters().specialForce().get().activeTimeSteps();
                 for (const auto &coordinate: sim->parameters().specialForce().get().markedParticles().coordinates()) {
                     toBeMarked.push_back({
@@ -307,7 +339,7 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                         if (dx < 1e-6 && dy < 1e-6) {
                             p.markForUpwardForce(); // Mark the particle
                             SPDLOG_DEBUG("Marked particle at ({:.2f}, {:.2f}) near target ({:.2f}, {:.2f})",
-                                        pos[0], pos[1], target[0], target[1]);
+                                         pos[0], pos[1], target[0], target[1]);
                             break; // No need to check further targets for this particle
                         }
                     }

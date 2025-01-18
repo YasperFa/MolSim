@@ -420,7 +420,9 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
                     double stiffnessConstant,
                     double avgBondLenght,
                     double &upwardsForce, int &activeTimesteps,
-                    int &freq, bool &version2,
+                    int &freq,
+                    int &gravityAxis, int &specialForceAxis,
+                    bool &version2,
                     std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                     std::unique_ptr<Calculators::Calculator> &calculator,
                     std::unique_ptr<BoundaryHandler> &boundaryHandler, std::unique_ptr<Thermostat> &thermostat,
@@ -435,7 +437,8 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
         boundaryHandler->handleBoundaries();
     }
     while (currentTime < endTime) {
-        calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght, upwardsForce, activeTimesteps);
+        calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght,
+                                 upwardsForce, activeTimesteps, gravityAxis, specialForceAxis);
         activeTimesteps--;
         if (boundaryHandler != nullptr) {
             SPDLOG_DEBUG("handling boundaries");
@@ -494,7 +497,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
 
             double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0, subStiffnessConstant = 0.0, subAvgBondLength =
                     0.0, subUpwardforce = 0.0;
-            int subFreq = 20, subActiveTimesetps = 0;
+            int subFreq = 20, subActiveTimesetps = 0, subGravityAxis = 1, subForceAxis = 1;
             bool version2 = false, assignNeighbors = false, harmonicOn = false;
             std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
             std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
@@ -505,7 +508,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
 
             if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, assignNeighbors, harmonicOn,
                                                 subStiffnessConstant, subAvgBondLength, subUpwardforce,
-                                                subActiveTimesetps, subFreq, version2,
+                                                subActiveTimesetps, subFreq, subGravityAxis, subForceAxis, version2,
                                                 subOutputWriter,
                                                 subCalculator,
                                                 subParticleContainer, subBoundaryHandler, subThermostat) != 0) {
@@ -515,7 +518,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
 
             MolSim::runSim(*subParticleContainer, subDeltaT, subEndTime, subGravity, harmonicOn, subStiffnessConstant,
                            subAvgBondLength, subUpwardforce,
-                           subActiveTimesetps, subFreq, version2, subOutputWriter,
+                           subActiveTimesetps, subFreq, subGravityAxis, subForceAxis, version2, subOutputWriter,
                            subCalculator,
                            subBoundaryHandler, subThermostat, subInputFile);
         }

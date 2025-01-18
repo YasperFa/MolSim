@@ -373,6 +373,36 @@ gravity (const gravity_optional& x)
   this->gravity_ = x;
 }
 
+const ParametersType::gravityAxis_optional& ParametersType::
+gravityAxis () const
+{
+  return this->gravityAxis_;
+}
+
+ParametersType::gravityAxis_optional& ParametersType::
+gravityAxis ()
+{
+  return this->gravityAxis_;
+}
+
+void ParametersType::
+gravityAxis (const gravityAxis_type& x)
+{
+  this->gravityAxis_.set (x);
+}
+
+void ParametersType::
+gravityAxis (const gravityAxis_optional& x)
+{
+  this->gravityAxis_ = x;
+}
+
+void ParametersType::
+gravityAxis (::std::unique_ptr< gravityAxis_type > x)
+{
+  this->gravityAxis_.set (std::move (x));
+}
+
 const ParametersType::parallelVersion2_optional& ParametersType::
 parallelVersion2 () const
 {
@@ -1766,6 +1796,30 @@ upwardForce (const upwardForce_type& x)
   this->upwardForce_.set (x);
 }
 
+const SpecialForceType::forceAxis_type& SpecialForceType::
+forceAxis () const
+{
+  return this->forceAxis_.get ();
+}
+
+SpecialForceType::forceAxis_type& SpecialForceType::
+forceAxis ()
+{
+  return this->forceAxis_.get ();
+}
+
+void SpecialForceType::
+forceAxis (const forceAxis_type& x)
+{
+  this->forceAxis_.set (x);
+}
+
+void SpecialForceType::
+forceAxis (::std::unique_ptr< forceAxis_type > x)
+{
+  this->forceAxis_.set (std::move (x));
+}
+
 const SpecialForceType::activeTimeSteps_type& SpecialForceType::
 activeTimeSteps () const
 {
@@ -2402,6 +2456,7 @@ ParametersType ()
   tEnd_ (this),
   deltaT_ (this),
   gravity_ (this),
+  gravityAxis_ (this),
   parallelVersion2_ (this),
   assignNeighbours_ (this),
   harmonicForce_ (this),
@@ -2417,6 +2472,7 @@ ParametersType (const ParametersType& x,
   tEnd_ (x.tEnd_, f, this),
   deltaT_ (x.deltaT_, f, this),
   gravity_ (x.gravity_, f, this),
+  gravityAxis_ (x.gravityAxis_, f, this),
   parallelVersion2_ (x.parallelVersion2_, f, this),
   assignNeighbours_ (x.assignNeighbours_, f, this),
   harmonicForce_ (x.harmonicForce_, f, this),
@@ -2432,6 +2488,7 @@ ParametersType (const ::xercesc::DOMElement& e,
   tEnd_ (this),
   deltaT_ (this),
   gravity_ (this),
+  gravityAxis_ (this),
   parallelVersion2_ (this),
   assignNeighbours_ (this),
   harmonicForce_ (this),
@@ -2483,6 +2540,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->gravity_)
       {
         this->gravity_.set (gravity_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // gravityAxis
+    //
+    if (n.name () == "gravityAxis" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< gravityAxis_type > r (
+        gravityAxis_traits::create (i, f, this));
+
+      if (!this->gravityAxis_)
+      {
+        this->gravityAxis_.set (::std::move (r));
         continue;
       }
     }
@@ -2557,6 +2628,7 @@ operator= (const ParametersType& x)
     this->tEnd_ = x.tEnd_;
     this->deltaT_ = x.deltaT_;
     this->gravity_ = x.gravity_;
+    this->gravityAxis_ = x.gravityAxis_;
     this->parallelVersion2_ = x.parallelVersion2_;
     this->assignNeighbours_ = x.assignNeighbours_;
     this->harmonicForce_ = x.harmonicForce_;
@@ -4597,10 +4669,12 @@ UpwardForceMarkType::
 
 SpecialForceType::
 SpecialForceType (const upwardForce_type& upwardForce,
+                  const forceAxis_type& forceAxis,
                   const activeTimeSteps_type& activeTimeSteps,
                   const markedParticles_type& markedParticles)
 : ::xml_schema::type (),
   upwardForce_ (upwardForce, this),
+  forceAxis_ (forceAxis, this),
   activeTimeSteps_ (activeTimeSteps, this),
   markedParticles_ (markedParticles, this)
 {
@@ -4608,10 +4682,12 @@ SpecialForceType (const upwardForce_type& upwardForce,
 
 SpecialForceType::
 SpecialForceType (const upwardForce_type& upwardForce,
+                  const forceAxis_type& forceAxis,
                   const activeTimeSteps_type& activeTimeSteps,
                   ::std::unique_ptr< markedParticles_type > markedParticles)
 : ::xml_schema::type (),
   upwardForce_ (upwardForce, this),
+  forceAxis_ (forceAxis, this),
   activeTimeSteps_ (activeTimeSteps, this),
   markedParticles_ (std::move (markedParticles), this)
 {
@@ -4623,6 +4699,7 @@ SpecialForceType (const SpecialForceType& x,
                   ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   upwardForce_ (x.upwardForce_, f, this),
+  forceAxis_ (x.forceAxis_, f, this),
   activeTimeSteps_ (x.activeTimeSteps_, f, this),
   markedParticles_ (x.markedParticles_, f, this)
 {
@@ -4634,6 +4711,7 @@ SpecialForceType (const ::xercesc::DOMElement& e,
                   ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   upwardForce_ (this),
+  forceAxis_ (this),
   activeTimeSteps_ (this),
   markedParticles_ (this)
 {
@@ -4661,6 +4739,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!upwardForce_.present ())
       {
         this->upwardForce_.set (upwardForce_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // forceAxis
+    //
+    if (n.name () == "forceAxis" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< forceAxis_type > r (
+        forceAxis_traits::create (i, f, this));
+
+      if (!forceAxis_.present ())
+      {
+        this->forceAxis_.set (::std::move (r));
         continue;
       }
     }
@@ -4700,6 +4792,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "");
   }
 
+  if (!forceAxis_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "forceAxis",
+      "");
+  }
+
   if (!activeTimeSteps_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
@@ -4729,6 +4828,7 @@ operator= (const SpecialForceType& x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
     this->upwardForce_ = x.upwardForce_;
+    this->forceAxis_ = x.forceAxis_;
     this->activeTimeSteps_ = x.activeTimeSteps_;
     this->markedParticles_ = x.markedParticles_;
   }

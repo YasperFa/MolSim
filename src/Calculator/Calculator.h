@@ -31,10 +31,11 @@ namespace Calculators {
         void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t,
                           double gravity = 0.0, bool harmonicOn = false,
                           double stiffnessConstant = 0.0, double avgBondLength = 0.0, double upwardsForce = 0.0,
-                        int activeTimesteps = 0) {
+                          int activeTimesteps = 0, int gravityAxis = 1, int specialForceAxis = 1) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
-            calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength, upwardsForce, activeTimesteps);
+            calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength, upwardsForce,
+                       activeTimesteps, gravityAxis, specialForceAxis);
             calculateV(particleContainer, delta_t);
             if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 lcCont->updateParticlesInCell();
@@ -51,17 +52,17 @@ namespace Calculators {
         void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0,
                         bool harmonicOn = false,
                         double stiffnessConstant = 0.0, double avgBondLength = 0.0, double upwardsForce = 0.0,
-                        int activeTimesteps = 0) {
+                        int activeTimesteps = 0, int gravityAxis = 1, int specialForceAxis = 1) {
             SPDLOG_TRACE("executing calculateF");
             // initialize sigma with zeros
             std::array<double, 3> sigma = {0.0, 0.0, 0.0};
 
             for (auto &p: particleContainer) {
                 p.setOldF(p.getF());
-                sigma[1] = p.getM() * gravity; //add gravitaional force in y direction
+                sigma[gravityAxis] = p.getM() * gravity; //add gravitaional force in y direction
 
                 if (activeTimesteps > 0 && p.upwardForceMarked()) {
-                    sigma[1] += upwardsForce;
+                    sigma[specialForceAxis] += upwardsForce;
                 }
 
                 p.setF(sigma);
@@ -345,21 +346,21 @@ namespace Calculators {
 
             auto processNeighbours = [&harmonicForceCalculator](Particle &particle,
                                                                 const std::vector<int> &neigbourIds,
-                                                                ParticleContainers::ParticleContainer&
+                                                                ParticleContainers::ParticleContainer &
                                                                 particleContainer,
                                                                 double bondLengthMultiplier) {
                 for (int neighbourId: neigbourIds) {
                     auto it = std::find_if(particleContainer.begin(), particleContainer.end(),
-                                   [&neighbourId](const Particle &p) {
-                                       return p.getID() == neighbourId;
-                                   });
+                                           [&neighbourId](const Particle &p) {
+                                               return p.getID() == neighbourId;
+                                           });
 
                     if (it == particleContainer.end()) {
                         SPDLOG_ERROR("Neighbour with ID {} not found", neighbourId);
                         continue;
                     }
 
-                    Particle& neighbour = *it;
+                    Particle &neighbour = *it;
 
                     std::array<double, 3> sub = neighbour.getX() - particle.getX();
                     std::array<double, 3> force = harmonicForceCalculator.calculateFIJ(

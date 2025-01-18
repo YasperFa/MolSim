@@ -1720,6 +1720,82 @@ class ParametersType: public ::xml_schema::type
   //@}
 
   /**
+   * @name gravityAxis
+   *
+   * @brief Accessor and modifier functions for the %gravityAxis
+   * optional element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::string gravityAxis_type;
+
+  /**
+   * @brief Element optional container type.
+   */
+  typedef ::xsd::cxx::tree::optional< gravityAxis_type > gravityAxis_optional;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< gravityAxis_type, char > gravityAxis_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * container.
+   *
+   * @return A constant reference to the optional container.
+   */
+  const gravityAxis_optional&
+  gravityAxis () const;
+
+  /**
+   * @brief Return a read-write reference to the element container.
+   *
+   * @return A reference to the optional container.
+   */
+  gravityAxis_optional&
+  gravityAxis ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  gravityAxis (const gravityAxis_type& x);
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x An optional container with the new value to set.
+   *
+   * If the value is present in @a x then this function makes a copy 
+   * of this value and sets it as the new value of the element.
+   * Otherwise the element container is set the 'not present' state.
+   */
+  void
+  gravityAxis (const gravityAxis_optional& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly instead
+   * of making a copy.
+   */
+  void
+  gravityAxis (::std::unique_ptr< gravityAxis_type > p);
+
+  //@}
+
+  /**
    * @name parallelVersion2
    *
    * @brief Accessor and modifier functions for the %parallelVersion2
@@ -2093,6 +2169,7 @@ class ParametersType: public ::xml_schema::type
   tEnd_optional tEnd_;
   deltaT_optional deltaT_;
   gravity_optional gravity_;
+  gravityAxis_optional gravityAxis_;
   parallelVersion2_optional parallelVersion2_;
   assignNeighbours_optional assignNeighbours_;
   harmonicForce_optional harmonicForce_;
@@ -6605,6 +6682,64 @@ class SpecialForceType: public ::xml_schema::type
   //@}
 
   /**
+   * @name forceAxis
+   *
+   * @brief Accessor and modifier functions for the %forceAxis
+   * required element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::xml_schema::string forceAxis_type;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< forceAxis_type, char > forceAxis_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element.
+   *
+   * @return A constant reference to the element.
+   */
+  const forceAxis_type&
+  forceAxis () const;
+
+  /**
+   * @brief Return a read-write reference to the element.
+   *
+   * @return A reference to the element.
+   */
+  forceAxis_type&
+  forceAxis ();
+
+  /**
+   * @brief Set the element value.
+   *
+   * @param x A new value to set.
+   *
+   * This function makes a copy of its argument and sets it as
+   * the new value of the element.
+   */
+  void
+  forceAxis (const forceAxis_type& x);
+
+  /**
+   * @brief Set the element value without copying.
+   *
+   * @param p A new value to use.
+   *
+   * This function will try to use the passed value directly
+   * instead of making a copy.
+   */
+  void
+  forceAxis (::std::unique_ptr< forceAxis_type > p);
+
+  //@}
+
+  /**
    * @name activeTimeSteps
    *
    * @brief Accessor and modifier functions for the %activeTimeSteps
@@ -6719,6 +6854,7 @@ class SpecialForceType: public ::xml_schema::type
    * initializers for required elements and attributes.
    */
   SpecialForceType (const upwardForce_type&,
+                    const forceAxis_type&,
                     const activeTimeSteps_type&,
                     const markedParticles_type&);
 
@@ -6731,6 +6867,7 @@ class SpecialForceType: public ::xml_schema::type
    * instead of making copies.
    */
   SpecialForceType (const upwardForce_type&,
+                    const forceAxis_type&,
                     const activeTimeSteps_type&,
                     ::std::unique_ptr< markedParticles_type >);
 
@@ -6805,6 +6942,7 @@ class SpecialForceType: public ::xml_schema::type
 
   protected:
   ::xsd::cxx::tree::one< upwardForce_type > upwardForce_;
+  ::xsd::cxx::tree::one< forceAxis_type > forceAxis_;
   ::xsd::cxx::tree::one< activeTimeSteps_type > activeTimeSteps_;
   ::xsd::cxx::tree::one< markedParticles_type > markedParticles_;
 

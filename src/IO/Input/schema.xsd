@@ -41,6 +41,7 @@
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
             <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
             <xs:element name="gravity" type="xs:double" minOccurs="0"/>
+            <xs:element name="gravityAxis" type="xs:string" minOccurs="0"/>
             <xs:element name="parallelVersion2" type="xs:boolean" minOccurs="0"/>
             <xs:element name="assignNeighbours" type="xs:boolean" minOccurs="0" default="false"/>
             <xs:element name="harmonicForce" type="HarmonicForceType" minOccurs="0"/>
@@ -171,6 +172,7 @@
     <xs:complexType name="SpecialForceType">
         <xs:sequence>
             <xs:element name="upwardForce" type="xs:double" minOccurs="1"/>
+            <xs:element name="forceAxis" type="xs:string" minOccurs="1"/>
             <xs:element name="activeTimeSteps" type="xs:int" minOccurs="1"/>
             <xs:element name="markedParticles" type="UpwardForceMarkType" minOccurs="1"/>
         </xs:sequence>

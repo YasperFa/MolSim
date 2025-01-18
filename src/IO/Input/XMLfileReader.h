@@ -42,6 +42,7 @@ public:
                                 bool &harmonicOn,
                                 double &stiffnessConstant,
                                 double &avgBondLength, double &upwardsForce, int &activeTimesteps, int &freq,
+                                int &gravityAxis, int &specialForceAxis,
                                 bool &version2,
                                 std::unique_ptr<outputWriters::OutputWriter> &outputWriter,
                                 std::unique_ptr<Calculators::Calculator> &calculator,
