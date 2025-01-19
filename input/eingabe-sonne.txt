@@ -11,6 +11,9 @@
 # * xyz-coordinates (3 double values)
 # * velocities (2 or 3 double values)
 # * mass (1 double value)
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
 #------------------------------------
 # Cuboid data consists of
 # * left front -coordinates (3 double values)
@@ -19,6 +22,9 @@
 # * distance between particles (1 double value)
 # * mass (1 double values)
 # * mean velocity  (1 double value)
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
 # -------------------------------------------------------------------------------------
 # Disc data consists of
 # * center coordinate (3 double values)
@@ -26,14 +32,16 @@
 # * radius ( in terms of the number of molecules along the radius) (1 double values)
 # * distance between particles (1 double value)
 # * mass (1 double values)
-# xyz-coord      velocity        mass
-# left-coord     NumParticles     initial_velocity    distance    mass    mean_velocity
+# * type (int)
+# * epsilon (double > 0)
+# * sigma (double > 0)
+# xyz-coord      velocity        mass    type    epsilon   sigma
 0
 4
-0.0 0.0 0.0      0.0 0.0 0.0     1.0
-0.0 1.0 0.0     -1.0 0.0 0.0     3.0e-6
-0.0 5.36 0.0    -0.425 0.0 0.0   9.55e-4
-34.75 0.0 0.0    0.0 0.0296 0.0  1.0e-14
+0.0 0.0 0.0      0.0 0.0 0.0     1.0         0     5    1
+0.0 1.0 0.0     -1.0 0.0 0.0     3.0e-6       0     5    1
+0.0 5.36 0.0    -0.425 0.0 0.0   9.55e-4      0     5    1
+34.75 0.0 0.0    0.0 0.0296 0.0  1.0e-14      0     5    1
 
 
 

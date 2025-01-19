@@ -93,14 +93,41 @@ namespace outputWriters {
         pointsIterator->push_back(p.getX()[2]);
     }
 
-    void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer &particleContainer, const std::string &filename) {
+    void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
+            double &endTime, double& gravity, double &deltaT)  {
         outputWriters::VTKWriter plotter;
-        plotter.initializeOutput(particleContainer.sizeParticles());
+       if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) { //LCC: do not print halo particles
+
+        int numParticles = 0;
+        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
+            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
+            numParticles++;
+            }
+        }
+
+        plotter.initializeOutput(numParticles);
+        
+        for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
+
+            if(!((lcCont->mapParticleToCell(*p)) -> getCellType()== Cell::CType::HALO)){
+            plotter.plotParticle(*p);}
+        }
+
+       } else { //DSC: plot every particle
+
+       plotter.initializeOutput(particleContainer.sizeParticles());
+
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
             plotter.plotParticle(*p);
         }
+
+       }
+
         plotter.writeFile(filename, iteration);
     }
+
+
+    
     std::string VTKWriter::toString() {
         return std::string("VTKWriter");
     }

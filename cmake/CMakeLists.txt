@@ -7,6 +7,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/ParticleGeneratorTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/BoundaryHandlerTest.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/Temperature/ThermostatTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/IO/XMLfileReaderTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
@@ -21,8 +22,10 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Calculator/GravityCalculator.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/XMLfileReader.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/schema.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/CheckpointInput/CheckpointSchema.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Output/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Containers/LinkedCell/BoundaryHandler.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/DirectThermostat.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
@@ -48,7 +51,7 @@ target_include_directories(Test
 
 target_link_libraries(Test
         PUBLIC
-       xerces-c
+        xerces-c
         PRIVATE
         gtest
         gtest_main
