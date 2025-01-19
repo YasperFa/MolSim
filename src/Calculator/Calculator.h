@@ -13,6 +13,7 @@ class Particle;
 #include "spdlog/spdlog.h"
 #include "utils/ArrayUtils.h"
 #include "../Objects/Containers/LinkedCell/BoundaryHandler.h"
+#include <boost/functional/hash.hpp>
 
 
 namespace Calculators {
@@ -344,27 +345,38 @@ namespace Calculators {
                                  HarmonicForceCalculator &harmonicForceCalculator) {
             SPDLOG_TRACE("Applying harmonic forces");
 
-            auto processNeighbours = [&harmonicForceCalculator](Particle &particle,
-                                                                const std::vector<int> &neigbourIds,
-                                                                ParticleContainers::ParticleContainer &
-                                                                particleContainer,
-                                                                double bondLengthMultiplier) {
-                for (int neighbourId: neigbourIds) {
-                    auto it = std::find_if(particleContainer.begin(), particleContainer.end(),
-                                           [&neighbourId](const Particle &p) {
-                                               return p.getID() == neighbourId;
-                                           });
+            // To keep track of processed pairs
+            std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int, int>>> processedPairs;
 
-                    if (it == particleContainer.end()) {
+            auto processNeighbours = [&](Particle &particle,
+                                         const std::vector<int> &neighbourIds,
+                                         ParticleContainers::ParticleContainer &container,
+                                         double bondLengthMultiplier) {
+                for (int neighbourId : neighbourIds) {
+                    // Ensure we only process each pair once
+                    int particleId = particle.getID();
+                    auto pair = std::minmax(particleId, neighbourId);
+
+                    if (processedPairs.count(pair) > 0) {
+                        continue; // Skip already processed pair
+                    }
+                    processedPairs.insert(pair);
+
+                    // Find the neighbour particle
+                    auto it = std::find_if(container.begin(), container.end(), [&neighbourId](const Particle &p) {
+                        return p.getID() == neighbourId;
+                    });
+
+                    if (it == container.end()) {
                         SPDLOG_ERROR("Neighbour with ID {} not found", neighbourId);
                         continue;
                     }
 
                     Particle &neighbour = *it;
 
+                    // Calculate and apply forces
                     std::array<double, 3> sub = neighbour.getX() - particle.getX();
-                    std::array<double, 3> force = harmonicForceCalculator.calculateFIJ(
-                        sub, particle, neighbour, bondLengthMultiplier);
+                    std::array<double, 3> force = harmonicForceCalculator.calculateFIJ(sub, particle, neighbour, bondLengthMultiplier);
 
                     if (!particle.getFixed()) {
                         particle.setF(particle.getF() + force);
@@ -374,6 +386,7 @@ namespace Calculators {
                     }
                 }
             };
+
 
             for (auto &particle: particleContainer) {
                 processNeighbours(particle, particle.getDirectNeighbourIds(), particleContainer, 1.0);
