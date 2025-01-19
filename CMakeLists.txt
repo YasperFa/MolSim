@@ -28,6 +28,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
+find_package(Boost REQUIRED COMPONENTS filesystem system)
+
 # collect all cpp files
 file(GLOB_RECURSE MY_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
@@ -48,6 +50,7 @@ target_compile_features(MolSim
 target_include_directories(MolSim
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libs/libxsd
+        ${Boost_INCLUDE_DIRS}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -62,6 +65,8 @@ target_link_libraries(MolSim
         PUBLIC
         xerces-c
         cxxopts
+        Boost::filesystem
+        Boost::system
 )
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)

@@ -98,11 +98,10 @@ namespace Calculators {
                     std::array<double, 3> sub = it2->getX() - it1->getX();
                     double norm = ArrayUtils::L2Norm(sub);
 
-                    bool neighbour = it1->isNeighbour(*it2);
                     // calculate Force between the current pair of particles
                     std::array<double, 3> fij = calculateFIJ(sub, it1->getM(), it2->getM(), norm, it1->getEpsilon(),
                                                              it2->getEpsilon(), it1->getSigma(), it2->getSigma(),
-                                                             neighbour);
+                                                             false);
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
                     if (!it1->getFixed())

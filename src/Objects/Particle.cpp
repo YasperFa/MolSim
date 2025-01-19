@@ -39,6 +39,7 @@ Particle::Particle(const Particle &other) {
     isFixed = other.isFixed;
     diagonalNeighbourIds = other.getDiagonalNeighbourIds();
     directNeighbourIds = other.getDirectNeighbourIds();
+    markedForUpwardForce = other.markedForUpwardForce;
 }
 
 // Todo: maybe use initializater list instead of copy?
