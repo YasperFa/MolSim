@@ -12,6 +12,7 @@
 
 #include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
 #include "Objects/Temperature/AverageThermostat.h"
+#include "Objects/Temperature/ZXThermostat.h"
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
@@ -213,7 +214,10 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
                 if (sim->temperature().get().ThermoType() == "average") {
                     thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
-                } else if (sim->temperature().get().ThermoType() != "direct") {
+                }else if (sim->temperature().get().ThermoType() == "zx") {
+                    thermostat = std::make_unique<ZXThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
+                }
+                else if (sim->temperature().get().ThermoType() == "direct") {
                     SPDLOG_ERROR("Invalid Thermostat type");
                 }
                 SPDLOG_DEBUG("Direct thermostat is selected from xml");

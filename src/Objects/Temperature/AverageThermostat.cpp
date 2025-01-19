@@ -2,7 +2,9 @@
 //
 // Created by Sawsan Farah on 08/01/2025.
 //
-std::array<double, 3> AverageThermostat::getNewVel(double currentTemperature, std::array<double, 3> particleVelocity, std::array<double, 3> averageVelocity) {
+void AverageThermostat::applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
+    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
+    const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
     double temperatureChange;
     if (targetTemperature > currentTemperature) {
         temperatureChange = std::min(targetTemperature - currentTemperature, maxDeltaT);
@@ -12,6 +14,9 @@ std::array<double, 3> AverageThermostat::getNewVel(double currentTemperature, st
 
     const double newTemperature = currentTemperature + temperatureChange;
     const double scaleFactor = std::sqrt(newTemperature / currentTemperature);
-    std::array<double, 3> newV = operator+(averageVelocity , operator*(scaleFactor , (operator-(particleVelocity,averageVelocity))));
-    return newV;
+    for (auto &particle: particleContainer) {
+        std::array<double, 3> newV =  operator+(averageVelocity , operator*(scaleFactor , (operator-(particle.getV(),averageVelocity))));
+        particle.setV(newV);
+    }
+
 }

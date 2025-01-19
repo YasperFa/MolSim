@@ -12,12 +12,6 @@ public:
     AverageThermostat(const double targetTemperature,const double maxDeltaT,const
     bool is3D, const int n) : Thermostat(targetTemperature, maxDeltaT, is3D, n){}
     ~AverageThermostat() override = default;
-        /**
-      * @brief scales the velocity according to the desired method.
-      * @param currentTemperature
-      * @param  particleVelocity: velocity of the particle which we want to scale
-      * @param averageVelocity
-     */
-    std::array<double, 3> getNewVel(double currentTemperature, std::array<double, 3> particleVelocity, std::array<double, 3> averageVelocity) override;
+    void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) override;
 
 };
