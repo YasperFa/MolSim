@@ -96,32 +96,12 @@ namespace outputWriters {
     void VTKWriter::plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
             double &endTime, double& gravity, double &deltaT)  {
         outputWriters::VTKWriter plotter;
-       if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) { //LCC: do not print halo particles
-
-        int numParticles = 0;
-        for (auto cell: lcCont->getInnerCells()){
-        
-        numParticles = numParticles + cell.get().getParticlesInCell().size();
-        }
-
-        plotter.initializeOutput(numParticles);
-        
-        for (auto cell: lcCont->getInnerCells()){
-        
-        for (auto p : cell.get().getParticlesInCell()) {
-            plotter.plotParticle(*p);
-        }
-        }
-
-       } else { //DSC: plot every particle
 
        plotter.initializeOutput(particleContainer.sizeParticles());
 
         for (auto p = particleContainer.begin(); p != particleContainer.end(); ++p) {
             plotter.plotParticle(*p);
         }
-
-       }
 
         plotter.writeFile(filename, iteration);
     }

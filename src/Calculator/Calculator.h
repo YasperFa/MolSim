@@ -32,14 +32,29 @@ namespace Calculators {
         void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t,
                           double gravity = 0.0, bool harmonicOn = false,
                           double stiffnessConstant = 0.0, double avgBondLength = 0.0, double upwardsForce = 0.0,
-                          int activeTimesteps = 0, int gravityAxis = 1, int specialForceAxis = 1) {
+                          int activeTimesteps = 0, int gravityAxis = 1, int specialForceAxis = 1, BoundaryHandler* boundaryHandler = nullptr) {
             SPDLOG_TRACE("executing calculateXFV");
             calculateX(particleContainer, delta_t);
+
+            if(boundaryHandler != nullptr){ //adjust positions for boundary handling
+                boundaryHandler -> handleOutflow();
+                boundaryHandler -> handlePeriodicMoveParticles();
+            }
+
             calculateF(particleContainer, gravity, harmonicOn, stiffnessConstant, avgBondLength, upwardsForce,
                        activeTimesteps, gravityAxis, specialForceAxis);
+
+             if(boundaryHandler != nullptr){ //add forces for boundary handling
+                boundaryHandler -> handlePeriodicAddForces();
+            }
+
             calculateV(particleContainer, delta_t);
             if (auto lcCont = dynamic_cast<ParticleContainers::LinkedCellContainer *>(&particleContainer)) {
                 lcCont->updateParticlesInCell();
+            }
+
+            if(boundaryHandler != nullptr){ //add forces for boundary handling
+                boundaryHandler -> handleReflecting();
             }
         }
 
@@ -184,7 +199,7 @@ namespace Calculators {
                                                                      neighbourP->getEpsilon(),
                                                                      (*itParticle1)->getSigma(),
                                                                      neighbourP->getSigma(), neighbourParticles);
-                            SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], (*itParticle1)->getID(),
+                            SPDLOG_TRACE("fij {} {} {} from particles {} and {}", fij[0], fij[1], fij[2], (*itParticle1)->getID(),
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
                             if (!(*itParticle1)->getFixed())
@@ -314,7 +329,6 @@ namespace Calculators {
             SPDLOG_TRACE("executing calculateX");
             for (auto &p: particleContainer) {
                 if (p.getFixed()) continue;
-                p.setOldX(p.getX());
                 std::array<double, 3> newX = (
                     p.getX() + ((delta_t * p.getV()) +
                                 (0.5 * pow(delta_t, 2) / p.getM() * p.getF())));

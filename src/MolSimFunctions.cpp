@@ -432,18 +432,11 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     int iteration = 0;
     // get start time
     auto start = std::chrono::high_resolution_clock::now();
-    if (boundaryHandler != nullptr) {
-        SPDLOG_DEBUG("handling initial boundaries");
-        boundaryHandler->handleBoundaries();
-    }
+
     while (currentTime < endTime) {
         calculator->calculateXFV(particleContainer, deltaT, gravity, harmonicOn, stiffnessConstant, avgBondLenght,
-                                 upwardsForce, activeTimesteps, gravityAxis, specialForceAxis);
+                                 upwardsForce, activeTimesteps, gravityAxis, specialForceAxis, &*boundaryHandler);
         activeTimesteps--;
-        if (boundaryHandler != nullptr) {
-            SPDLOG_DEBUG("handling boundaries");
-            boundaryHandler->handleBoundaries();
-        }
 
         iteration++;
 
