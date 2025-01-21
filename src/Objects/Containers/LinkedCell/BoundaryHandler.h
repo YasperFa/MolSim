@@ -22,11 +22,6 @@ class BoundaryHandler{
     BoundaryHandler(std::array<bCondition, 6> t, ParticleContainers::LinkedCellContainer& pc);
     ~BoundaryHandler() = default;
 
-    /** Handles particles that have left/are about to leave the boundaries of the simulation
-     * This method should be called in every iteration after updating the positions of all particles
-     */
-    void handleBoundaries();
-
     /** Calculates the absolute value of a particle to a boundary
      * @param p the Particle whose distance is to be calculated
      * @param i int that signifies the currently observed boundary: 0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 4 -> front, 5 -> back
@@ -58,22 +53,6 @@ class BoundaryHandler{
     */
     bool isBoundaryCellofBoundary(int i, std::array<int, 3> pos);
 
-    /** Checks whether a particle was not in a boundary cell and not in a halo cell of boundary i in the last iteration,
-     * meaning that it moved into the boundary from an inner cell
-     * Assumes that particle is within boundary cell 
-     * @param i int that signifies the currently observed boundary: 0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 4 -> front, 5 -> back
-     * @param pos former position of the particle
-     * @returns true if the particle was not in a boundary cell and not in a halo cell of boundary i in the last iteration
-     * */
-    bool movedIntoBoundary(int i, std::array<double, 3> oldX);
-
-    /** Creates a clone particle for the peridic boundary handling
-     * @param i int that signifies the currently observed boundary: 0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 4 -> front, 5 -> back
-     * @param  particle the Particle that is to be cloned
-     * @returns particle which has been cloned to the opposite side of the domain
-     */
-    Particle createCloneParticle(int i, Particle particle);
-
     /** Helper function to calculate the position of a cloned particle
      * @param pos position of the particle to be cloned
      * @param i int that signifies the boundary we are cloning at: 0 -> left, 1 -> right, 2 -> top, 3 -> bottom, 4 -> front, 5 -> back
@@ -95,11 +74,22 @@ class BoundaryHandler{
     
     std::array<int, 3> oppositeCell(std::array<int, 3> position, int i);
 
-    std::vector<int> getSpecialCells();
+
+     /**Deletes particles that have left the boundaries of the simulation 
+    */
+    void handleOutflow();
+
+    /**Reflects particles that are about to leave the boundaries of the simulation using ghost particles 
+    */
+    void handleReflecting();
+
+    void handlePeriodicAddForces();
+
+    void handlePeriodicMoveParticles();
 
     private:
-    /** Vector that contains indexes of halo cells that also border on a boundary from the inside */
-    std::vector<int> specialCells; 
+
+    std::vector<std::vector<std::pair<int, std::vector<int>>>> neighborCells;
 
     /** determines what condition is used on what border
      * boundaries of the simulation: left, right, top, bottom(, front, back)
@@ -112,39 +102,14 @@ class BoundaryHandler{
     /**boundaries of the simulation: left, right, top, bottom(, front, back) */
     const std::array<double, 6> boundaries;
 
-    /**Deletes particles that have left the boundaries of the simulation 
-    */
-    void handleOutflow();
-
-    /**Reflects particles that are about to leave the boundaries of the simulation using ghost particles 
-    */
-    void handleReflecting();
-
-   /**Particles that exit the domain on one side enter it from the opposite side*/
-    void handlePeriodic();
-
-    /**Handles cloning of particle values for clones particles in peridic boundaries */
-    void updatePartners();
-
     /**Get int of opposite side
      * @param i input side
      * @returns opposite side
      */
     int oppositeSide(int i);
 
-    /**Must be updated last, particles copy from other halo particles (which are not in corner halo cells)*/
-    int isCornerHaloCell (std::array<int, 3> position);
+    void moveParticlesToOppositeSideHelper(Cell & cell, std::array<int, 3> cellPos, int i);
 
-    /** Helper function to create clones of cloned particles
-     * @param currentParticle the clone that is to be cloned
-     * @param cellPos the position of the particle in the cell grid
-     * @param j the direction in which we want to clone 
-     */
-    void cloneOfCloneHelper(Particle& currentParticle, std::array <int, 3> cellPos, int j);
-
-    /** Helper function to update all clone particles in a halo cell
-     * @param cell a halo cell
-     */
-    void updateCell(Cell& cell);
+    std::array<int, 3> oppositeNeighborCell(std::array<int, 3> position, int i);
 
 };
