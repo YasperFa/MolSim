@@ -42,7 +42,6 @@ FetchContent_MakeAvailable(googletest)
 # create testing executable
 add_executable(Test ${TEST_SRC})
 
-
 target_include_directories(Test
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libs/libxsd
