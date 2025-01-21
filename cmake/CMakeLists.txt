@@ -28,6 +28,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Containers/LinkedCell/BoundaryHandler.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/DirectThermostat.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/AverageThermostat.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/ZXThermostat.cpp"
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(

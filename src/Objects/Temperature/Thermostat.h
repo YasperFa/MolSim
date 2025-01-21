@@ -37,15 +37,7 @@ public:
  * @brief applies the desired thermostat to all particles in the container
  * @param particleContainer: Particle container
 */
- void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
-   std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
-   const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
-     for (auto &particle: particleContainer) {
-      if(particle.getFixed()) continue;
-      std::array<double, 3> newV = getNewVel(currentTemperature,particle.getV(),averageVelocity);
-      particle.setV(newV);
-     }
- }
+ virtual void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) = 0;
  /**
  * @brief calculates the kinetic energy of the container
  * @param particleContainer: Particle container
@@ -74,13 +66,6 @@ public:
     averageVelocity = operator*((1.0 / count) , averageVelocity);
     return averageVelocity;
  }
- /**
-  * @brief scales the velocity according to the desired method.
-  * @param currentTemperature
-  * @param  particleVelocity: velocity of the particle which we want to scale
-  * @param averageVelocity
- */
- virtual std::array<double, 3> getNewVel(double currentTemperature, std::array<double, 3> particleVelocity, std::array<double, 3> averageVelocity) = 0;
  /**
 * @return number of timesteps
 */

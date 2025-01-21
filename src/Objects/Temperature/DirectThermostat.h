@@ -18,7 +18,7 @@ public:
          * @param  particleVelocity: velocity of the particle which we want to scale
          * @param averageVelocity
          */
-       std::array<double, 3> getNewVel(double currentTemperature, std::array<double, 3> particleVelocit, std::array<double, 3> averageVelocity) override;
+     void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) override;
 
 };
 
