@@ -13,7 +13,6 @@ class Particle;
 #include "spdlog/spdlog.h"
 #include "utils/ArrayUtils.h"
 #include "../Objects/Containers/LinkedCell/BoundaryHandler.h"
-#include <boost/functional/hash.hpp>
 
 
 namespace Calculators {
@@ -340,12 +339,20 @@ namespace Calculators {
 
         virtual std::string toString() = 0;
 
+        struct PairHash {
+            template <typename T1, typename T2>
+            std::size_t operator()(const std::pair<T1, T2> &p) const {
+                return std::hash<T1>()(p.first) ^ (std::hash<T2>()(p.second) << 1);
+            }
+        };
+
         void applyHarmonicForces(ParticleContainers::ParticleContainer &particleContainer,
                                  HarmonicForceCalculator &harmonicForceCalculator) {
             SPDLOG_TRACE("Applying harmonic forces");
 
+
             // To keep track of processed pairs
-            std::unordered_set<std::pair<int, int>, boost::hash<std::pair<int, int>>> processedPairs;
+            std::unordered_set<std::pair<int, int>, PairHash> processedPairs;
 
             auto processNeighbours = [&](Particle &particle,
                                          const std::vector<int> &neighbourIds,

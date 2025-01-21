@@ -158,7 +158,7 @@ void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, s
         Cuboid cuboid(x, N, h, m, v, mv);
         SPDLOG_DEBUG("Cuboid created!: ");
         // generates the particles in the cuboid
-        ParticleGenerator::generateCuboid(particles,cuboid, t, epsilon, sigma, -1, assignNeighbours);
+        ParticleGenerator::generateCuboid(particles,cuboid, t, epsilon, sigma, -1);
         // read another line (if more cuboids follow)
         getline(input_file, tmp_string);
         SPDLOG_DEBUG("Read line: {}", tmp_string);
