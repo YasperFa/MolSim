@@ -15,6 +15,7 @@ void AverageThermostat::applyThermostat(ParticleContainers::ParticleContainer& p
     const double newTemperature = currentTemperature + temperatureChange;
     const double scaleFactor = std::sqrt(newTemperature / currentTemperature);
     for (auto &particle: particleContainer) {
+        if (particle.getFixed()) continue;
         std::array<double, 3> newV =  operator+(averageVelocity , operator*(scaleFactor , (operator-(particle.getV(),averageVelocity))));
         particle.setV(newV);
     }
