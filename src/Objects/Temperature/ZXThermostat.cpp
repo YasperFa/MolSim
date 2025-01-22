@@ -13,7 +13,7 @@ void ZXThermostat::applyThermostat(ParticleContainers::ParticleContainer& partic
         keneticEnergy += particle.getM() * (v[0] * v[0] + (v[1] - averageVelocity[1])*(v[1] - averageVelocity[1])  + v[2] * v[2]) * 0.5;
     }
     int dimension = is3D ? 3 : 2;
-    const double currentTemperature = 2 * getContainerKineticEnergy(particleContainer) / (dimension * particleContainer.sizeParticles());
+    const double currentTemperature = 2 * keneticEnergy / (dimension * particleContainer.sizeParticles());
     if (targetTemperature > currentTemperature) {
         temperatureChange = std::min(targetTemperature - currentTemperature, maxDeltaT);
     } else {
@@ -24,6 +24,7 @@ void ZXThermostat::applyThermostat(ParticleContainers::ParticleContainer& partic
     for (auto &particle: particleContainer) {
         std::array<double, 3> newV;
          newV[0] = scaleFactor*particle.getV()[0];
+         newV[1] = particle.getV()[1];
          newV[2] = scaleFactor*particle.getV()[2];
         particle.setV(newV);
     }

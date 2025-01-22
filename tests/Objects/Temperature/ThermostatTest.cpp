@@ -7,6 +7,7 @@
 #include "../../../src/Objects/Temperature/DirectThermostat.h"
 #include "../../../src/Objects/Containers/DirectSum/DirectSumContainer.h"
 #include "Objects/Temperature/AverageThermostat.h"
+#include "Objects/Temperature/ZXThermostat.h"
 
 // test if kinetic energy is calculated correctly
 TEST(ThermostatTest, getKineticEnergyTest) {
@@ -163,6 +164,38 @@ TEST(AverageThermostatTest, correctVelocityCalculationsAverageThermostat) {
     int i = 0;
     for (Particle p : testContainer) {
          EXPECT_NEAR(result_values[i][0],p.getV()[0],0.00001);
+        EXPECT_NEAR(result_values[i][1],p.getV()[1],0.00001);
+        EXPECT_NEAR(result_values[i][2],p.getV()[2],0.00001);
+        i++;
+    }
+
+}
+//tests for correct calculation ZX thermostat
+TEST(ZXThermostatTest, correctVelocityCalculationsZxThermostat) {
+    ParticleContainers::DirectSumContainer testContainer;
+    testContainer.addParticle(Particle({0, 3, 0}, {0, 1.1, 1}, 2, 0));
+    testContainer.addParticle(Particle({2, 1, 0}, {0, -4.1, 0}, 1, 0));
+    testContainer.addParticle(Particle({1, 2, 0}, {-1.3, 0, 2}, 4, 0));
+    testContainer.addParticle(Particle({3, 2, 0}, {1.0, 0, 3}, 1, 0));
+    ZXThermostat t(10,20, true, 1);
+
+    std::array<double, 3> averageVelocity = t.getAverageVelocity(testContainer);
+    EXPECT_NEAR(averageVelocity[0], -0.075 , 0.00001);
+    EXPECT_NEAR(averageVelocity[1], -0.75 , 0.00001);
+    EXPECT_NEAR(averageVelocity[2], 1.5 , 0.00001);
+    double keneticEnergy = 27.82;
+     double currentTemperature = 2 * keneticEnergy / (3 * 4);
+    double scale = std::sqrt(10/currentTemperature);
+    std::array<std::array<double,3>, 4> result_values = {};
+    result_values[0] =  {(0)*scale ,1.1, (1)*scale};
+    result_values[1] =  {(0)*scale,-4.1, (0)*scale};
+    result_values[2] =  {(-1.3)*scale ,0, (2)*scale};
+    result_values[3] =  {(1.0)*scale,0, (3)*scale};
+
+    t.applyThermostat(testContainer);
+    int i = 0;
+    for (Particle p : testContainer) {
+        EXPECT_NEAR(result_values[i][0],p.getV()[0],0.00001);
         EXPECT_NEAR(result_values[i][1],p.getV()[1],0.00001);
         EXPECT_NEAR(result_values[i][2],p.getV()[2],0.00001);
         i++;

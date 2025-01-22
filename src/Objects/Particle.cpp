@@ -116,6 +116,9 @@ Particle &Particle::operator=(const Particle &other) {
     sigma = other.sigma;
     epsilon = other.epsilon;
     isFixed = other.isFixed;
+    diagonalNeighbourIds = other.getDiagonalNeighbourIds();
+    directNeighbourIds = other.getDirectNeighbourIds();
+    markedForUpwardForce = other.markedForUpwardForce;
     return *this;
 }
 

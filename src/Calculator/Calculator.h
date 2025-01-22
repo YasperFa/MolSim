@@ -217,9 +217,9 @@ namespace Calculators {
         */
         void calculateFLinkedCellV2(ParticleContainers::LinkedCellContainer &lcCon) {
             for (auto order: lcCon.getIterationOrders()) {
-#ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic)
-#endif
+              #ifdef _OPENMP
+                 #pragma omp parallel for schedule(dynamic)
+              #endif
                 for (auto itCell: order) {
                     if (itCell->getCellType() == Cell::CType::HALO) {
                         //halo cells copy behaviour of opposite boundary cells
@@ -264,7 +264,7 @@ namespace Calculators {
                             continue;
                         }
 
-                        if (neighbourCell < &(*itCell)) {
+                        if (neighbourCell < itCell) {
                             continue;
                         }
                         for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++
