@@ -18,6 +18,20 @@ TEST(ThermostatTest, getKineticEnergyTest) {
     DirectThermostat t(10,20, false, 1);
     EXPECT_NEAR(t.getContainerKineticEnergy(testContainer), 35.96, 0.00001);
 }
+// test correct scaling for holding temperature -- directThermostat
+TEST(DirectThermostatTest, applyDirectThermostatHold) {
+    ParticleContainers::DirectSumContainer testContainer;
+    testContainer.addParticle(Particle({2, 3, 0}, {5, 1.1, 0}, 2, 0));
+    testContainer.addParticle(Particle({2, 1, 0}, {0, -4.1, 0}, 1, 0));
+    testContainer.addParticle(Particle({1, 2, 0}, {-1.3, 0, 0}, 1, 0));
+    testContainer.addParticle(Particle({3, 2, 0}, {1.0, 0, 0}, 1, 0));
+    DirectThermostat t(8.99,20, false, 1);
+    double currentTemperature = t.getCurrentTemperature(testContainer, false);
+    EXPECT_NEAR(currentTemperature, 8.99 , 0.00001);
+    t.applyThermostat(testContainer);
+    currentTemperature = t.getCurrentTemperature(testContainer, false);
+    EXPECT_NEAR(currentTemperature, 8.99, 0.00001);
+}
 // test correct scaling for heating -- directThermostat
 TEST(DirectThermostatTest, applyDirectThermostatHeating) {
     ParticleContainers::DirectSumContainer testContainer;
@@ -108,6 +122,20 @@ TEST(AverageThermostatTest, applyAverageThermostatCooling) {
     currentTemperature = t.getCurrentTemperature(testContainer, false);
     EXPECT_GT(currentTemperature, 7.0);
     EXPECT_LE(currentTemperature, prevTemperature);
+
+}
+TEST(AverageThermostatTest, applyAverageThermostatHold) {
+    ParticleContainers::DirectSumContainer testContainer;
+    testContainer.addParticle(Particle({2, 3, 0}, {5, 1.1, 0}, 2, 0));
+    testContainer.addParticle(Particle({2, 1, 0}, {0, -4.1, 0}, 1, 0));
+    testContainer.addParticle(Particle({1, 2, 0}, {-1.3, 0, 0}, 1, 0));
+    testContainer.addParticle(Particle({3, 2, 0}, {1.0, 0, 0}, 1, 0));
+    AverageThermostat t(8.99,20, false, 1);
+    double currentTemperature = t.getCurrentTemperature(testContainer, false);
+    EXPECT_NEAR(currentTemperature, 8.99 , 0.00001);
+    t.applyThermostat(testContainer);
+    currentTemperature = t.getCurrentTemperature(testContainer, false);
+    EXPECT_NEAR(currentTemperature, 8.99 , 0.00001);
 
 }
 //tests for correct calculation AverageThermostat

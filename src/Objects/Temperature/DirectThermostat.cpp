@@ -7,7 +7,6 @@
 
 
 void DirectThermostat::applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
-    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
     const double currentTemperature = getCurrentTemperature(particleContainer, is3D);
     double temperatureChange;
     if (targetTemperature > currentTemperature) {

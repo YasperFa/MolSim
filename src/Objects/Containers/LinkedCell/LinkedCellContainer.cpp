@@ -259,23 +259,41 @@ namespace ParticleContainers {
     }
     void LinkedCellContainer::initParallelV2() {
         SPDLOG_DEBUG("Initializing parallel V2...");
-        std::vector<std::array<int, 3>> startOffsets;
         int dx = 2;
         int dy = 2;
         int dz = 2;
 
-        for (int x = 0; x < dx; ++x) {
-            for (int y = 0; y < dy; ++y) {
-                for (int z = 0; z < dz; ++z){
+        if (cellNumPerDimension[2] == 1) {
+            for (int x = 0; x < dx; ++x) {
+                for (int y = 0; y < dy; ++y) {
                     std::vector<Cell*> order;
                     for (int cx = x - 1; cx <= cellNumPerDimension[0]; cx += dx) {
                         for (int cy = y - 1; cy <= cellNumPerDimension[1]; cy += dy) {
-                            for (int cz = z - 1; cz <= cellNumPerDimension[2]; cz += dz) {
-                                order.push_back(&cells.at(cellIndex(cx, cy, cz)));
-                            }
+                            order.push_back(&cells.at(cellIndex(cx, cy, 0)));
                         }
                     }
+
                     iterationOrders.push_back(order);
+
+                }
+            }
+        }
+        else {
+            for (int x = 0; x < dx; ++x) {
+                for (int y = 0; y < dy; ++y) {
+                    for (int z = 0; z < dz; ++z){
+                        std::vector<Cell*> order;
+                        for (int cx = x - 1; cx <= cellNumPerDimension[0]; cx += dx) {
+                            for (int cy = y - 1; cy <= cellNumPerDimension[1]; cy += dy) {
+                                for (int cz = z - 1; cz <= cellNumPerDimension[2]; cz += dz) {
+                                    order.push_back(&cells.at(cellIndex(cx, cy, cz)));
+                                }
+                            }
+                        }
+
+                        iterationOrders.push_back(order);
+
+                    }
                 }
             }
         }

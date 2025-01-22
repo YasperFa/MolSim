@@ -214,13 +214,15 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 thermostat = std::make_unique<DirectThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
                 if (sim->temperature().get().ThermoType() == "average") {
                     thermostat = std::make_unique<AverageThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
+                    SPDLOG_DEBUG("Average thermostat is selected from xml");
                 }else if (sim->temperature().get().ThermoType() == "zx") {
                     thermostat = std::make_unique<ZXThermostat>(targetTemperature, maxDeltaT, is3d, timeSteps);
+                    SPDLOG_DEBUG("zx thermostat is selected from xml");
                 }
-                else if (sim->temperature().get().ThermoType() == "direct") {
+                else if (sim->temperature().get().ThermoType() != "direct") {
                     SPDLOG_ERROR("Invalid Thermostat type");
                 }
-                SPDLOG_DEBUG("Direct thermostat is selected from xml");
+
             }
             for (int i = 0; i < (int) sim->shapes().particle().size(); i++) {
                 SPDLOG_DEBUG("reading particles from xml file");
