@@ -116,15 +116,11 @@ void BoundaryHandler::handleOutflow() {
     SPDLOG_TRACE("handle outflow");
 
     //check if we have at least one outflow boundary
-    for (int i = 0; i < 6; i++){
-        if(type[i] == bCondition::OUTFLOW){
-            goto A; // continue with function
-        }
-    }
 
-    return; // no outflow boundary found
-    
-    A:
+    if(!(type[0] == bCondition::OUTFLOW ||type[1] == bCondition::OUTFLOW ||type[2] == bCondition::OUTFLOW ||
+    type[3] == bCondition::OUTFLOW ||type[4] == bCondition::OUTFLOW ||type[5] == bCondition::OUTFLOW)){
+        return; // no outflow boundary found
+    }
 
         for (auto cell: container.getHaloCells()) {
 
@@ -146,6 +142,13 @@ void BoundaryHandler::handleOutflow() {
 
 void BoundaryHandler::handleReflecting() {
     SPDLOG_TRACE("handle reflecting");
+
+    //check if we have at least one reflecting boundary
+
+    if(!(type[0] == bCondition::REFLECTING ||type[1] == bCondition::REFLECTING ||type[2] == bCondition::REFLECTING ||
+    type[3] == bCondition::REFLECTING ||type[4] == bCondition::REFLECTING ||type[5] == bCondition::REFLECTING)){
+        return; // no reflecting boundary found
+    }
 
         for (auto cell: container.getBoundaryCells()) {
 
@@ -175,6 +178,14 @@ void BoundaryHandler::handleReflecting() {
 }
 
 void BoundaryHandler::handlePeriodicMoveParticles(){
+
+      //check if we have at least one periodic boundary
+
+    if(!(type[0] == bCondition::PERIODIC ||type[1] == bCondition::PERIODIC ||type[2] == bCondition::PERIODIC ||
+    type[3] == bCondition::PERIODIC ||type[4] == bCondition::PERIODIC ||type[5] == bCondition::PERIODIC)){
+        return; // no periodic boundary found
+    }
+
     for (auto cell : container.getHaloCells()){
 
         for (int i = 0; i < 6; i++){
