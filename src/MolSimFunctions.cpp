@@ -15,6 +15,7 @@
 #include "IO/Input/XMLfileReader.h"
 #include "IO/Input/CheckpointInput/CheckpointReader/CheckpointFileReader.h"
 #include "IO/Output/outputWriter/CheckpointOutput/CheckpointWriter.h"
+#include "IO/Output/outputWriter/ProfilePrinter.h"
 
 #include <chrono>
 
@@ -430,6 +431,8 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
     const std::string outName = "MD";
     double currentTime = 0.0;
     int iteration = 0;
+    ProfilePrinter profilePrinter = ProfilePrinter(particleContainer);
+    profilePrinter.initializeOutput();
     // get start time
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -442,6 +445,10 @@ void MolSim::runSim(ParticleContainers::ParticleContainer &particleContainer, do
 
         if (iteration % freq == 0) {
             outputWriter->plotParticles(iteration, particleContainer, outName, inputFile, endTime, gravity, deltaT);
+        }
+
+        if (iteration % 10000 == 0){
+            profilePrinter.printOutput(particleContainer, iteration);
         }
 
         if (thermostat != nullptr) {
