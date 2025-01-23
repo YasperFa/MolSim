@@ -10,7 +10,6 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1) {
     double deltaT;
     double endTime;
     double gravity;
-    bool assignNeighbours;
     bool harmonicOn;
     double stiffnessConstant;
     double avgBondLength;
@@ -25,7 +24,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest1) {
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn, stiffnessConstant,
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, harmonicOn, stiffnessConstant,
                                     avgBondLength, upwardsForce, activeTimesteps, freq, gravityAxis, specialForceAxis,
                                     version2, outputWriter,
                                     calculator, particleContainer, boundaryHandler, thermostat);
@@ -54,7 +53,6 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     double deltaT = 0.0;
     double endTime = 0.0;
     double gravity = 0;
-    bool assignNeighbours = false;
     bool harmonicOn = false;
     double stiffnessConstant = 0.0;
     double avgBondLength = 0.0;
@@ -69,7 +67,7 @@ TEST(XMLfileReaderTest, correctParsingSchemaTest2) {
     std::unique_ptr<ParticleContainers::ParticleContainer> particleContainer;
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
-    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn, stiffnessConstant,
+    XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, harmonicOn, stiffnessConstant,
                                     avgBondLength, upwardsForce, activeTimesteps, freq, gravityAxis, specialForceAxis,
                                     version2, outputWriter, calculator, particleContainer, boundaryHandler, thermostat);
     EXPECT_EQ("VTKWriter", outputWriter->toString());

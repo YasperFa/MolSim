@@ -11,17 +11,13 @@
 namespace Calculators {
     std::array<double, 3> LennardJonesCalculator::calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
                                                                double normCubed, double epsilon1, double epsilon2,
-                                                               double sigma1, double sigma2, bool neighbours) {
+                                                               double sigma1, double sigma2) {
         SPDLOG_TRACE("executing calculateF with lennardJonesCalculator");
 
         double smallSigma = (sigma1 == sigma2) ? sigma1 : (sigma1 + sigma2) / 2.0;
         double cutoff = std::pow(2.0, 1.0 / 6.0) * smallSigma;
 
         if (repulsiveOnly && normCubed > cutoff) {
-            return {0.0, 0.0, 0.0};
-        }
-
-        if (nonNeighboursOnly && !neighbours) {
             return {0.0, 0.0, 0.0};
         }
 

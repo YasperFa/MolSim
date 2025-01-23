@@ -19,7 +19,7 @@ public:
   FileReader();
   virtual ~FileReader();
 
-  static void readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename, bool assignNeighbours);
+  static void readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename);
 
   
 /**Initializes a ParticleContainer with input Particles data from a file
@@ -31,7 +31,7 @@ public:
  * @param particles: the empty particle container
  * @param input_file: stream of file data
  */
- static void readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file, bool assignNeighbours);
+ static void readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file);
  /**Initializes a ParticleContainer with input Discs data from a file
   * @param particles: the empty particle container
   * @param input_file: stream of file data

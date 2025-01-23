@@ -73,7 +73,7 @@ TEST(LinkedCellContainerTest, correctCellInitialization2D) {
 /** Checks that only neighboring cells are influenced during calculations */
 TEST(LinkedCellContainerTest, correctCalculations) {
     ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{5, 5, 1}, 1.0, false);
-    Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false,false);
+    Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false);
     
 
     Particle p({0, 2, 0.0},{0.0, 0.0, 0.0},2.0,0);

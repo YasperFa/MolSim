@@ -94,7 +94,7 @@ Optional arguments:
 
 
 bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
-                            double &gravity, bool assignNeighbours,
+                            double &gravity,
                             bool harmonicOn,
                             double stiffnessConstant,
                             double avgBondLenght,
@@ -117,8 +117,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
             ("r, cutoffRadius", "Set cutoff radius", cxxopts::value<double>()->default_value("3."))
             ("b, boundaryCondition", "Set boundary condition", cxxopts::value<std::vector<char> >())
             ("g, gravity", "Set gravity", cxxopts::value<double>()->default_value("0"))
-            ("n, neighbour", "Choose if the neighbours will be assigned",
-             cxxopts::value<bool>()->default_value("false"))
             ("harmonic", "Activate the harmonic force", cxxopts::value<bool>()->default_value("false"))
             ("stiffnessConstant", "Set stiffness constant for harmonic force",
              cxxopts::value<double>()->default_value("0.0"))
@@ -312,7 +310,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     outputWriter = std::make_unique<outputWriters::VTKWriter>();
     calculator = std::make_unique<Calculators::GravityCalculator>();
 
-    assignNeighbours = parseResult["neighbour"].as<bool>();
     harmonicOn = parseResult["harmonic"].as<bool>();
     stiffnessConstant = parseResult["stiffnessConstant"].as<double>();
     avgBondLenght = parseResult["bondLength"].as<double>();
@@ -343,7 +340,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     if (parseResult.count("calculator")) {
         std::string calculatorTemp = parseResult["calculator"].as<std::string>();
         if (calculatorTemp == "LJC") {
-            calculator = std::make_unique<Calculators::LennardJonesCalculator>(repulsiveOnly, nonNeighboursOnly);
+            calculator = std::make_unique<Calculators::LennardJonesCalculator>(repulsiveOnly);
             SPDLOG_DEBUG("{} is selected as the calculator", calculatorTemp);
         } else if (calculatorTemp == "Default") {
             calculator = std::make_unique<Calculators::GravityCalculator>();
@@ -498,7 +495,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
             double subDeltaT = 0.0, subEndTime = 0.0, subGravity = 0.0, subStiffnessConstant = 0.0, subAvgBondLength =
                     0.0, subUpwardforce = 0.0;
             int subFreq = 20, subActiveTimesetps = 0, subGravityAxis = 1, subForceAxis = 1;
-            bool version2 = false, assignNeighbors = false, harmonicOn = false;
+            bool version2 = false, harmonicOn = false;
             std::unique_ptr<ParticleContainers::ParticleContainer> subParticleContainer;
             std::unique_ptr<outputWriters::OutputWriter> subOutputWriter;
             std::unique_ptr<Calculators::Calculator> subCalculator;
@@ -506,7 +503,7 @@ bool MolSim::runSubSim(std::string &mainInputFile) {
             std::unique_ptr<Thermostat> subThermostat;
 
 
-            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, assignNeighbors, harmonicOn,
+            if (XMLfileReader::parseXMLFromFile(subFile, subDeltaT, subEndTime, subGravity, harmonicOn,
                                                 subStiffnessConstant, subAvgBondLength, subUpwardforce,
                                                 subActiveTimesetps, subFreq, subGravityAxis, subForceAxis, version2,
                                                 subOutputWriter,

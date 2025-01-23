@@ -7,11 +7,11 @@
 #include "Containers/ParticleContainer.h"
 #include "spdlog/spdlog.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
+#include "utils/ArrayUtils.h"
 
 
 void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type,
-                                       double epsilon, double sigma, double initTemperature, bool isFixed,
-                                       bool assignNeighbours, bool is3d) {
+                                       double epsilon, double sigma, double initTemperature, bool isFixed, bool is3d) {
     // iterate over the specified dimensions and generate particles
     SPDLOG_DEBUG("generating cuboid particles");
     std::array<double, 3> N = cuboid.getNumOfParticlesPerDimension();
@@ -53,67 +53,63 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
             }
         }
     }
+}
 
-    if (assignNeighbours) {
-        SPDLOG_DEBUG("Assigning neighbors for particles");
+void ParticleGenerator::generateMembrane(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type,
+                                         double epsilon, double sigma, double initTemperature, bool isFixed, bool is3d,
+                                         double stiffnessConstant) {
+    // Step 1: Generate the particle grid using the existing generateCuboid function
+    generateCuboid(particles, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d);
 
-        const auto &allParticles = particles.getParticles();
+    // Step 2: Extract parameters for neighbor assignment
+    std::array<double, 3> grid_dimensions = cuboid.getNumOfParticlesPerDimension();
 
-        auto assignNeighbors = [&](const std::vector<std::array<int, 3>> &offsets,
-                               void (Particle::*addNeighborFunc)(int)) {
-            for (auto currentIt = particles.begin(); currentIt != particles.end(); ++currentIt) {
-                Particle &current = *currentIt;
-
-                // Calculate 3D indices from the 1D index
-                int currentIdx = std::distance(particles.begin(), currentIt);
-                int xIndex = currentIdx % static_cast<int>(N[0]);
-                int yIndex = (currentIdx / static_cast<int>(N[0])) % static_cast<int>(N[1]);
-                int zIndex = currentIdx / (static_cast<int>(N[0]) * static_cast<int>(N[1]));
+    // Step 3: Iterate through particles to assign neighbors
+    auto particle_it = particles.begin();
+    for (int i = 0; i < static_cast<int>(grid_dimensions[0]); i++) {
+        for (int j = 0; j < static_cast<int>(grid_dimensions[1]); j++) {
+            for (int k = 0; k < static_cast<int>(grid_dimensions[2]); k++) {
+                Particle &current_particle = *particle_it;
 
                 // Assign neighbors using offsets
-                for (const auto &offset : offsets) {
-                    int ni = xIndex + offset[0];
-                    int nj = yIndex + offset[1];
-                    int nk = zIndex + offset[2];
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        for (int dz = -1; dz <= 1; dz++) {
+                            if (dx == 0 && dy == 0 && dz == 0) continue;
 
-                    if (ni >= 0 && ni < N[0] && nj >= 0 && nj < N[1] && nk >= 0 && nk < N[2]) {
-                        int neighborIdx = ni + nj * N[0] + nk * N[0] * N[1];
+                            int ni = i + dx;
+                            int nj = j + dy;
+                            int nk = k + dz;
 
-                        // Find neighbor by its index
-                        auto neighborIt = particles.begin();
-                        std::advance(neighborIt, neighborIdx);
+                            // Ensure neighbors are within bounds
+                            if (ni < 0 || ni >= static_cast<int>(grid_dimensions[0]) || nj < 0 ||
+                                nj >= static_cast<int>(grid_dimensions[1]) || nk < 0 ||
+                                nk >= static_cast<int>(grid_dimensions[2])) {
+                                continue;
+                            }
 
-                        Particle &neighbour = *neighborIt;
+                            // Calculate linear index of neighbor
+                            int neighbor_index =
+                                    ni * static_cast<int>(grid_dimensions[1]) * static_cast<int>(grid_dimensions[2]) +
+                                    nj * static_cast<int>(grid_dimensions[2]) + nk;
 
-                        if (!current.getFixed()) {
-                            (current.*addNeighborFunc)(neighbour.getID());
+                            auto neighbor_it = particles.begin();
+                            std::advance(neighbor_it, neighbor_index);
+
+                            Particle &neighbor_particle = *neighbor_it;
+
+                            // Calculate initial distance and add connection
+                            double initial_distance = ArrayUtils::L2Norm(
+                                current_particle.getX() - neighbor_particle.getX());
+                            current_particle.addNeighbourParticle(&neighbor_particle - &current_particle,
+                                                                  initial_distance, stiffnessConstant);
                         }
                     }
                 }
+
+                ++particle_it;
             }
-        };
-
-        static const std::vector<std::array<int, 3>> directOffsets = {
-            {
-                {-1, 0, 0}, {1, 0, 0}, // direct neighbours on the x-axis
-                {0, -1, 0}, {0, 1, 0}, // direct neighbours on the y-axis
-                {0, 0, -1}, {0, 0, 1} // direct neighbours on the z-axis
-            }
-        };
-
-
-        static const std::vector<std::array<int, 3>> diagonalOffsets = {
-            {
-                {-1, -1, 0}, {-1, 1, 0}, {1, -1, 0}, {1, 1, 0}, // diagonal neighbours on the XY plane
-                {-1, 0, -1}, {-1, 0, 1}, {1, 0, -1}, {1, 0, 1}, // diagonal neighbours on the XZ plane
-                {0, -1, -1}, {0, -1, 1}, {0, 1, -1}, {0, 1, 1}, // diagonal neighbours on the YZ plane
-                {-1, -1, -1}, {-1, -1, 1}, {-1, 1, -1}, {-1, 1, 1}, {1, -1, -1}, {1, -1, 1}, {1, 1, -1},
-                {1, 1, 1} // 3D diagonal
-            }
-        };
-
-        assignNeighbors(directOffsets, &Particle::addDirectNeighbour);
-        assignNeighbors(diagonalOffsets, &Particle::addDiagonalNeighbour);
+        }
     }
 }
 

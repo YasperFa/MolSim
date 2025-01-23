@@ -138,7 +138,7 @@ TEST(CalculatorTest, correctLJcalculationsDirectSum) {
     Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
     testContainer.addParticle(k);
 
-    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false,false);
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false);
     calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
@@ -163,7 +163,7 @@ TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
     Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
     testContainer.addParticle(k);
 
-    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false,false);
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false);
     calc.calculateF(testContainer, 0);
 
     for (int in = 0; in < 3; in++) {
@@ -189,267 +189,15 @@ TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
     }
 }
 
-/** Test that `calculateFIJ` correctly computes harmonic forces. */
-TEST(HarmonicForceCalculatorTest, CorrectForceCalculation) {
-    // Initialize calculator with stiffness constant and average bond length
-    double stiffnessConstant = 10.0;
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    // Define particle positions
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {1.5, 0.0, 0.0};
-
-    // Subtract positions to calculate the displacement
-    std::array<double, 3> sub = position2 - position1;
-
-    // Create particles
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    // Calculate force
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, 1.0);
-
-    // Verify the force
-    EXPECT_NEAR(5.0, force[0], 1e-5); // Stiffness constant x displacement (1.5 - 1.0)
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test force calculation with a bond length multiplier. */
-TEST(HarmonicForceCalculatorTest, ForceWithBondLengthMultiplier) {
-    // Initialize calculator
-    double stiffnessConstant = 15.0;
-    double avgBondLength = 2.0;
-    double bondLengthMultiplier = 0.5;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    // Define particle positions
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {3.0, 0.0, 0.0};
-
-    // Displacement
-    std::array<double, 3> sub = position2 - position1;
-
-    // Particles
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    // Calculate force
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, bondLengthMultiplier);
-
-    // Verify force
-    EXPECT_NEAR(30.0, force[0], 1e-5); // Stiffness constant x (distance - bondLength)
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test `toString` method. */
-TEST(HarmonicForceCalculatorTest, ToString) {
-    Calculators::HarmonicForceCalculator calc(10.0, 1.0);
-    EXPECT_EQ("Harmonic", calc.toString());
-}
-
-/** Test that no force is applied when particles are at equilibrium distance. */
-TEST(HarmonicForceCalculatorTest, NoForceAtEquilibrium) {
-    double stiffnessConstant = 20.0;
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {1.0, 0.0, 0.0}; // At equilibrium distance
-
-    std::array<double, 3> sub = position2 - position1;
-
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, 1.0);
-
-    EXPECT_NEAR(0.0, force[0], 1e-5);
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test that the force calculation works for particles displaced in multiple dimensions. */
-TEST(HarmonicForceCalculatorTest, ForceInMultipleDimensions) {
-    double stiffnessConstant = 10.0;
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {1.2, 1.5, 0.0};
-
-    std::array<double, 3> sub = position2 - position1;
-
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, 1.0);
-
-    double expectedForceMagnitude = stiffnessConstant * (std::sqrt(1.2 * 1.2 + 1.5 * 1.5) - avgBondLength) /
-                                    std::sqrt(1.2 * 1.2 + 1.5 * 1.5);
-
-    EXPECT_NEAR(expectedForceMagnitude * 1.2, force[0], 1e-5);
-    EXPECT_NEAR(expectedForceMagnitude * 1.5, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-
-/** Test force calculation with a large bond length multiplier. */
-TEST(HarmonicForceCalculatorTest, LargeBondLengthMultiplier) {
-    double stiffnessConstant = 5.0;
-    double avgBondLength = 1.0;
-    double bondLengthMultiplier = 3.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {4.0, 0.0, 0.0};
-
-    std::array<double, 3> sub = position2 - position1;
-
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, bondLengthMultiplier);
-
-    EXPECT_NEAR(5.0, force[0], 1e-5); // (4.0 - 3.0) * stiffnessConstant
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test force calculation with negative stiffness constant. */
-TEST(HarmonicForceCalculatorTest, NegativeStiffnessConstant) {
-    double stiffnessConstant = -10.0; // Negative stiffness
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {1.5, 0.0, 0.0};
-
-    std::array<double, 3> sub = position2 - position1;
-
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, 1.0);
-
-    EXPECT_NEAR(-5.0, force[0], 1e-5); // Stiffness constant x displacement (1.5 - 1.0)
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test that particles at a large distance produce the expected force. */
-TEST(HarmonicForceCalculatorTest, LargeDistance) {
-    double stiffnessConstant = 8.0;
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    std::array<double, 3> position1 = {0.0, 0.0, 0.0};
-    std::array<double, 3> position2 = {10.0, 0.0, 0.0}; // Far apart
-
-    std::array<double, 3> sub = position2 - position1;
-
-    Particle particle1(position1, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2(position2, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    std::array<double, 3> force = calc.calculateFIJ(sub, particle1, particle2, 1.0);
-
-    EXPECT_NEAR(72.0, force[0], 1e-5); // Stiffness constant x (distance - bondLength)
-    EXPECT_NEAR(0.0, force[1], 1e-5);
-    EXPECT_NEAR(0.0, force[2], 1e-5);
-}
-
-/** Test applying harmonic forces with direct neighbors. */
-TEST(HarmonicForceApplicationTest, DirectNeighborsForceApplication) {
-    ParticleContainers::DirectSumContainer container;
-    Calculators::LennardJonesCalculator calcLJ = Calculators::LennardJonesCalculator(true, true);
-
-    // Define particles
-    Particle particle1({0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2({2.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    // Set neighbors
-    particle1.addDirectNeighbour(particle2.getID());
-    particle2.addDirectNeighbour(particle1.getID());
-
-    // Add particles to container
-    container.addParticle(particle1);
-    container.addParticle(particle2);
-
-    // Create harmonic force calculator
-    double stiffnessConstant = 10.0;
-    double avgBondLength = 1.0;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    // Apply harmonic forces
-    calcLJ.applyHarmonicForces(container, calc);
-
-    // Verify forces
-    for (auto &particle : container) {
-        if (particle.getID() == 1) {
-            EXPECT_NEAR(10.0, particle.getF()[0], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[1], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[2], 1e-5);
-        } else if (particle.getID() == 2) {
-            EXPECT_NEAR(-10.0, particle.getF()[0], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[1], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[2], 1e-5);
-        }
-    }
-}
-
-/** Test applying harmonic forces with diagonal neighbors. */
-TEST(HarmonicForceApplicationTest, DiagonalNeighborsForceApplication) {
-    ParticleContainers::DirectSumContainer container;
-    Calculators::LennardJonesCalculator calcLJ = Calculators::LennardJonesCalculator(true, true);
-
-
-    // Define particles
-    Particle particle1({0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
-    Particle particle2({1.0, 1.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 1);
-
-    // Set diagonal neighbors
-    particle1.addDiagonalNeighbour(particle2.getID());
-    particle2.addDiagonalNeighbour(particle1.getID());
-
-    // Add particles to container
-    container.addParticle(particle1);
-    container.addParticle(particle2);
-
-    // Create harmonic force calculator
-    double stiffnessConstant = 5.0;
-    double avgBondLength = 1.5;
-    Calculators::HarmonicForceCalculator calc(stiffnessConstant, avgBondLength);
-
-    // Apply harmonic forces
-    calcLJ.applyHarmonicForces(container, calc);
-
-    // Verify forces
-    for (auto &particle : container) {
-        if (particle.getID() == 1) {
-            EXPECT_NEAR(-2.5, particle.getF()[0], 1e-5); // Scaled by sqrt(2)
-            EXPECT_NEAR(-2.5, particle.getF()[1], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[2], 1e-5);
-        } else if (particle.getID() == 2) {
-            EXPECT_NEAR(2.5, particle.getF()[0], 1e-5);
-            EXPECT_NEAR(2.5, particle.getF()[1], 1e-5);
-            EXPECT_NEAR(0.0, particle.getF()[2], 1e-5);
-        }
-    }
-}
-
 /** Test upward force applied to marked particles */
 TEST(CalculateFTest, UpwardForceOnMarkedParticles) {
     ParticleContainers::DirectSumContainer testContainer;
-    Calculators::LennardJonesCalculator calcLJ = Calculators::LennardJonesCalculator(true, true);
+    Calculators::LennardJonesCalculator calcLJ = Calculators::LennardJonesCalculator(true);
 
     // Create particles
     Particle p1({0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
     p1.markForUpwardForce();
     Particle p2({1.0, 1.0, 1.0}, {0.0, 0.0, 0.0}, 2.0, 0); // Not marked
-    p1.addDiagonalNeighbour(p2.getID());
-    p2.addDiagonalNeighbour(p1.getID());
 
     testContainer.addParticle(p1);
     testContainer.addParticle(p2);

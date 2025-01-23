@@ -38,7 +38,6 @@ public:
    * @param thermostat: thermostat
    */
     static int parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
-                                bool &assignNeighbours,
                                 bool &harmonicOn,
                                 double &stiffnessConstant,
                                 double &avgBondLength, double &upwardsForce, int &activeTimesteps, int &freq,

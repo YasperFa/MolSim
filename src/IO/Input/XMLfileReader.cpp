@@ -16,7 +16,6 @@
 
 
 int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, double &endTime, double &gravity,
-                                    bool &assignNeighbours,
                                     bool &harmonicOn,
                                     double &stiffnessConstant,
                                     double &avgBondLength,
@@ -46,12 +45,6 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     SPDLOG_ERROR("Invalid Frequency, Frequency should be positive!, using default value");
                     freq = 10;
                 }
-            }
-
-            if (sim->parameters().assignNeighbours().present()) {
-                assignNeighbours = sim->parameters().assignNeighbours().get();
-            } else {
-                assignNeighbours = false;
             }
 
             harmonicOn = false;
@@ -173,21 +166,16 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
             }
 
             bool repulsiveOnly = false;
-            bool nonNeighboursOnly = false;
 
             if (sim->calculator().repulsiveOnly().present()) {
                 repulsiveOnly = sim->calculator().repulsiveOnly().get();
-            }
-
-            if (sim->calculator().nonNeighboursOnly().present()) {
-                nonNeighboursOnly = sim->calculator().nonNeighboursOnly().get();
             }
 
             if (sim->calculator().calculatorForce().present()) {
                 std::string calculatorType = sim->calculator().calculatorForce().get();
                 if (calculatorType == "LJC") {
                     calculator = std::make_unique<
-                        Calculators::LennardJonesCalculator>(repulsiveOnly, nonNeighboursOnly);
+                        Calculators::LennardJonesCalculator>(repulsiveOnly);
                     SPDLOG_DEBUG("LJC is selected from xml");
                 } else if (calculatorType == "Default") {
                     calculator = std::make_unique<Calculators::GravityCalculator>();
@@ -305,7 +293,50 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                 }
                 Cuboid cuboid(cuboidX, N, cuboidH, m, v, mv);
                 ParticleGenerator::generateCuboid(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature,
-                                                  isFixed, assignNeighbours, is3d);
+                                                  isFixed, is3d);
+            }
+
+            for (int i = 0; i < (int) sim->shapes().membrane().size(); i++) {
+                SPDLOG_DEBUG("reading membranes from xml file");
+                // define all Cuboid parameters
+                cuboidX[0] = sim->shapes().membrane().at(i).position().x();
+                cuboidX[1] = sim->shapes().membrane().at(i).position().y();
+                cuboidX[2] = sim->shapes().membrane().at(i).position().z();
+                std::array<double, 3> N;
+                N[0] = sim->shapes().membrane().at(i).dimensions().x();
+                N[1] = sim->shapes().membrane().at(i).dimensions().y();
+                N[2] = sim->shapes().membrane().at(i).dimensions().z();
+                std::array<double, 3> v;
+                v[0] = sim->shapes().membrane().at(i).initialVelocity().x();
+                v[1] = sim->shapes().membrane().at(i).initialVelocity().y();
+                v[2] = sim->shapes().membrane().at(i).initialVelocity().z();
+                cuboidH = sim->shapes().membrane().at(i).distance();
+                double m = sim->shapes().membrane().at(i).mass();
+                double mv = sim->shapes().membrane().at(i).meanVelocity();
+
+
+                int type = 0;
+                if (sim->shapes().membrane().at(i).type().present()) {
+                    type = sim->shapes().membrane().at(i).type().get();
+                }
+
+                double epsilon = 5;
+                if (sim->shapes().membrane().at(i).epsilon().present()) {
+                    epsilon = sim->shapes().membrane().at(i).epsilon().get();
+                }
+
+                double sigma = 1;
+                if (sim->shapes().membrane().at(i).sigma().present()) {
+                    sigma = sim->shapes().membrane().at(i).sigma().get();
+                }
+
+                bool isFixed = false;
+                if (sim->shapes().membrane().at(i).isFixed().present()) {
+                    isFixed = sim->shapes().membrane().at(i).isFixed().get();
+                }
+                Cuboid cuboid(cuboidX, N, cuboidH, m, v, mv);
+                ParticleGenerator::generateMembrane(*particleContainer, cuboid, type, epsilon, sigma, initialTemperature,
+                                                  isFixed, is3d, stiffnessConstant);
             }
 
             upwardsForce = 0.0;
