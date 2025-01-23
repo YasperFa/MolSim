@@ -13,6 +13,15 @@
 #include "../../../Calculator/Calculator.h"
 #include "../../../Calculator/LennardJonesCalculator.h"
 
+  enum side : int{ //not enum class to allow for implicit type conversion
+        LEFT = 0,
+        RIGHT = 1,
+        TOP = 2,
+        BOTTOM = 3,
+        FRONT = 4,
+        BACK = 5
+    };
+
 Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
 
 BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t,
@@ -60,22 +69,11 @@ BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t,
                     if(isHalo && ifHaloThenPeriodic ){
                         //add cell
                         std::vector<int> directions; //direction in which particles will have to be temporarily moved during f calculation (opposite from the direction we are moving the cellposition to)
-                        if(isHaloCellofBoundary(0, neighborPos)){
-                            directions.push_back(1);
-                        } else if(isHaloCellofBoundary(1, neighborPos)){
-                            directions.push_back(0);
-                        }
 
-                        if(isHaloCellofBoundary(3, neighborPos)){
-                            directions.push_back(2);
-                        } else if(isHaloCellofBoundary(2, neighborPos)){
-                            directions.push_back(3);
-                        }
-
-                        if(isHaloCellofBoundary(5, neighborPos)){
-                            directions.push_back(4);
-                        } else if(isHaloCellofBoundary(4, neighborPos)){
-                            directions.push_back(5);
+                        for (int i = 0; i < 6; i++){
+                            if(isHaloCellofBoundary(i, neighborPos)){
+                                directions.push_back(oppositeSide(i));
+                            }
                         }
 
                         //find corresponding boundary cell on opposite side
@@ -117,11 +115,12 @@ void BoundaryHandler::handleOutflow() {
 
     //check if we have at least one outflow boundary
 
-    if(!(type[0] == bCondition::OUTFLOW ||type[1] == bCondition::OUTFLOW ||type[2] == bCondition::OUTFLOW ||
-    type[3] == bCondition::OUTFLOW ||type[4] == bCondition::OUTFLOW ||type[5] == bCondition::OUTFLOW)){
+    if(!(type[LEFT] == bCondition::OUTFLOW ||type[RIGHT] == bCondition::OUTFLOW ||type[TOP] == bCondition::OUTFLOW ||
+    type[BOTTOM] == bCondition::OUTFLOW ||type[FRONT] == bCondition::OUTFLOW ||type[BACK] == bCondition::OUTFLOW)){
         return; // no outflow boundary found
     }
 
+        //cannot parallelize because of updateParticlesInCells
         for (auto cell: container.getHaloCells()) {
 
             for (int i = 0; i < 6; i++) {
@@ -145,11 +144,15 @@ void BoundaryHandler::handleReflecting() {
 
     //check if we have at least one reflecting boundary
 
-    if(!(type[0] == bCondition::REFLECTING ||type[1] == bCondition::REFLECTING ||type[2] == bCondition::REFLECTING ||
-    type[3] == bCondition::REFLECTING ||type[4] == bCondition::REFLECTING ||type[5] == bCondition::REFLECTING)){
+    if(!(type[LEFT] == bCondition::REFLECTING ||type[RIGHT] == bCondition::REFLECTING ||type[TOP] == bCondition::REFLECTING ||
+    type[BOTTOM] == bCondition::REFLECTING ||type[FRONT] == bCondition::REFLECTING ||type[BACK] == bCondition::REFLECTING)){
         return; // no reflecting boundary found
     }
 
+        #ifdef _OPENMP
+        #pragma omp parallel for schedule(dynamic)
+        #endif
+        //cells don't influnce each other, can be parallelized
         for (auto cell: container.getBoundaryCells()) {
 
             for (int i = 0; i < 6; i++) {
@@ -181,8 +184,8 @@ void BoundaryHandler::handlePeriodicMoveParticles(){
 
       //check if we have at least one periodic boundary
 
-    if(!(type[0] == bCondition::PERIODIC ||type[1] == bCondition::PERIODIC ||type[2] == bCondition::PERIODIC ||
-    type[3] == bCondition::PERIODIC ||type[4] == bCondition::PERIODIC ||type[5] == bCondition::PERIODIC)){
+    if(!(type[LEFT] == bCondition::PERIODIC ||type[RIGHT] == bCondition::PERIODIC ||type[TOP] == bCondition::PERIODIC ||
+    type[BOTTOM] == bCondition::PERIODIC ||type[FRONT] == bCondition::PERIODIC ||type[BACK] == bCondition::PERIODIC)){
         return; // no periodic boundary found
     }
 
@@ -263,6 +266,10 @@ void BoundaryHandler::handlePeriodicAddForces(){
                     tempLocation = cloneParticleLocation(tempLocation, direction);
                 }
 
+                #ifdef _OPENMP
+                #pragma omp parallel for schedule(dynamic)
+                #endif
+
                 for (auto particle:cell.getParticlesInCell()) {
 
                     //force between neighborP and P
@@ -286,12 +293,12 @@ void BoundaryHandler::handlePeriodicAddForces(){
 double BoundaryHandler::calculateDistance(Particle p, int i) {
     //passing by value on purpose
     switch (i) {
-        case 0: return std::abs(p.getX()[0] - boundaries[0]); //left
-        case 1: return std::abs(p.getX()[0] - boundaries[1]); //right
-        case 2: return std::abs(p.getX()[1] - boundaries[2]); //top
-        case 3: return std::abs(p.getX()[1] - boundaries[3]); //bottom
-        case 4: return std::abs(p.getX()[2] - boundaries[4]); //front
-        case 5: return std::abs(p.getX()[2] - boundaries[5]); //back
+        case LEFT: return std::abs(p.getX()[0] - boundaries[0]); //left
+        case RIGHT: return std::abs(p.getX()[0] - boundaries[1]); //right
+        case TOP: return std::abs(p.getX()[1] - boundaries[2]); //top
+        case BOTTOM: return std::abs(p.getX()[1] - boundaries[3]); //bottom
+        case FRONT: return std::abs(p.getX()[2] - boundaries[4]); //front
+        case BACK: return std::abs(p.getX()[2] - boundaries[5]); //back
         default: throw std::runtime_error("Error calculating distance");
     }
 }
@@ -301,33 +308,32 @@ std::array<double, 3L> BoundaryHandler::ghostParticleLocation(Particle p, int i,
     std::array<double, 3> mirrorX = p.getX();
 
     switch (i) {
-        case 0: {
+        case LEFT: {
             //mirror along left border
             mirrorX[0] = (mirrorX[0] - 2 * dist);
             break;
         }
-        case 1: {
+        case RIGHT: {
             //mirror along right border
             mirrorX[0] = (mirrorX[0] + 2 * dist);
             break;
         }
-        case 2: {
+        case TOP: {
             //mirror along top border
             mirrorX[1] = (mirrorX[1] + 2 * dist);
             break;
         }
-        case 3: {
+        case BOTTOM: {
             //mirror along bottom border
             mirrorX[1] = (mirrorX[1] - 2 * dist);
             break;
         }
-        case 4: {
+        case FRONT: {
             //mirror along front border
             mirrorX[2] = (mirrorX[2] + 2 * dist);
-            //not sure yet if (0|0|0) is front bottom left or back bottom left corner
             break;
         }
-        case 5: {
+        case BACK: {
             //mirror along back border
             mirrorX[2] = (mirrorX[2] - 2 * dist);
             break;
@@ -339,26 +345,26 @@ std::array<double, 3L> BoundaryHandler::ghostParticleLocation(Particle p, int i,
 
 bool BoundaryHandler::isHaloCellofBoundary(int i, std::array<int, 3> pos) {
     switch (i) {
-        case 0: return (pos[0] == -1);
-        case 1: return (pos[0] == container.getCellNumPerDimension()[0]);
-        case 2: return (pos[1] == container.getCellNumPerDimension()[1]);
-        case 3: return (pos[1] == -1);
-        case 4: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (
+        case LEFT: return (pos[0] == -1);
+        case RIGHT: return (pos[0] == container.getCellNumPerDimension()[0]);
+        case TOP: return (pos[1] == container.getCellNumPerDimension()[1]);
+        case BOTTOM: return (pos[1] == -1);
+        case FRONT: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (
                 pos[2] == container.getCellNumPerDimension()[2]);
-        case 5: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (pos[2] == -1);
+        case BACK: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (pos[2] == -1);
         default: throw std::runtime_error("Error calculating isHaloCellOfBoundary");
     }
 }
 
 bool BoundaryHandler::isBoundaryCellofBoundary(int i, std::array<int, 3> pos) {
     switch (i) {
-        case 0: return (pos[0] == 0);
-        case 1: return (pos[0] == container.getCellNumPerDimension()[0] - 1);
-        case 2: return (pos[1] == container.getCellNumPerDimension()[1] - 1);
-        case 3: return (pos[1] == 0);
-        case 4: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (
+        case LEFT: return (pos[0] == 0);
+        case RIGHT: return (pos[0] == container.getCellNumPerDimension()[0] - 1);
+        case TOP: return (pos[1] == container.getCellNumPerDimension()[1] - 1);
+        case BOTTOM: return (pos[1] == 0);
+        case FRONT: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (
                 pos[2] == container.getCellNumPerDimension()[2] - 1);
-        case 5: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (pos[2] == 0);
+        case BACK: if (container.getCellNumPerDimension()[2] == 1) { return false; } else return (pos[2] == 0);
         default: throw std::runtime_error("Error calculating isBoundaryCellOfBoundary");
     }
 }
@@ -366,27 +372,27 @@ bool BoundaryHandler::isBoundaryCellofBoundary(int i, std::array<int, 3> pos) {
 
 std::array<double, 3UL> BoundaryHandler::cloneParticleLocation(std::array<double, 3UL> pos, int i) {
     switch (i) {
-        case 0: {
+        case LEFT: {
             pos[0] += container.getDomainSize()[0];
             return pos;
         }
-        case 1: {
+        case RIGHT: {
             pos[0] -= container.getDomainSize()[0];
             return pos;
         }
-        case 2: {
+        case TOP: {
             pos[1] -= container.getDomainSize()[1];
             return pos;
         }
-        case 3: {
+        case BOTTOM: {
             pos[1] += container.getDomainSize()[1];
             return pos;
         }
-        case 4: {
+        case FRONT: {
             pos[2] -= container.getDomainSize()[2];
             return pos;
         }
-        case 5: {
+        case BACK: {
             pos[2] += container.getDomainSize()[2];
             return pos;
         }
@@ -394,36 +400,38 @@ std::array<double, 3UL> BoundaryHandler::cloneParticleLocation(std::array<double
     }
 };
 
+double value = std::pow(2.0, 1.0 / 6.0); //precompute
+
 double BoundaryHandler::minDist(double sigma) {
-    return std::pow(2.0, 1.0 / 6.0) * sigma;
+    return value * sigma;
 }
 
 
 int BoundaryHandler::oppositeSide(int i) {
     switch (i) {
-        case 0: return 1;
-        case 1: return 0;
-        case 2: return 3;
-        case 3: return 2;
-        case 4: return 5;
-        case 5: return 4;
+        case LEFT: return RIGHT;
+        case RIGHT: return LEFT;
+        case TOP: return BOTTOM;
+        case BOTTOM: return TOP;
+        case FRONT: return BACK;
+        case BACK: return FRONT;
         default: return -1;
     }
 }
 
 std::array<int, 3> BoundaryHandler::oppositeCell(std::array<int, 3> position, int i) {
     switch (i) {
-        case 0: position[0] = position[0] + container.getCellNumPerDimension()[0];
+        case LEFT: position[0] = position[0] + container.getCellNumPerDimension()[0];
             break;
-        case 1: position[0] = position[0] - container.getCellNumPerDimension()[0];
+        case RIGHT: position[0] = position[0] - container.getCellNumPerDimension()[0];
             break;
-        case 2: position[1] = position[1] - container.getCellNumPerDimension()[1];
+        case TOP: position[1] = position[1] - container.getCellNumPerDimension()[1];
             break;
-        case 3: position[1] = position[1] + container.getCellNumPerDimension()[1];
+        case BOTTOM: position[1] = position[1] + container.getCellNumPerDimension()[1];
             break;
-        case 4: position[2] = position[2] - container.getCellNumPerDimension()[2];
+        case FRONT: position[2] = position[2] - container.getCellNumPerDimension()[2];
             break;
-        case 5: position[2] = position[2] + container.getCellNumPerDimension()[2];
+        case BACK: position[2] = position[2] + container.getCellNumPerDimension()[2];
             break;
         default: throw std::runtime_error("Error calculating oppositeCell");
     }
@@ -433,17 +441,17 @@ std::array<int, 3> BoundaryHandler::oppositeCell(std::array<int, 3> position, in
 
 std::array<int, 3> BoundaryHandler::oppositeNeighborCell(std::array<int, 3> position, int i) {
     switch (i) {
-        case 0: position[0] = position[0] + container.getCellNumPerDimension()[0] - 1;
+        case LEFT: position[0] = position[0] + container.getCellNumPerDimension()[0] - 1;
             break;
-        case 1: position[0] = position[0] - container.getCellNumPerDimension()[0] + 1;
+        case RIGHT: position[0] = position[0] - container.getCellNumPerDimension()[0] + 1;
             break;
-        case 2: position[1] = position[1] - container.getCellNumPerDimension()[1] + 1;
+        case TOP: position[1] = position[1] - container.getCellNumPerDimension()[1] + 1;
             break;
-        case 3: position[1] = position[1] + container.getCellNumPerDimension()[1] - 1;
+        case BOTTOM: position[1] = position[1] + container.getCellNumPerDimension()[1] - 1;
             break;
-        case 4: position[2] = position[2] - container.getCellNumPerDimension()[2] + 1;
+        case FRONT: position[2] = position[2] - container.getCellNumPerDimension()[2] + 1;
             break;
-        case 5: position[2] = position[2] + container.getCellNumPerDimension()[2] - 1;
+        case BACK: position[2] = position[2] + container.getCellNumPerDimension()[2] - 1;
             break;
         default: throw std::runtime_error("Error calculating oppositeCell");
     }
