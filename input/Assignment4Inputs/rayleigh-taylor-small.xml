@@ -7,7 +7,6 @@
     <calculator>
         <calculatorForce>LJC</calculatorForce>
         <repulsiveOnly>false</repulsiveOnly>
-        <nonNeighboursOnly>false</nonNeighboursOnly>
     </calculator>
     <container>
         <containerType>LCC</containerType>
@@ -31,7 +30,6 @@
         <deltaT>0.0005</deltaT>
         <gravity>-12.44</gravity>
         <parallelVersion2>0</parallelVersion2>
-        <assignNeighbours>false</assignNeighbours>
     </parameters>
     <shapes>
         <cuboid>
