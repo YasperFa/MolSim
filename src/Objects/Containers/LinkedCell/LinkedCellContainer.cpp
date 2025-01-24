@@ -259,9 +259,9 @@ namespace ParticleContainers {
     }
     void LinkedCellContainer::initParallelV2() {
         SPDLOG_DEBUG("Initializing parallel V2...");
-        int dx = 2;
-        int dy = 2;
-        int dz = 2;
+        int dx = 3;
+        int dy = 3;
+        int dz = 3;
 
         if (cellNumPerDimension[2] == 1) {
             for (int x = 0; x < dx; ++x) {

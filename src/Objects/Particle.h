@@ -103,6 +103,8 @@ public:
 
     void setF(const std::array<double, 3> &newF);
 
+    void setF_no_mutex(const std::array<double, 3> &newF);
+
     void setOldF(const std::array<double, 3> &newOldF);
 
     void setX(const std::array<double, 3> &X);

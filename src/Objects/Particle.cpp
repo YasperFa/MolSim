@@ -78,6 +78,12 @@ void Particle::setF(const std::array<double, 3> &newF) {
     forceMutex.unlock();
 }
 
+void Particle::setF_no_mutex(const std::array<double, 3> &newF) {
+    f[0] = newF[0];
+    f[1] = newF[1];
+    f[2] = newF[2];
+}
+
 void Particle::setOldF(const std::array<double, 3> &newOldF) {
     old_f[0] = newOldF[0];
     old_f[1] = newOldF[1];
