@@ -24,7 +24,10 @@ public:
    * @param isFixed
    */
    static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
-      isFixed =false, bool assignNeighbours = false, bool is3d = false);
+      isFixed =false, bool is3d = false);
+
+   static void generateMembrane(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
+      isFixed =false, bool is3d = false, double stiffnessConstant = 0.0);
    /**
    * @brief generates particles from a given disc
    * If it is a 3d simulation, a sphere will be created instead

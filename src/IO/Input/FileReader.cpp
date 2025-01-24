@@ -19,7 +19,7 @@ FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
 
-void FileReader::readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename, bool assignNeighbours) {
+void FileReader::readFile(ParticleContainers::ParticleContainer &particles, const std::string& filename) {
     SPDLOG_DEBUG("reading file {}", filename);
 
     std::ifstream input_file(filename);
@@ -42,7 +42,7 @@ void FileReader::readFile(ParticleContainers::ParticleContainer &particles, cons
                 readParticles(particles, input_file);
                 break;
             case 1:
-                readCuboids(particles, input_file, assignNeighbours);
+                readCuboids(particles, input_file);
                 break;
             case 2:
                 readDiscs(particles, input_file);
@@ -98,7 +98,7 @@ void FileReader::readParticles(ParticleContainers::ParticleContainer &particles,
     }
 }
 
-void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file, bool assignNeighbours) {
+void FileReader::readCuboids(ParticleContainers::ParticleContainer &particles, std::ifstream &input_file) {
     SPDLOG_DEBUG("reading cuboids from file");
     // define all Cuboid parameters
     std::array<double, 3> x;

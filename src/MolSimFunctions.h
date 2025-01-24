@@ -37,7 +37,6 @@ namespace MolSim {
      */
     bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                         double &gravity,
-                        bool assignNeighbours,
                         bool harmonicOn,
                         double stiffnessConstant,
                         double avgBondLength,

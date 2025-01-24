@@ -7,7 +7,6 @@
     <calculator>
         <calculatorForce>LJC</calculatorForce>
         <repulsiveOnly>true</repulsiveOnly>
-        <nonNeighboursOnly>true</nonNeighboursOnly>
     </calculator>
     <container>
         <containerType>LCC</containerType>
@@ -32,7 +31,6 @@
         <gravity>-0.001</gravity>
         <gravityAxis>Z</gravityAxis>
         <parallelVersion2>0</parallelVersion2>
-        <assignNeighbours>true</assignNeighbours>
         <harmonicForce>
             <harmonicOn>true</harmonicOn>
             <stiffnessConstant>300</stiffnessConstant>
@@ -63,7 +61,7 @@
         </specialForce>
     </parameters>
     <shapes>
-        <cuboid>
+        <membrane>
             <position>
                 <x>15</x>
                 <y>15</y>
@@ -85,6 +83,6 @@
             <type>0</type>
             <epsilon>1.0</epsilon>
             <sigma>1.0</sigma>
-        </cuboid>
+        </membrane>
     </shapes>
 </simulation>

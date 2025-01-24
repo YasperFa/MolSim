@@ -37,7 +37,6 @@ int main(int argc, char *argsv[]) {
     bool version2 = false;
     int freq = 20;
     double gravity;
-    bool assignNeighbours;
     bool harmonicOn;
     double stiffnessConstant;
     double avgBondLength;
@@ -51,7 +50,7 @@ int main(int argc, char *argsv[]) {
     std::unique_ptr<BoundaryHandler> boundaryHandler;
     std::unique_ptr<Thermostat> thermostat;
     //parses and sets arguments from the command line
-    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, gravity, assignNeighbours, harmonicOn,
+    if (!MolSim::parseArguments(argc, argsv, inputFile, deltaT, endTime, gravity, harmonicOn,
                                 stiffnessConstant, avgBondLength, outputWriter, calculator, particleContainer,
                                 boundaryHandler)) {
         return 1;
@@ -60,7 +59,7 @@ int main(int argc, char *argsv[]) {
     //if the specified input file is xml, overwrite and set new arguments
     if (inputFile.compare(inputFile.length() - 4, 4, ".xml") == 0) {
         std::ifstream file(inputFile);
-        if (XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, assignNeighbours, harmonicOn,
+        if (XMLfileReader::parseXMLFromFile(file, deltaT, endTime, gravity, harmonicOn,
                                             stiffnessConstant, avgBondLength, upwardsForce, activeTimesteps, freq,
                                             gravityAxis, specialForceAxis, version2, outputWriter, calculator,
                                             particleContainer, boundaryHandler, thermostat)) {
@@ -75,7 +74,7 @@ int main(int argc, char *argsv[]) {
         CheckpointFileReader::readCheckpoint(inputFile, particleContainer);
     } else {
         FileReader fileReader;
-        fileReader.readFile(*particleContainer, inputFile, assignNeighbours);
+        fileReader.readFile(*particleContainer, inputFile);
     }
 
 

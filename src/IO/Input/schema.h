@@ -62,6 +62,7 @@
 #error XSD runtime version mismatch
 #endif
 
+
 #include <xsd/cxx/pre.hxx>
 
 #include <xsd/cxx/xml/char-utf8.hxx>
@@ -992,71 +993,6 @@ class CalculatorType: public ::xml_schema::type
   //@}
 
   /**
-   * @name nonNeighboursOnly
-   *
-   * @brief Accessor and modifier functions for the %nonNeighboursOnly
-   * optional element.
-   */
-  //@{
-
-  /**
-   * @brief Element type.
-   */
-  typedef ::xml_schema::boolean nonNeighboursOnly_type;
-
-  /**
-   * @brief Element optional container type.
-   */
-  typedef ::xsd::cxx::tree::optional< nonNeighboursOnly_type > nonNeighboursOnly_optional;
-
-  /**
-   * @brief Element traits type.
-   */
-  typedef ::xsd::cxx::tree::traits< nonNeighboursOnly_type, char > nonNeighboursOnly_traits;
-
-  /**
-   * @brief Return a read-only (constant) reference to the element
-   * container.
-   *
-   * @return A constant reference to the optional container.
-   */
-  const nonNeighboursOnly_optional&
-  nonNeighboursOnly () const;
-
-  /**
-   * @brief Return a read-write reference to the element container.
-   *
-   * @return A reference to the optional container.
-   */
-  nonNeighboursOnly_optional&
-  nonNeighboursOnly ();
-
-  /**
-   * @brief Set the element value.
-   *
-   * @param x A new value to set.
-   *
-   * This function makes a copy of its argument and sets it as
-   * the new value of the element.
-   */
-  void
-  nonNeighboursOnly (const nonNeighboursOnly_type& x);
-
-  /**
-   * @brief Set the element value.
-   *
-   * @param x An optional container with the new value to set.
-   *
-   * If the value is present in @a x then this function makes a copy 
-   * of this value and sets it as the new value of the element.
-   * Otherwise the element container is set the 'not present' state.
-   */
-  void
-  nonNeighboursOnly (const nonNeighboursOnly_optional& x);
-
-  //@}
-
-  /**
    * @name Constructors
    */
   //@{
@@ -1139,7 +1075,6 @@ class CalculatorType: public ::xml_schema::type
   protected:
   calculatorForce_optional calculatorForce_;
   repulsiveOnly_optional repulsiveOnly_;
-  nonNeighboursOnly_optional nonNeighboursOnly_;
 
   //@endcond
 };
@@ -1861,79 +1796,6 @@ class ParametersType: public ::xml_schema::type
   //@}
 
   /**
-   * @name assignNeighbours
-   *
-   * @brief Accessor and modifier functions for the %assignNeighbours
-   * optional element.
-   */
-  //@{
-
-  /**
-   * @brief Element type.
-   */
-  typedef ::xml_schema::boolean assignNeighbours_type;
-
-  /**
-   * @brief Element optional container type.
-   */
-  typedef ::xsd::cxx::tree::optional< assignNeighbours_type > assignNeighbours_optional;
-
-  /**
-   * @brief Element traits type.
-   */
-  typedef ::xsd::cxx::tree::traits< assignNeighbours_type, char > assignNeighbours_traits;
-
-  /**
-   * @brief Return a read-only (constant) reference to the element
-   * container.
-   *
-   * @return A constant reference to the optional container.
-   */
-  const assignNeighbours_optional&
-  assignNeighbours () const;
-
-  /**
-   * @brief Return a read-write reference to the element container.
-   *
-   * @return A reference to the optional container.
-   */
-  assignNeighbours_optional&
-  assignNeighbours ();
-
-  /**
-   * @brief Set the element value.
-   *
-   * @param x A new value to set.
-   *
-   * This function makes a copy of its argument and sets it as
-   * the new value of the element.
-   */
-  void
-  assignNeighbours (const assignNeighbours_type& x);
-
-  /**
-   * @brief Set the element value.
-   *
-   * @param x An optional container with the new value to set.
-   *
-   * If the value is present in @a x then this function makes a copy 
-   * of this value and sets it as the new value of the element.
-   * Otherwise the element container is set the 'not present' state.
-   */
-  void
-  assignNeighbours (const assignNeighbours_optional& x);
-
-  /**
-   * @brief Return the default value for the element.
-   *
-   * @return The element's default value.
-   */
-  static assignNeighbours_type
-  assignNeighbours_default_value ();
-
-  //@}
-
-  /**
    * @name harmonicForce
    *
    * @brief Accessor and modifier functions for the %harmonicForce
@@ -2171,7 +2033,6 @@ class ParametersType: public ::xml_schema::type
   gravity_optional gravity_;
   gravityAxis_optional gravityAxis_;
   parallelVersion2_optional parallelVersion2_;
-  assignNeighbours_optional assignNeighbours_;
   harmonicForce_optional harmonicForce_;
   specialForce_optional specialForce_;
 
@@ -2676,6 +2537,70 @@ class ShapeType: public ::xml_schema::type
   //@}
 
   /**
+   * @name membrane
+   *
+   * @brief Accessor and modifier functions for the %membrane
+   * sequence element.
+   */
+  //@{
+
+  /**
+   * @brief Element type.
+   */
+  typedef ::CuboidType membrane_type;
+
+  /**
+   * @brief Element sequence container type.
+   */
+  typedef ::xsd::cxx::tree::sequence< membrane_type > membrane_sequence;
+
+  /**
+   * @brief Element iterator type.
+   */
+  typedef membrane_sequence::iterator membrane_iterator;
+
+  /**
+   * @brief Element constant iterator type.
+   */
+  typedef membrane_sequence::const_iterator membrane_const_iterator;
+
+  /**
+   * @brief Element traits type.
+   */
+  typedef ::xsd::cxx::tree::traits< membrane_type, char > membrane_traits;
+
+  /**
+   * @brief Return a read-only (constant) reference to the element
+   * sequence.
+   *
+   * @return A constant reference to the sequence container.
+   */
+  const membrane_sequence&
+  membrane () const;
+
+  /**
+   * @brief Return a read-write reference to the element sequence.
+   *
+   * @return A reference to the sequence container.
+   */
+  membrane_sequence&
+  membrane ();
+
+  /**
+   * @brief Copy elements from a given sequence.
+   *
+   * @param s A sequence to copy elements from.
+   *
+   * For each element in @a s this function makes a copy and adds it 
+   * to the sequence. Note that this operation completely changes the 
+   * sequence and all old elements will be lost.
+   */
+  void
+  membrane (const membrane_sequence& s);
+
+  //@}
+
+  /**
    * @name Constructors
    */
   //@{
@@ -2759,6 +2684,7 @@ class ShapeType: public ::xml_schema::type
   cuboid_sequence cuboid_;
   disc_sequence disc_;
   particle_sequence particle_;
+  membrane_sequence membrane_;
 
   //@endcond
 };

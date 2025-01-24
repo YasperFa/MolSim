@@ -24,7 +24,6 @@
         <xs:sequence>
             <xs:element name="calculatorForce" type="xs:string" minOccurs="0"/>
             <xs:element name="repulsiveOnly" type="xs:boolean" minOccurs="0"/>
-            <xs:element name="nonNeighboursOnly" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -43,7 +42,6 @@
             <xs:element name="gravity" type="xs:double" minOccurs="0"/>
             <xs:element name="gravityAxis" type="xs:string" minOccurs="0"/>
             <xs:element name="parallelVersion2" type="xs:boolean" minOccurs="0"/>
-            <xs:element name="assignNeighbours" type="xs:boolean" minOccurs="0" default="false"/>
             <xs:element name="harmonicForce" type="HarmonicForceType" minOccurs="0"/>
             <xs:element name="specialForce" type="SpecialForceType" minOccurs="0"/>
         </xs:sequence>
@@ -60,7 +58,7 @@
             <xs:element name="cuboid" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="disc" type="DiscType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="particle" type="ParticleType" minOccurs="0" maxOccurs="unbounded"/>
-
+            <xs:element name="membrane" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="CuboidType">

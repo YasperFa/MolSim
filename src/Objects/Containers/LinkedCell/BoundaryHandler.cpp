@@ -13,16 +13,16 @@
 #include "../../../Calculator/Calculator.h"
 #include "../../../Calculator/LennardJonesCalculator.h"
 
-  enum side : int{ //not enum class to allow for implicit type conversion
-        LEFT = 0,
-        RIGHT = 1,
-        TOP = 2,
-        BOTTOM = 3,
-        FRONT = 4,
-        BACK = 5
-    };
+enum side{ // no enum class to allow for implicit type conversion
+    RIGHT = 0,
+    LEFT = 1,
+    TOP = 2,
+    BOTTOM = 3,
+    FRONT = 4,
+    BACK = 5
+};
 
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
+Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false);
 
 BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t,
                                  ParticleContainers::LinkedCellContainer &container) : type{t}, container{container},
@@ -171,8 +171,7 @@ void BoundaryHandler::handleReflecting() {
                     std::array<double, 3> sub = (ghostParticleLocation(*p, i, dist) - p->getX());
                     double norm = ArrayUtils::L2Norm(sub);
                     std::array<double, 3UL> force = calculator.calculateFIJ(
-                        sub, 0, 0, norm, p->getEpsilon(), p->getEpsilon(), p->getSigma(), p->getSigma(),
-                        false); //ghost particle has same epsilon and sigma
+                        sub, 0, 0, norm, p->getEpsilon(), p->getEpsilon(), p->getSigma(), p->getSigma()); //ghost particle has same epsilon and sigma
                     p->setF(p->getF() + force);
                 }
             }
@@ -281,7 +280,7 @@ void BoundaryHandler::handlePeriodicAddForces(){
                                     continue;
                                 }
 
-                    std::array<double,3> force = calculator.calculateFIJ(sub, 0, 0, norm, neighborParticle->getEpsilon(), particle -> getEpsilon(), neighborParticle -> getSigma(), particle -> getSigma(), true);
+                    std::array<double,3> force = calculator.calculateFIJ(sub, 0, 0, norm, neighborParticle->getEpsilon(), particle -> getEpsilon(), neighborParticle -> getSigma(), particle -> getSigma());
                     particle -> setF(particle -> getF() - force);
                     neighborParticle -> setF(neighborParticle -> getF() + force); 
                 }

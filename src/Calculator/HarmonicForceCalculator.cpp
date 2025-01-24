@@ -8,21 +8,50 @@
 #include "spdlog/spdlog.h"
 
 namespace Calculators {
-    HarmonicForceCalculator::HarmonicForceCalculator(double stiffnessConstant, double avgBondLength)
-        : stiffnessConstant(stiffnessConstant), avgBondLength(avgBondLength) {}
+    HarmonicForceCalculator::HarmonicForceCalculator(const ParticleContainers::ParticleContainer &container) {
+        // Check the container type using dynamic casting
+        const auto *linkedCellContainer = dynamic_cast<const ParticleContainers::LinkedCellContainer *>(&container);
 
-    std::array<double, 3> HarmonicForceCalculator::calculateFIJ(const std::array<double, 3> &sub, Particle &current,
-                                                                Particle &other, double boundLengthMultiplier) {
-        SPDLOG_TRACE("Executing calculateFIJ with HarmonicForceCalculator");
+        if (linkedCellContainer) {
+            isLinkedCellContainer = true;
+            domainSize = linkedCellContainer->getDomainSize();
+        } else {
+            isLinkedCellContainer = false;
+        }
+    }
 
-        double distance = ArrayUtils::L2Norm(sub);
-        double bondLength = boundLengthMultiplier * avgBondLength;
+    std::array<double, 3> HarmonicForceCalculator::calculateForce(Particle &current) const {
+        auto totalHarmonicForce = std::array<double, 3>{0.0, 0.0, 0.0};
 
-        double multiplier = stiffnessConstant * (distance - bondLength) / distance;
-        return multiplier * sub;
+        // Iterate over all neighbor particles
+        for (const auto &neighbor : current.getNeighbourParticles()) {
+            // Access elements of the tuple explicitly for C++14 compatibility
+            auto ptrDiff = std::get<0>(neighbor);
+            auto l0 = std::get<1>(neighbor);
+            auto k = std::get<2>(neighbor);
+
+            Particle *connectedParticle = &current + ptrDiff;
+            auto displacement = connectedParticle->getX() - current.getX();
+
+            // Apply periodic boundary conditions if the container is a LinkedCellContainer
+            if (isLinkedCellContainer) {
+                for (size_t i = 0; i < displacement.size(); ++i) {
+                    if (std::abs(displacement[i]) > domainSize[i] * 0.5) {
+                        displacement[i] += (displacement[i] > 0) ? -domainSize[i] : domainSize[i];
+                    }
+                }
+            }
+
+            // Calculate the distance and force
+            double distance = ArrayUtils::L2Norm(displacement);
+            double harmonicForce = k * (distance - l0) / distance;
+            totalHarmonicForce = totalHarmonicForce + harmonicForce * displacement;
+        }
+
+        return totalHarmonicForce;
     }
 
     std::string HarmonicForceCalculator::toString() {
-        return "Harmonic";
+        return "HarmonicForceCalculator";
     }
 }

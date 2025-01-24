@@ -161,30 +161,6 @@ repulsiveOnly (const repulsiveOnly_optional& x)
   this->repulsiveOnly_ = x;
 }
 
-const CalculatorType::nonNeighboursOnly_optional& CalculatorType::
-nonNeighboursOnly () const
-{
-  return this->nonNeighboursOnly_;
-}
-
-CalculatorType::nonNeighboursOnly_optional& CalculatorType::
-nonNeighboursOnly ()
-{
-  return this->nonNeighboursOnly_;
-}
-
-void CalculatorType::
-nonNeighboursOnly (const nonNeighboursOnly_type& x)
-{
-  this->nonNeighboursOnly_.set (x);
-}
-
-void CalculatorType::
-nonNeighboursOnly (const nonNeighboursOnly_optional& x)
-{
-  this->nonNeighboursOnly_ = x;
-}
-
 
 // ContainerType
 //
@@ -427,36 +403,6 @@ parallelVersion2 (const parallelVersion2_optional& x)
   this->parallelVersion2_ = x;
 }
 
-const ParametersType::assignNeighbours_optional& ParametersType::
-assignNeighbours () const
-{
-  return this->assignNeighbours_;
-}
-
-ParametersType::assignNeighbours_optional& ParametersType::
-assignNeighbours ()
-{
-  return this->assignNeighbours_;
-}
-
-void ParametersType::
-assignNeighbours (const assignNeighbours_type& x)
-{
-  this->assignNeighbours_.set (x);
-}
-
-void ParametersType::
-assignNeighbours (const assignNeighbours_optional& x)
-{
-  this->assignNeighbours_ = x;
-}
-
-ParametersType::assignNeighbours_type ParametersType::
-assignNeighbours_default_value ()
-{
-  return assignNeighbours_type (false);
-}
-
 const ParametersType::harmonicForce_optional& ParametersType::
 harmonicForce () const
 {
@@ -661,6 +607,24 @@ void ShapeType::
 particle (const particle_sequence& s)
 {
   this->particle_ = s;
+}
+
+const ShapeType::membrane_sequence& ShapeType::
+membrane () const
+{
+  return this->membrane_;
+}
+
+ShapeType::membrane_sequence& ShapeType::
+membrane ()
+{
+  return this->membrane_;
+}
+
+void ShapeType::
+membrane (const membrane_sequence& s)
+{
+  this->membrane_ = s;
 }
 
 
@@ -2196,8 +2160,7 @@ CalculatorType::
 CalculatorType ()
 : ::xml_schema::type (),
   calculatorForce_ (this),
-  repulsiveOnly_ (this),
-  nonNeighboursOnly_ (this)
+  repulsiveOnly_ (this)
 {
 }
 
@@ -2207,8 +2170,7 @@ CalculatorType (const CalculatorType& x,
                 ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   calculatorForce_ (x.calculatorForce_, f, this),
-  repulsiveOnly_ (x.repulsiveOnly_, f, this),
-  nonNeighboursOnly_ (x.nonNeighboursOnly_, f, this)
+  repulsiveOnly_ (x.repulsiveOnly_, f, this)
 {
 }
 
@@ -2218,8 +2180,7 @@ CalculatorType (const ::xercesc::DOMElement& e,
                 ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   calculatorForce_ (this),
-  repulsiveOnly_ (this),
-  nonNeighboursOnly_ (this)
+  repulsiveOnly_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2263,17 +2224,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // nonNeighboursOnly
-    //
-    if (n.name () == "nonNeighboursOnly" && n.namespace_ ().empty ())
-    {
-      if (!this->nonNeighboursOnly_)
-      {
-        this->nonNeighboursOnly_.set (nonNeighboursOnly_traits::create (i, f, this));
-        continue;
-      }
-    }
-
     break;
   }
 }
@@ -2293,7 +2243,6 @@ operator= (const CalculatorType& x)
     static_cast< ::xml_schema::type& > (*this) = x;
     this->calculatorForce_ = x.calculatorForce_;
     this->repulsiveOnly_ = x.repulsiveOnly_;
-    this->nonNeighboursOnly_ = x.nonNeighboursOnly_;
   }
 
   return *this;
@@ -2458,7 +2407,6 @@ ParametersType ()
   gravity_ (this),
   gravityAxis_ (this),
   parallelVersion2_ (this),
-  assignNeighbours_ (this),
   harmonicForce_ (this),
   specialForce_ (this)
 {
@@ -2474,7 +2422,6 @@ ParametersType (const ParametersType& x,
   gravity_ (x.gravity_, f, this),
   gravityAxis_ (x.gravityAxis_, f, this),
   parallelVersion2_ (x.parallelVersion2_, f, this),
-  assignNeighbours_ (x.assignNeighbours_, f, this),
   harmonicForce_ (x.harmonicForce_, f, this),
   specialForce_ (x.specialForce_, f, this)
 {
@@ -2490,7 +2437,6 @@ ParametersType (const ::xercesc::DOMElement& e,
   gravity_ (this),
   gravityAxis_ (this),
   parallelVersion2_ (this),
-  assignNeighbours_ (this),
   harmonicForce_ (this),
   specialForce_ (this)
 {
@@ -2569,17 +2515,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // assignNeighbours
-    //
-    if (n.name () == "assignNeighbours" && n.namespace_ ().empty ())
-    {
-      if (!this->assignNeighbours_)
-      {
-        this->assignNeighbours_.set (assignNeighbours_traits::create (i, f, this));
-        continue;
-      }
-    }
-
     // harmonicForce
     //
     if (n.name () == "harmonicForce" && n.namespace_ ().empty ())
@@ -2630,7 +2565,6 @@ operator= (const ParametersType& x)
     this->gravity_ = x.gravity_;
     this->gravityAxis_ = x.gravityAxis_;
     this->parallelVersion2_ = x.parallelVersion2_;
-    this->assignNeighbours_ = x.assignNeighbours_;
     this->harmonicForce_ = x.harmonicForce_;
     this->specialForce_ = x.specialForce_;
   }
@@ -2770,7 +2704,8 @@ ShapeType ()
 : ::xml_schema::type (),
   cuboid_ (this),
   disc_ (this),
-  particle_ (this)
+  particle_ (this),
+  membrane_ (this)
 {
 }
 
@@ -2781,7 +2716,8 @@ ShapeType (const ShapeType& x,
 : ::xml_schema::type (x, f, c),
   cuboid_ (x.cuboid_, f, this),
   disc_ (x.disc_, f, this),
-  particle_ (x.particle_, f, this)
+  particle_ (x.particle_, f, this),
+  membrane_ (x.membrane_, f, this)
 {
 }
 
@@ -2792,7 +2728,8 @@ ShapeType (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   cuboid_ (this),
   disc_ (this),
-  particle_ (this)
+  particle_ (this),
+  membrane_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2844,6 +2781,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
+    // membrane
+    //
+    if (n.name () == "membrane" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< membrane_type > r (
+        membrane_traits::create (i, f, this));
+
+      this->membrane_.push_back (::std::move (r));
+      continue;
+    }
+
     break;
   }
 }
@@ -2864,6 +2812,7 @@ operator= (const ShapeType& x)
     this->cuboid_ = x.cuboid_;
     this->disc_ = x.disc_;
     this->particle_ = x.particle_;
+    this->membrane_ = x.membrane_;
   }
 
   return *this;

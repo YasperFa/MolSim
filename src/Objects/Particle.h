@@ -20,7 +20,7 @@ private:
      * Position of the particle
      */
     std::array<double, 3> x;
-    
+
     /**
      * Velocity of the particle
      */
@@ -61,15 +61,7 @@ private:
 
     bool isFixed;
 
-    /**
-     * @brief Ids of the direct neighbours of the current particle (up, down, right or left).
-     */
-    std::vector<int> directNeighbourIds;
-
-    /**
-     * @brief Ids of the diagonal neighbours of the current particle.
-     */
-    std::vector<int> diagonalNeighbourIds;
+    std::vector<std::tuple<long, double, double> > neighbourParticles;
 
     /**
      * @brief true if the upward force is supposed to be used on the particle
@@ -127,50 +119,19 @@ public:
 
     //Neighbour functions
 
+    // Connection functions for harmonic force
     /**
-     *
-     * @return a vector of direct neighbours of the current particle.
+     * @brief Adds a connected particle with the given parameters
+     * @param ptr_diff Difference in memory addresses between this and the connected particle
+     * @param l0 Preferred distance (rest length of the spring)
+     * @param k Spring constant
      */
-    const std::vector<int> &getDirectNeighbourIds() const;
+    void addNeighbourParticle(long ptr_diff, double l0, double k);
 
     /**
-     *
-     * @return a vector of diagonal neighbours of the current particle.
+     * @return The list of connected particles
      */
-    const std::vector<int> &getDiagonalNeighbourIds() const;
-
-    /**
-     * @brief adds the given particle id to the vector of direct neighbours
-     * @param neighbourID the id of the particle to be added
-     */
-    void addDirectNeighbour(int neighbourID);
-
-    /**
-     * @brief adds the given particle id to the vector of diagonal neighbours
-     * @param neighbourID the id of the particle to be added
-     */
-    void addDiagonalNeighbour(int neighbourID);
-
-    /**
-     * @brief checks if the given particle is a direct neighbour of the current particle
-     * @param other particle to be checked
-     * @return true if the particles are direct neighbours vector, else false
-     */
-    bool isDirectNeighbour(const Particle &other) const;
-
-    /**
-    * @brief checks if the given particle is a diagonal neighbour of the current particle
-    * @param other particle to be checked
-    * @return true if the particles are diagonal neighbours vector, else false
-    */
-    bool isDiagonalNeighbour(const Particle &other) const;
-
-    /**
-    * @brief checks if the given particle is a neighbour of the current particle
-    * @param other particle to be checked
-    * @return true if the particles are neighbours, else false
-    */
-    bool isNeighbour(const Particle &other) const;
+    const std::vector<std::tuple<long, double, double> > &getNeighbourParticles() const;
 
     void markForUpwardForce();
 

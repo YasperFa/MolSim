@@ -13,11 +13,9 @@ namespace Calculators {
     class LennardJonesCalculator : public Calculator {
     private:
         bool repulsiveOnly;
-        bool nonNeighboursOnly;
 
     public:
-        LennardJonesCalculator(bool repulsiveOnly, bool nonNeighboursOnly) : repulsiveOnly(repulsiveOnly),
-                                                                          nonNeighboursOnly(nonNeighboursOnly) {}
+        LennardJonesCalculator(bool repulsiveOnly) : repulsiveOnly(repulsiveOnly) {}
 
         ~LennardJonesCalculator() override = default;
 
@@ -35,7 +33,7 @@ namespace Calculators {
         */
         std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
                                            double normCubed, double epsilon1, double epsilon2, double sigma1,
-                                           double sigma2, bool neighbours) override;
+                                           double sigma2) override;
 
         std::string toString() override;
     };

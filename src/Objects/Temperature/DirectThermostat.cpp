@@ -17,6 +17,7 @@ void DirectThermostat::applyThermostat(ParticleContainers::ParticleContainer& pa
     const double newTemperature = currentTemperature + temperatureChange;
     const double scaleFactor = std::sqrt(newTemperature / currentTemperature);
     for (auto &particle: particleContainer) {
+        if (particle.getFixed()) continue;
         std::array<double, 3> newV = operator*(scaleFactor, particle.getV());
         particle.setV(newV);
     }
