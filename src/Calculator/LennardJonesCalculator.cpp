@@ -7,6 +7,7 @@
 #include <cmath>
 #include "spdlog/spdlog.h"
 
+double cutOffValue =  std::pow(2.0, 1.0 / 6.0); //precompute value
 
 namespace Calculators {
     std::array<double, 3> LennardJonesCalculator::calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,
@@ -15,9 +16,9 @@ namespace Calculators {
         SPDLOG_TRACE("executing calculateF with lennardJonesCalculator");
 
         double smallSigma = (sigma1 == sigma2) ? sigma1 : (sigma1 + sigma2) / 2.0;
-        double cutoff = std::pow(2.0, 1.0 / 6.0) * smallSigma;
 
-        if (repulsiveOnly && normCubed > cutoff) {
+        // cutoff = std::pow(2.0, 1.0 / 6.0) * smallSigma
+        if (repulsiveOnly && normCubed > cutOffValue * smallSigma) { //only evaluate cutoff if necessary
             return {0.0, 0.0, 0.0};
         }
 

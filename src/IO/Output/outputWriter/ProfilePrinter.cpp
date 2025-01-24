@@ -103,7 +103,7 @@ void ProfilePrinter::printOutput(ParticleContainers::ParticleContainer& particle
         }
 
         //average density over length
-        double den = ((double) densityBuckets[i])/bucketSize;
+        double den = num/bucketSize;
          
     //print
   
