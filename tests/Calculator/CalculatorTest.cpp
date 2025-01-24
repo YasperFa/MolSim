@@ -65,6 +65,46 @@ TEST(CalculatorTest, correctFIJcalculations) {
     }
 }
 
+/*Checks that calculateF() correctly adds gravitational force*/
+TEST(CalculatorTest, calculateFGravity) {
+    ParticleContainers::DirectSumContainer testContainer;
+    std::array<double,3> old = {1.0, 2.0, 3.0};
+
+    Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
+    i.setF(old);
+    testContainer.addParticle(i);
+
+    Particle j({2.0, 2.0, 2.0},{0.0, 0.0, 0.0},2.0,0);
+    j.setF(old);
+    testContainer.addParticle(j);
+
+    Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
+    k.setF(old);
+    testContainer.addParticle(k);
+
+
+    Calculators::GravityCalculator calc;
+    calc.calculateF(testContainer, 2); 
+
+    for (Particle& p: testContainer) {
+     EXPECT_EQ(old, testContainer.getParticle(p.getID()).getOldF());
+    }  
+
+
+        EXPECT_NEAR(0.13230943, (testContainer.getParticle(i).getF())[0], 0.0001); //no added gravity
+        EXPECT_NEAR(0.19245008, (testContainer.getParticle(j).getF())[0], 0.0001);
+        EXPECT_NEAR(-0.3247695, (testContainer.getParticle(k).getF())[0], 0.0001);
+
+        EXPECT_NEAR(2.13230943, (testContainer.getParticle(i).getF())[1], 0.0001); //added gravity
+        EXPECT_NEAR(4.19245008, (testContainer.getParticle(j).getF())[1], 0.0001);
+        EXPECT_NEAR(5.675205, (testContainer.getParticle(k).getF()) [1], 0.0001);
+
+        EXPECT_NEAR(0.13230943, (testContainer.getParticle(i).getF())[2], 0.0001); //no added gravity
+        EXPECT_NEAR(0.19245008, (testContainer.getParticle(j).getF())[2], 0.0001);
+        EXPECT_NEAR(-0.3247695, (testContainer.getParticle(k).getF())[2], 0.0001);
+}
+
+
 /**Checks that calculateV() correctly updates the velocity of a particle*/
 TEST(CalculatorTest, correctVcalculations) {
     ParticleContainers::DirectSumContainer testContainer;
@@ -146,8 +186,6 @@ TEST(CalculatorTest, correctLJcalculationsDirectSum) {
         EXPECT_NEAR(0, (testContainer.getParticle(j).getF())[in], 0.00001);
         EXPECT_NEAR(-0.01165109898, (testContainer.getParticle(k).getF())[in], 0.00001);
     }
-    
-
 }
 
  /*Checks that calculateF() of LJC correctly updates the force between particles for LinkedCellContainer*/
@@ -186,6 +224,29 @@ TEST(CalculatorTest, correctLJcalculationsLinkedCell) {
         EXPECT_NEAR(0.01165109898, (testContainer.getParticles().at(0).getF())[in], 0.00001);
         EXPECT_NEAR(0, testContainer.getParticles().at(1).getF()[in], 0.00001);
         EXPECT_NEAR(-0.01165109898, testContainer.getParticles().at(2).getF()[in], 0.00001);
+    }
+}
+
+/*Checks that calculateF()correctly updates the force between particles of different types*/
+TEST(CalculatorTest, correctFijMixing) {
+    ParticleContainers::DirectSumContainer testContainer;
+
+    Particle i({0.0, 0.0, 0.0},{0.0, 0.0, 0.0},1.0,0, 5.0, 2.0);
+    testContainer.addParticle(i);
+
+    Particle j({1.0, 1.0, 1.0},{0.0, 0.0, 0.0},2.0,0, 5.5, 2.2);
+    testContainer.addParticle(j);
+
+    Particle k({2.0, 2.0, 2.0},{0.0, 0.0, 0.0},3.0,0, 5.0, 2.0);
+    testContainer.addParticle(k);
+
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false,false);
+    calc.calculateF(testContainer, 0);
+
+    for (int in = 0; in < 3; in++) {
+        EXPECT_NEAR(-712.6750486, (testContainer.getParticle(i).getF())[in], 0.00001);
+        EXPECT_NEAR(0, (testContainer.getParticle(j).getF())[in], 0.00001);
+        EXPECT_NEAR(712.6750486, (testContainer.getParticle(k).getF())[in], 0.00001);
     }
 }
 
