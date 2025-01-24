@@ -7,6 +7,7 @@
 #include "Containers/ParticleContainer.h"
 #include "spdlog/spdlog.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
+#include <iostream>
 
 
 void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid &cuboid, int type,
@@ -125,7 +126,9 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
     const double mass = disc.getMass();
     const double h = disc.getDistanceBetweenParticles();
     int dimensions = is3d ? 3 : 2;
-    SPDLOG_DEBUG("generating disc particles");
+
+    if(!is3d) {
+    SPDLOG_DEBUG("generating disc particles for 2d");
     SPDLOG_DEBUG("r: {}", r);
     for (int i = -r; i <= r; ++i) {
         SPDLOG_DEBUG("column {}", i);
@@ -147,5 +150,34 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
                 particles.addParticle(nParticle);
             }
         }
+    }
+    } else {
+        SPDLOG_DEBUG("generating disc particles for 3d");
+         for (int i = -r; i <= r; ++i) {
+        SPDLOG_DEBUG("column {}", i);
+        // check if position is inside the circle j*j + i*i + k*k<= r*r
+        for (int j = -r; j <= r; ++j) {
+            for (int k = -r; k <= r; k++){
+
+            if (((j * j) + (i * i) + (k * k) <= r * r)) {
+                if (initTemperature != -1) {
+                    double scale = std::sqrt(initTemperature / mass);
+                    std::array<double, 3> maxwell_vel = maxwellBoltzmannDistributedVelocity(scale, dimensions);
+                    for (int m = 0; m < 3; ++m) {
+                        initVel[m] += maxwell_vel[m];
+                    }
+                }
+                SPDLOG_DEBUG("line {}", j);
+                const std::array<double, 3> particlePosition = {center[0] + j * h, center[1] + i * h, center[2] + k * h};
+                SPDLOG_INFO("{} {} {}", center[0] + j * h, center[1] + i * h, center[2] + k * h);
+                // create new particle
+                Particle nParticle(particlePosition, initVel, mass, type, epsilon, sigma, isFixed);
+                // add new particle to container
+                particles.addParticle(nParticle);
+            }
+            }
+        }
+    }
+
     }
 }

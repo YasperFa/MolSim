@@ -27,6 +27,7 @@ public:
       isFixed =false, bool assignNeighbours = false, bool is3d = false);
    /**
    * @brief generates particles from a given disc
+   * If it is a 3d simulation, a sphere will be created instead
    * @param particles empty Particle container where particles will be inserted
    * @param disc Disc that defines parameters
    * @param type defines the type of the particles
