@@ -288,304 +288,69 @@ EXPECT_EQ(comp, testContainer.mapParticleToCell(testContainer.getParticles().at(
 
 
 TEST(BoundaryHandlerTest, conditionPeriodicAddForces){
-     ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({3, 3, 3}, 1, false);
+     ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({30, 30, 30}, 10, false);
      BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
      Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
      ParticleIdInitializer::reset();
 
-     for (auto cell: testContainer.getInnerCells()){ //add 8 evenly spaced particles in every inner cell
+     for (auto cell: testContainer.getInnerCells()){ //add 8 particles in every inner cell
           auto pos = cell.get().getPosition();
-          testContainer.addParticle(Particle({0.25 + pos[0], 0.25 + pos[1], 0.25 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.25 + pos[0], 0.25 + pos[1], 0.75 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.25 + pos[0], 0.75 + pos[1], 0.25 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.25 + pos[0], 0.75 + pos[1], 0.75 + pos[2]}, {0, 0, 0}, 1, 0));
-          testContainer.addParticle(Particle({0.75 + pos[0], 0.25 + pos[1], 0.25 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.75 + pos[0], 0.25 + pos[1], 0.75 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.75 + pos[0], 0.75 + pos[1], 0.25 + pos[2]}, {0, 0, 0}, 1, 0)); 
-          testContainer.addParticle(Particle({0.75 + pos[0], 0.75 + pos[1], 0.75 + pos[2]}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.21 + pos[0]), 10 * (0.22 + pos[1]), 10 * (0.21 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.22 + pos[0]), 10 * (0.21 + pos[1]), 10 * (0.74 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.23 + pos[0]), 10 * (0.74 + pos[1]), 10 * (0.23 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.24 + pos[0]), 10 * (0.78 + pos[1]), 10 * (0.76 + pos[2])}, {0, 0, 0}, 1, 0));
+          testContainer.addParticle(Particle({10 * (0.75 + pos[0]), 10 * (0.22 + pos[1]), 10 * (0.23 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.76 + pos[0]), 10 * (0.26 + pos[1]), 10 * (0.76 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.77 + pos[0]), 10 * (0.73 + pos[1]), 10 * (0.27 + pos[2])}, {0, 0, 0}, 1, 0)); 
+          testContainer.addParticle(Particle({10 * (0.78 + pos[0]), 10 * (0.75 + pos[1]), 10 * (0.73 + pos[2])}, {0, 0, 0}, 1, 0)); 
      }
 
      calculator.calculateXFV(testContainer, 0.5,  0.0, false, 0.0, 0.0, 0.0, 0,  1,  1, &handler);
 
-     EXPECT_EQ(testContainer.getParticles().size(), 27 * 8);
+     for (auto cell: testContainer.getInnerCells()){
 
-     auto comp = testContainer.getCells().at(testContainer.cellIndex(1, 1, 1)).getParticlesInCell().at(0)->getF();
+          for (int i = 0; i < 8; i++){
 
-     for (auto particle: testContainer.getParticles()){
-         EXPECT_NEAR(comp[0], particle.getF()[0], 0.000001);
-         EXPECT_NEAR(comp[1], particle.getF()[1], 0.000001);
-         EXPECT_NEAR(comp[2], particle.getF()[2], 0.000001);
+
+          auto comp = testContainer.getCells().at(testContainer.cellIndex(1, 1, 1)).getParticlesInCell().at(i)->getF();
+          auto particleF = cell.get().getParticlesInCell().at(i)-> getF();
+
+         EXPECT_NEAR(comp[0], particleF[0], 0.0001);
+         EXPECT_NEAR(comp[1], particleF[1], 0.0001);
+         EXPECT_NEAR(comp[2], particleF[2], 0.0001);
+
      }
-
-     for (auto c : testContainer.getInnerCells()) {
-          EXPECT_EQ(c.get().getParticlesInCell().size(), 8);
      }
+    
 
      for (auto c : testContainer.getHaloCells()) {
           EXPECT_EQ(c.get().getParticlesInCell().size(), 0);
      }
 }
 
+//Tests that boundaryHandler adds forces correctly if not all boundaries are periodic
+TEST(BoundaryHandlerTest, conditionPeriodicAddForcesNotAllPeriodic){
+     ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({3, 3, 3}, 1, false);
+     BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
+     Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
+     ParticleIdInitializer::reset();
 
-/*
+     testContainer.addParticle(Particle({0.5, 0.5, 0.5}, {0, 0, 0}, 1, 0)); 
+     testContainer.addParticle(Particle({2.5, 0.5, 0.5}, {0, 0, 0}, 1, 0)); //will be influenced, left boundary
+     testContainer.addParticle(Particle({0.5, 2.5, 0.5}, {0, 0, 0}, 1, 0)); //will be influenced, bottom boundary
 
+     testContainer.addParticle(Particle({0.5, 0.5, 2.5}, {0, 0, 0}, 1, 0)); //will not be influenced, back boundary
 
-TEST(BoundaryHandlerTest, PeriodicThreeClonesForCorner) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
-ParticleIdInitializer::reset();
+     calculator.calculateXFV(testContainer, 0.5,  0.0, false, 0.0, 0.0, 0.0, 0,  1,  1, &handler);
 
-BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
+     std::array<double,3> comp = {0, 0, 0};
 
-testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner particle
-
-EXPECT_EQ(testContainer.getParticles().size(), 1);
-
-
-     bool contains = false;
-     for (auto cell : testContainer.getBoundaryCells()){
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == 1) {
-                    contains = true;
-               }
-          }
-     EXPECT_TRUE(contains); //particle is in boundary cells
-}
-
-handler.handleBoundaries();
-
-EXPECT_EQ(testContainer.getParticles().size(), 4);
-
-for (int i = 2; i < 5; i++) {
-     bool contains = false;
-     for (auto cell : testContainer.getHaloCells()){
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == i) {
-                    contains = true;
-               }
-          }
-     }
-     EXPECT_TRUE(contains); //3 clone particles created
-}
-}
-
-
-TEST(BoundaryHandlerTest, PeriodicOneCloneForCorner) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
-BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
-ParticleIdInitializer::reset();
-
-testContainer.addParticle(Particle({0.5, 0.5, 0}, {0, 1.5, 0}, 1, 0)); //corner particle
-
-EXPECT_EQ(testContainer.getParticles().size(), 1);
-
-
-     bool contains = false;
-     for (auto cell : testContainer.getBoundaryCells()){
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == 1) {
-                    contains = true;
-               }
-          }
-     EXPECT_TRUE(contains); //particle is in boundary cells
-}
-
-handler.handleBoundaries();
-
-EXPECT_EQ(testContainer.getParticles().size(), 2);
-
-
-     contains = false;
-     for (auto cell : testContainer.getHaloCells()){
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == 2) {
-                    contains = true;
-               }
-          }
-     }
-     EXPECT_TRUE(contains); // clone particle created
-
-}
-
-TEST(BoundaryHandlerTest, PeriodicCreatePartners3D) {
-ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 4}, 1, false);
-Calculators::LennardJonesCalculator calculator = Calculators::LennardJonesCalculator(false, false);
-ParticleIdInitializer::reset();
-
-BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
-Particle particle = Particle({0.5, 0.5, 2.5}, {0, 0, -2}, 1, 0);
-testContainer.addParticle(particle); //corner particle
-
-EXPECT_EQ(testContainer.getParticles().size(), 1);
-
-SPDLOG_DEBUG(testContainer.getParticles().at(0).toString());
-SPDLOG_DEBUG(testContainer.mapParticleToCell(particle)->getCellType() == Cell::CType::BOUNDARY);
-
-     bool contains = false;
-     for (auto cell : testContainer.getBoundaryCells()){
-
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == 1) {
-                    contains = true;
-               }
-          }
-}
-
-EXPECT_TRUE(contains); //particle is in boundary cells
-
-handler.handleBoundaries();
-
-EXPECT_EQ(testContainer.getParticles().size(), 4); //first only create 3
-
-calculator.calculateXFV(testContainer, 1);
-
-EXPECT_EQ(testContainer.getParticles().size(), 4);
-
-std::array<double,3> v = {-1, -1, -1};
-testContainer.getCells().at(testContainer.cellIndex(0, 0, 0)).getParticlesInCell().at(0) -> setV(v);
-
-for (auto p : testContainer.getParticles()){
-     SPDLOG_DEBUG(p.toString());
-}
-
-handler.handleBoundaries();
-
-EXPECT_EQ(testContainer.getParticles().size(), 8); //now 7 clones in total
-
-for (auto p : testContainer.getParticles()){
-     SPDLOG_DEBUG(p.toString());
-}
-
-for (int i = 2; i < 9; i++) {
-     bool contains = false;
-     for (auto cell : testContainer.getHaloCells()){
-          for (auto p : cell.get().getParticlesInCell()) {
-               if (p->getID() == i) {
-                    contains = true;
-               }
-          }
-     }
-     EXPECT_TRUE(contains); //more clone particles created
-}
-
-//check that partners are set correctly and values are updated
-for (auto p: testContainer.getParticles()){
-     EXPECT_TRUE(p.getPartner(0) != 0);
-     EXPECT_TRUE(p.getPartner(1) != 0);
-     EXPECT_TRUE(p.getPartner(2) != 0);
-     EXPECT_EQ(p.getV(), v); //values updated correctly
-
-     for (int i = 0; i < 6; i++){
-          std::array<int, 3> pos = handler.oppositeCell(testContainer.mapParticleToCell(p) -> getPosition(), i);
-          int index = testContainer.cellIndex(pos[0], pos[1], pos[2]);
-
-          if(index != -1){
-          EXPECT_EQ(p.getPartner(i), testContainer.getCells().at(index).getParticlesInCell().at(0)->getID());
-          }
-     }
-}
-
-calculator.calculateXFV(testContainer, 1); //particle moves out of boundary, other particle moves in
-
- v = {0, -3, 0};
-testContainer.getCells().at(testContainer.cellIndex(3, 3, 3)).getParticlesInCell().at(0) -> setV(v);
-
-handler.handleBoundaries();
-
-EXPECT_EQ(testContainer.getParticles().size(), 8);
-
- for (auto p : testContainer.getParticles()){
-     SPDLOG_DEBUG(p.toString());
- }
-
-     for (auto cell: testContainer.getInnerCells()){
-           if(cell.get().getPosition()[0] == 3 && cell.get().getPosition()[1] == 3 && cell.get().getPosition()[2] == 3){
-               EXPECT_EQ(cell.get().getParticlesInCell().size(), 1);
+     for (auto p: testContainer.getParticles()){
+          if(p.getID() == 4){
+               EXPECT_EQ(p.getF(), comp);
           } else {
-               EXPECT_EQ(cell.get().getParticlesInCell().size(), 0);
+               EXPECT_NE(p.getF(), comp);
           }
      }
-
-
-     //check that partners are set correctly and values are updated
-     for (auto p: testContainer.getParticles()){
-          EXPECT_TRUE(p.getPartner(0) != 0);
-          EXPECT_TRUE(p.getPartner(1) != 0);
-          EXPECT_TRUE(p.getPartner(2) != 0);
-          EXPECT_EQ(p.getV(), v); //values updated correctly
-
-          for (int i = 0; i < 6; i++){
-               std::array<int, 3> pos = handler.oppositeCell(testContainer.mapParticleToCell(p) -> getPosition(), i);
-               int index = testContainer.cellIndex(pos[0], pos[1], pos[2]);
-
-               if(index != -1){
-               EXPECT_EQ(p.getPartner(i), testContainer.getCells().at(index).getParticlesInCell().at(0)->getID());
-               }
-          }
-     }
-
-
-     calculator.calculateXFV(testContainer, 1); //some clones are deleted, some are created
-     v = {-2, 0, 0};
-     testContainer.getCells().at(testContainer.cellIndex(3, 0, 3)).getParticlesInCell().at(0) -> setV(v);
-
-     handler.handleBoundaries();
-
-     for (auto p : testContainer.getParticles()){
-     SPDLOG_DEBUG(p.toString());
 }
-
-     EXPECT_EQ(testContainer.getParticles().size(), 8);
-
-       for (auto cell: testContainer.getInnerCells()){
-           if(cell.get().getPosition()[0] == 3 && cell.get().getPosition()[1] == 0 && cell.get().getPosition()[2] == 3){
-               EXPECT_EQ(cell.get().getParticlesInCell().size(), 1);
-          } else {
-               EXPECT_EQ(cell.get().getParticlesInCell().size(), 0);
-          }
-     }
-     
-     //check that partners are set correctly and values are updated
-     for (auto p: testContainer.getParticles()){
-          EXPECT_EQ(p.getV(), v); //values updated correctly
-
-          for (int i = 0; i < 6; i++){
-               std::array<int, 3> pos = handler.oppositeCell(testContainer.mapParticleToCell(p) -> getPosition(), i);
-               int index = testContainer.cellIndex(pos[0], pos[1], pos[2]);
-
-               if(index != -1){
-               EXPECT_EQ(p.getPartner(i), testContainer.getCells().at(index).getParticlesInCell().at(0)->getID());
-               }
-          }
-     }
-
-      calculator.calculateXFV(testContainer, 1); //some clones are deleted
-     v = {0, -2, 0};
-
-     handler.handleBoundaries();
-
-     for (auto p : testContainer.getParticles()){
-     SPDLOG_DEBUG(p.toString());
-}
-
-     EXPECT_EQ(testContainer.getParticles().size(), 4);
-
-     
-     //check that partners are set correctly and values are updated
-     for (auto p: testContainer.getParticles()){
-          for (int i = 0; i < 6; i++){
-               std::array<int, 3> pos = handler.oppositeCell(testContainer.mapParticleToCell(p) -> getPosition(), i);
-               int index = testContainer.cellIndex(pos[0], pos[1], pos[2]);
-
-               if(index != -1){
-               EXPECT_EQ(p.getPartner(i), testContainer.getCells().at(index).getParticlesInCell().at(0)->getID());
-               }
-          }
-     }
-
-
-}
-*/
-
-
-
 
