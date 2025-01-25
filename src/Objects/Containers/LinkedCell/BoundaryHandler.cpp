@@ -33,7 +33,7 @@ BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t,
 
     for(auto cell:container.getBoundaryCells()){
 
-        std::vector<std::pair<int, std::vector<int>>> neighbors;
+        std::vector<std::pair<std::reference_wrapper<Cell>, std::vector<int>>> neighbors;
 
         std::array <int, 3> cellPos = cell.get().getPosition();
         int cellIndex = container.cellIndex(cellPos[0], cellPos[1], cellPos[2]);
@@ -92,7 +92,8 @@ BoundaryHandler::BoundaryHandler(std::array<bCondition, 6> t,
                         //make sure that every pair is only looked at once by comparing index
 
                         if(neighborIndex < cellIndex){
-                            neighbors.push_back({neighborIndex, directions}); //add to neighbors of this cell
+
+                            neighbors.push_back({container.getCells().at(neighborIndex), directions}); //add to neighbors of this cell
                             SPDLOG_DEBUG("added neighbor of {} {} {} : {} {} {}", cellPos[0], cellPos[1], cellPos[2], neighborPos[0], neighborPos[1], neighborPos[2]);
                         }
 
@@ -149,9 +150,6 @@ void BoundaryHandler::handleReflecting() {
         return; // no reflecting boundary found
     }
 
-        #ifdef _OPENMP
-        #pragma omp parallel for schedule(dynamic)
-        #endif
         //cells don't influnce each other, can be parallelized
         for (auto cell: container.getBoundaryCells()) {
 
@@ -172,7 +170,7 @@ void BoundaryHandler::handleReflecting() {
                     double norm = ArrayUtils::L2Norm(sub);
                     std::array<double, 3UL> force = calculator.calculateFIJ(
                         sub, 0, 0, norm, p->getEpsilon(), p->getEpsilon(), p->getSigma(), p->getSigma()); //ghost particle has same epsilon and sigma
-                    p->setF(p->getF() + force);
+                    p->addF_no_mutex(force);
                 }
             }
         }
@@ -197,7 +195,7 @@ void BoundaryHandler::handlePeriodicMoveParticles(){
             }
 
             std::array<int,3> cellPos = cell.get().getPosition();
-            if (isHaloCellofBoundary(i, cellPos)){
+            if (isHaloCellofBoundary(i, cellPos) && cell.get().getParticlesInCell().size() > 0){//TODO: pass as parameter?
                 moveParticlesToOppositeSideHelper(cell, cellPos, i);
                 break; //perform move only once even for corner
             }
@@ -245,16 +243,14 @@ void BoundaryHandler::moveParticlesToOppositeSideHelper(Cell& cell, std::array<i
 
 void BoundaryHandler::handlePeriodicAddForces(){
     SPDLOG_TRACE("handle add forces");
-
-    int size = (int) container.getBoundaryCells().size();
     
-    for (int i = 0; i < size; i++){
+    int i = 0; //todo: parallelize?
 
-        Cell& cell = container.getBoundaryCells().at(i);
+    for (auto & cell : container.getBoundaryCells()){
         
-        for (auto n : neighborCells.at(i)){
+        for (auto n : neighborCells.at(i++)){
             
-            Cell& neighborCell = container.getCells().at(n.first);
+            Cell& neighborCell = n.first;
 
             //calculate force in directions
             for (auto neighborParticle : neighborCell.getParticlesInCell()){
@@ -265,11 +261,7 @@ void BoundaryHandler::handlePeriodicAddForces(){
                     tempLocation = cloneParticleLocation(tempLocation, direction);
                 }
 
-                #ifdef _OPENMP
-                #pragma omp parallel for schedule(dynamic)
-                #endif
-
-                for (auto particle:cell.getParticlesInCell()) {
+                for (auto particle:cell.get().getParticlesInCell()) {
 
                     //force between neighborP and P
 
@@ -281,8 +273,8 @@ void BoundaryHandler::handlePeriodicAddForces(){
                                 }
 
                     std::array<double,3> force = calculator.calculateFIJ(sub, 0, 0, norm, neighborParticle->getEpsilon(), particle -> getEpsilon(), neighborParticle -> getSigma(), particle -> getSigma());
-                    particle -> setF(particle -> getF() - force);
-                    neighborParticle -> setF(neighborParticle -> getF() + force); 
+                    particle -> setF_no_mutex(particle -> getF() - force);
+                    neighborParticle -> setF_no_mutex(neighborParticle -> getF() + force); 
                 }
             }
         }

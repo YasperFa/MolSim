@@ -89,7 +89,7 @@ class BoundaryHandler{
 
     private:
 
-    std::vector<std::vector<std::pair<int, std::vector<int>>>> neighborCells;
+    std::vector<std::vector<std::pair<std::reference_wrapper<Cell>, std::vector<int>>>> neighborCells;
 
     /** determines what condition is used on what border
      * boundaries of the simulation: left, right, top, bottom(, front, back)

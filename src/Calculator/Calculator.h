@@ -84,7 +84,7 @@ namespace Calculators {
 
                 if (harmonicOn) {
                     HarmonicForceCalculator harmonicForceCalculator(particleContainer);
-                    p.setF(p.getF() + harmonicForceCalculator.calculateForce(p));
+                    p.addF_no_mutex(harmonicForceCalculator.calculateForce(p));
 
                 }
             }
@@ -119,10 +119,10 @@ namespace Calculators {
                     SPDLOG_TRACE("fij {} from particles {} and {}", fij[0], it1->getID(), it2->getID());
                     // add force of this pair to the overall force of particle 1
                     if (!it1->getFixed())
-                        it1->setF(it1->getF() + fij);
+                        it1->addF(fij);
                     // make use of Newton's third law and add the negative force calculated above to particle 2
                     if (!it2->getFixed())
-                        it2->setF(it2->getF() - fij);
+                        it2->addF(-1 * fij);
                 }
             }
         }
@@ -134,11 +134,9 @@ namespace Calculators {
 #ifdef _OPENMP
         #pragma omp parallel for schedule(dynamic)
 #endif
-            for (auto itCell = lcCon.beginCells(); itCell != lcCon.endCells(); ++itCell) {
-                if (itCell->getCellType() == Cell::CType::HALO) {
-                    //halo cells copy behaviour of opposite boundary cells
-                    continue;
-                }
+            for (auto c : lcCon.getInnerCells()) {
+
+                Cell* itCell = &(c.get());
 
                 for (auto itParticle1 = itCell->beginParticle(); itParticle1 != itCell->endParticle(); ++itParticle1) {
                     if (*itParticle1 == nullptr) {
@@ -163,10 +161,10 @@ namespace Calculators {
                                      (*itParticle2)->getID());
                         // add force of this pair to the overall force of particle 1
                         if (!(*itParticle1)->getFixed())
-                            (*itParticle1)->setF((*itParticle1)->getF() + fij);
+                            (*itParticle1)->addF(fij);
                         // make use of Newton's third law and add the negative force calculated above to particle 2
                         if (!(*itParticle2)->getFixed())
-                            (*itParticle2)->setF((*itParticle2)->getF() - fij);
+                            (*itParticle2)->addF( -1* fij);
                     }
                 }
                 for (Cell *neighbourCell: itCell->getNeighbourCells()) {
@@ -199,10 +197,10 @@ namespace Calculators {
                                          neighbourP->getID());
                             // add force of this pair to the overall force of particle 1
                             if (!(*itParticle1)->getFixed())
-                                (*itParticle1)->setF(((*itParticle1)->getF() + fij));
+                                (*itParticle1)->addF(fij);
                             // make use of Newton's third law and add the negative force calculated above to particle 2
                             if (!neighbourP->getFixed())
-                                neighbourP->setF((neighbourP->getF() - fij));
+                                neighbourP->addF(-1* fij);
                         }
                     }
                 }
@@ -247,10 +245,10 @@ namespace Calculators {
                                          (*itParticle2)->getID());
                             // add force of this pair to the overall force of particle 1
                             if (!(*itParticle1)->getFixed())
-                                (*itParticle1)->setF_no_mutex((*itParticle1)->getF() + fij);
+                                (*itParticle1)->addF_no_mutex(fij);
                             // make use of Newton's third law and add the negative force calculated above to particle 2
                             if (!(*itParticle2)->getFixed())
-                                (*itParticle2)->setF_no_mutex((*itParticle2)->getF() - fij);
+                                (*itParticle2)->addF_no_mutex(-1* fij);
                         }
                     }
                     for (Cell *neighbourCell: itCell->getNeighbourCells()) {
@@ -283,10 +281,10 @@ namespace Calculators {
                                              neighbourP->getID());
                                 // add force of this pair to the overall force of particle 1
                                 if (!(*itParticle1)->getFixed())
-                                    (*itParticle1)->setF_no_mutex(((*itParticle1)->getF() + fij));
+                                    (*itParticle1)->addF_no_mutex(fij);
                                 // make use of Newton's third law and add the negative force calculated above to particle 2
                                 if (!neighbourP->getFixed())
-                                    neighbourP->setF_no_mutex((neighbourP->getF() - fij));
+                                    neighbourP->addF_no_mutex(-1 * fij);
                             }
                         }
                     }
