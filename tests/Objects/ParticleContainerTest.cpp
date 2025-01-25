@@ -69,6 +69,80 @@ TEST(LinkedCellContainerTest, correctCellInitialization2D) {
     EXPECT_EQ(testContainer.getInnerCells().size(), 1800);
     EXPECT_EQ(testContainer.getHaloCells().size(), 184);
 }
+/** Checks that cells in the LinkedCellContainer are initialized correctly for 2D simulations version2*/
+TEST(LinkedCellContainerTest, correctCellInitialization2DVersion2) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{180,90,1}, 3.0, true);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 60);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 30);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[2], 1);
+    std::vector<std::vector<Cell*>> orders = testContainer.getIterationOrders();
+    int orderSize = orders.size();
+    EXPECT_EQ(orderSize, 9);
+    int cellsNumber = 0;
+    for (auto p : orders) {
+        cellsNumber+= p.size();
+    }
+    // 62*32*1 = 1984
+    EXPECT_EQ(cellsNumber, 1984);
+}
+//checks if order initialization splits the orders correctly
+TEST(LinkedCellContainerTest, correctOrderInitialization2DVersion2) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{1,1,1}, 1.0, true);
+    std::vector<std::vector<Cell*>> orders = testContainer.getIterationOrders();
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 1);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 1);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[2], 1);
+    int orderSize = orders.size();
+    EXPECT_EQ(orderSize, 9);
+    int cellsNumber = 0;
+    for (auto p : orders) {
+        cellsNumber+= p.size();
+    }
+    // 3*3*1 = 9
+    EXPECT_EQ(cellsNumber, 9);
+
+    bool orderCorrect = (orders[0][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,-1,0))) && (orders[1][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,0,0)))
+    && (orders[2][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,1,0))) && (orders[3][0] == &testContainer.getCells().at(testContainer.cellIndex(0,-1,0))) &&
+        (orders[4][0] == &testContainer.getCells().at(testContainer.cellIndex(0,0,0))) && (orders[5][0] == &testContainer.getCells().at(testContainer.cellIndex(0,1,0))) &&
+            (orders[6][0] == &testContainer.getCells().at(testContainer.cellIndex(1,-1,0))) && (orders[7][0] == &testContainer.getCells().at(testContainer.cellIndex(1,0,0))) && (orders[8][0] == &testContainer.getCells().at(testContainer.cellIndex(1,1,0)));
+    EXPECT_TRUE(orderCorrect);
+
+}
+TEST(LinkedCellContainerTest, correctOrder2Initialization2DVersion2) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{2,2,1}, 1.0, true);
+    std::vector<std::vector<Cell*>> orders = testContainer.getIterationOrders();
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[0], 2);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[1], 2);
+    EXPECT_EQ(testContainer.getCellNumPerDimension()[2], 1);
+    int orderSize = orders.size();
+    EXPECT_EQ(orderSize, 9);
+    int cellsNumber = 0;
+    for (auto p : orders) {
+        cellsNumber+= p.size();
+    }
+    // 3*3*1 = 9
+    EXPECT_EQ(cellsNumber, 16);
+
+    bool order1Correct = (orders[0][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,-1,0))) && (orders[0][1] == &testContainer.getCells().at(testContainer.cellIndex(-1,2,0)))
+    && (orders[0][2] == &testContainer.getCells().at(testContainer.cellIndex(2,-1,0))) && (orders[0][3] == &testContainer.getCells().at(testContainer.cellIndex(2,2,0)));
+    EXPECT_TRUE(order1Correct);
+    bool order2Correct = (orders[1][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,0,0))) && (orders[1][1] == &testContainer.getCells().at(testContainer.cellIndex(2,0,0)));
+    EXPECT_TRUE(order2Correct);
+    bool order3Correct = (orders[2][0] == &testContainer.getCells().at(testContainer.cellIndex(-1,1,0))) && (orders[2][1] == &testContainer.getCells().at(testContainer.cellIndex(2,1,0)));
+    EXPECT_TRUE(order3Correct);
+    bool order4Correct = (orders[3][0] == &testContainer.getCells().at(testContainer.cellIndex(0,-1,0))) && (orders[3][1] == &testContainer.getCells().at(testContainer.cellIndex(0,2,0)));
+    EXPECT_TRUE(order4Correct);
+    bool order5Correct = (orders[4][0] == &testContainer.getCells().at(testContainer.cellIndex(0,0,0)));
+    EXPECT_TRUE(order5Correct);
+    bool order6Correct = (orders[5][0] == &testContainer.getCells().at(testContainer.cellIndex(0,1,0)));
+    EXPECT_TRUE(order6Correct);
+    bool order7Correct = (orders[6][0] == &testContainer.getCells().at(testContainer.cellIndex(1,-1,0))) && (orders[6][1] == &testContainer.getCells().at(testContainer.cellIndex(1,2,0)));
+    EXPECT_TRUE(order7Correct);
+    bool order8Correct = (orders[7][0] == &testContainer.getCells().at(testContainer.cellIndex(1,0,0)));
+    EXPECT_TRUE(order8Correct);
+    bool order9Correct = (orders[8][0] == &testContainer.getCells().at(testContainer.cellIndex(1,1,0)));
+    EXPECT_TRUE(order9Correct);
+}
 
 /** Checks that only neighboring cells are influenced during calculations */
 TEST(LinkedCellContainerTest, correctCalculations) {
