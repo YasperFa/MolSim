@@ -105,6 +105,8 @@ public:
 
     void addF(const std::array<double, 3> &newF);
 
+    void subF(const std::array<double, 3> &newF);
+
     void setF_no_mutex(const std::array<double, 3> &newF);
 
     void addF_no_mutex(const std::array<double, 3> &newF);

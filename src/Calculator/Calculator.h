@@ -122,7 +122,7 @@ namespace Calculators {
                         it1->addF(fij);
                     // make use of Newton's third law and add the negative force calculated above to particle 2
                     if (!it2->getFixed())
-                        it2->addF(-1 * fij);
+                        it2->subF(fij);
                 }
             }
         }
@@ -164,7 +164,7 @@ namespace Calculators {
                             (*itParticle1)->addF(fij);
                         // make use of Newton's third law and add the negative force calculated above to particle 2
                         if (!(*itParticle2)->getFixed())
-                            (*itParticle2)->addF( -1* fij);
+                            (*itParticle2)->subF(fij);
                     }
                 }
                 for (Cell *neighbourCell: itCell->getNeighbourCells()) {
@@ -200,7 +200,7 @@ namespace Calculators {
                                 (*itParticle1)->addF(fij);
                             // make use of Newton's third law and add the negative force calculated above to particle 2
                             if (!neighbourP->getFixed())
-                                neighbourP->addF(-1* fij);
+                                neighbourP->subF(fij);
                         }
                     }
                 }

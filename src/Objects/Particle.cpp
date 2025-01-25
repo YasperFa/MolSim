@@ -86,6 +86,14 @@ void Particle::addF(const std::array<double, 3> &newF) {
     forceMutex.unlock();
 }
 
+void Particle::subF(const std::array<double, 3> &newF) {
+    forceMutex.lock();
+    f[0] -= newF[0];
+    f[1] -= newF[1];
+    f[2] -= newF[2];
+    forceMutex.unlock();
+}
+
 void Particle::addF_no_mutex(const std::array<double, 3> &newF) {
     f[0] += newF[0];
     f[1] += newF[1];
