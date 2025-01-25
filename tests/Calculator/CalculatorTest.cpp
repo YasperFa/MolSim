@@ -65,6 +65,7 @@ TEST(CalculatorTest, correctFIJcalculations) {
     }
 }
 
+
 /*Checks that calculateF() correctly adds gravitational force*/
 TEST(CalculatorTest, calculateFGravity) {
     ParticleContainers::DirectSumContainer testContainer;
@@ -249,7 +250,35 @@ TEST(CalculatorTest, correctFijMixing) {
         EXPECT_NEAR(712.6750486, (testContainer.getParticle(k).getF())[in], 0.00001);
     }
 }
+TEST(CalculatorTest, dontCalculateXforFixed) {
+    ParticleContainers::LinkedCellContainer testContainer(std::array<double,3>{100, 100, 10}, 5, false);
 
+    Particle i({0.0, 7.0, 0.0},{0.0, 0.0, 0.0},1.0,0);
+    i.fixParticle();
+    testContainer.addParticle(i);
+
+    Particle j({2.0, 9.0, 2.0},{0.0, 0.0, 0.0},2.0,0);
+    j.fixParticle();
+    testContainer.addParticle(j);
+
+    Particle k({4.0, 4.0, 4.0},{0.0, 0.0, 0.0},3.0,0);
+    k.fixParticle();
+    testContainer.addParticle(k);
+
+    std::array<std::array<double,3>,3> values;
+    values[0] = {0.0, 7.0, 0.0};
+    values[1] = {2.0, 9.0, 2.0};
+    values[2] = {4.0, 4.0, 4.0};
+    Calculators::LennardJonesCalculator calc = Calculators::LennardJonesCalculator(false);
+    calc.calculateX(testContainer, 10);
+    int t = 0;
+    for (Particle p : testContainer.getParticles()) {
+        EXPECT_NEAR(p.getX()[0], values[t][0], 0.0000000001);
+        EXPECT_NEAR(p.getX()[1], values[t][1], 0.0000000001);
+        EXPECT_NEAR(p.getX()[2], values[t][2], 0.0000000001);
+        t++;
+    }
+}
 /** Test upward force applied to marked particles */
 TEST(CalculateFTest, UpwardForceOnMarkedParticles) {
     ParticleContainers::DirectSumContainer testContainer;
