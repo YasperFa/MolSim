@@ -9,6 +9,7 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/BoundaryHandlerTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/Objects/Temperature/ThermostatTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/IO/XMLfileReaderTest.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/IO/CheckpointTest.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Particle.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cuboid.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Cell.cpp"
@@ -24,11 +25,13 @@ file(GLOB_RECURSE TEST_SRC
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/XMLfileReader.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/schema.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/CheckpointInput/CheckpointSchema.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Input/CheckpointInput/CheckpointReader/CheckpointFileReader.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/IO/Output/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Containers/LinkedCell/BoundaryHandler.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/DirectThermostat.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/AverageThermostat.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Temperature/ZXThermostat.cpp"
+
 )
 # fetch Googletest from the github repository
 FetchContent_Declare(
