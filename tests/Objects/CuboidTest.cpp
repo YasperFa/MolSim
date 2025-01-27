@@ -29,5 +29,7 @@ TEST(CuboidTest, testGettersAndConstructor) {
     EXPECT_EQ(10.0, cuboid1.getInitVelocity()[0]);
     EXPECT_EQ(0.0, cuboid1.getInitVelocity()[1]);
     EXPECT_EQ(0.0, cuboid1.getInitVelocity()[2]);
-
 }
+
+
+

@@ -33,7 +33,6 @@ namespace Calculators {
             Particle *connectedParticle = &current + ptrDiff;
             auto displacement = connectedParticle->getX() - current.getX();
 
-            // Apply periodic boundary conditions if the container is a LinkedCellContainer
             if (isLinkedCellContainer) {
                 for (size_t i = 0; i < displacement.size(); ++i) {
                     if (std::abs(displacement[i]) > domainSize[i] * 0.5) {

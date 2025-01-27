@@ -129,3 +129,276 @@ TEST(ParticleGeneratorTest, checkOtherVariables) {
     }
 }
 
+/* checks if particle container has the correct number of particles when generating membrane */
+TEST(ParticleGeneratorTest, checkMembraneSize) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 1.0}; // 2x2x1 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = false;
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Check particle count: 2x2x1 = 4
+    EXPECT_EQ(pc.sizeParticles(), 4);
+}
+
+/* checks if the membrane particles are initialized with the correct positions */
+TEST(ParticleGeneratorTest, checkMembraneParticlePositions) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 1.0}; // 2x2x1 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = false;
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Expected positions
+    std::array<std::array<double, 3>, 4> expected_positions = {
+        std::array<double, 3>{0.0, 0.0, 0.0},
+        std::array<double, 3>{1.0, 0.0, 0.0},
+        std::array<double, 3>{0.0, 1.0, 0.0},
+        std::array<double, 3>{1.0, 1.0, 0.0}
+    };
+
+    int i = 0;
+    for (Particle &p : pc) {
+        EXPECT_EQ(p.getX()[0], expected_positions[i][0]);
+        EXPECT_EQ(p.getX()[1], expected_positions[i][1]);
+        EXPECT_EQ(p.getX()[2], expected_positions[i][2]);
+        i++;
+    }
+}
+
+/* checks if the neighbors are assigned correctly in membrane generation */
+TEST(ParticleGeneratorTest, checkMembraneNeighborAssignments) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 1.0}; // 2x2x1 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = false;
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Check neighbor assignments
+    for (Particle &particle : pc) {
+        for (const auto &neighbor : particle.getNeighbourParticles()) {
+            long neighbor_ptr_diff = std::get<0>(neighbor);
+            double distance = std::get<1>(neighbor);
+
+            Particle *neighbor_particle = &particle + neighbor_ptr_diff;
+
+            // Verify neighbor distance
+            EXPECT_NEAR(distance, ArrayUtils::L2Norm(particle.getX() - neighbor_particle->getX()), 1e-5);
+        }
+    }
+}
+
+/* checks if neighbor relationships are symmetric */
+TEST(ParticleGeneratorTest, checkNeighborSymmetry) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 1.0}; // 2x2x1 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = false;
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Check symmetric neighbor relationships
+    for (Particle &particle : pc) {
+        for (const auto &neighbor : particle.getNeighbourParticles()) {
+            long neighbor_ptr_diff = std::get<0>(neighbor);
+            Particle *neighbor_particle = &particle + neighbor_ptr_diff;
+
+            bool reverse_found = false;
+            for (const auto &reverse_neighbor : neighbor_particle->getNeighbourParticles()) {
+                if (&particle == neighbor_particle + std::get<0>(reverse_neighbor)) {
+                    reverse_found = true;
+                    break;
+                }
+            }
+            EXPECT_TRUE(reverse_found);
+        }
+    }
+}
+
+/* checks if the particle container has the correct number of particles in a 3D membrane */
+TEST(ParticleGeneratorTest, check3DMembraneSize) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 2.0}; // 2x2x2 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = true; // Set to 3D
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Check particle count: 2x2x2 = 8
+    EXPECT_EQ(pc.sizeParticles(), 8);
+}
+
+/* checks if the 3D membrane particles are initialized with the correct positions */
+TEST(ParticleGeneratorTest, check3DMembraneParticlePositions) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 2.0}; // 2x2x2 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = true; // Set to 3D
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Expected positions for a 2x2x2 grid
+    std::array<std::array<double, 3>, 8> expected_positions = {
+        std::array<double, 3>{0.0, 0.0, 0.0}, std::array<double, 3>{1.0, 0.0, 0.0},
+        std::array<double, 3>{0.0, 1.0, 0.0}, std::array<double, 3>{1.0, 1.0, 0.0},
+        std::array<double, 3>{0.0, 0.0, 1.0}, std::array<double, 3>{1.0, 0.0, 1.0},
+        std::array<double, 3>{0.0, 1.0, 1.0}, std::array<double, 3>{1.0, 1.0, 1.0}
+    };
+
+    int i = 0;
+    for (Particle &p : pc) {
+        EXPECT_EQ(p.getX()[0], expected_positions[i][0]);
+        EXPECT_EQ(p.getX()[1], expected_positions[i][1]);
+        EXPECT_EQ(p.getX()[2], expected_positions[i][2]);
+        i++;
+    }
+}
+
+/* checks if neighbors are correctly assigned in a 3D membrane */
+TEST(ParticleGeneratorTest, check3DMembraneNeighborAssignments) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 2.0}; // 2x2x2 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = true; // Set to 3D
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Verify neighbors for all particles
+    for (Particle &particle : pc) {
+        for (const auto &neighbor : particle.getNeighbourParticles()) {
+            long neighbor_ptr_diff = std::get<0>(neighbor);
+            double distance = std::get<1>(neighbor);
+
+            Particle *neighbor_particle = &particle + neighbor_ptr_diff;
+
+            // Verify neighbor distance
+            EXPECT_NEAR(distance, ArrayUtils::L2Norm(particle.getX() - neighbor_particle->getX()), 1e-5);
+        }
+    }
+}
+
+/* checks neighbor symmetry in a 3D membrane */
+TEST(ParticleGeneratorTest, check3DMembraneNeighborSymmetry) {
+    std::array<double, 3> x = {0.0, 0.0, 0.0};
+    std::array<double, 3> N = {2.0, 2.0, 2.0}; // 2x2x2 grid
+    std::array<double, 3> V = {0.0, 0.0, 0.0};
+    double h = 1.0;
+    double m = 1.0;
+    double mv = 0.0;
+    Cuboid cuboid(x, N, h, m, V, mv);
+    ParticleContainers::DirectSumContainer pc;
+
+    int type = 0;
+    double epsilon = 1.0;
+    double sigma = 1.0;
+    double initTemperature = 0.0;
+    bool isFixed = false;
+    bool is3d = true; // Set to 3D
+    double stiffnessConstant = 100.0;
+
+    ParticleGenerator::generateMembrane(pc, cuboid, type, epsilon, sigma, initTemperature, isFixed, is3d, stiffnessConstant);
+
+    // Check neighbor symmetry
+    for (Particle &particle : pc) {
+        for (const auto &neighbor : particle.getNeighbourParticles()) {
+            long neighbor_ptr_diff = std::get<0>(neighbor);
+            Particle *neighbor_particle = &particle + neighbor_ptr_diff;
+
+            bool reverse_found = false;
+            for (const auto &reverse_neighbor : neighbor_particle->getNeighbourParticles()) {
+                if (&particle == neighbor_particle + std::get<0>(reverse_neighbor)) {
+                    reverse_found = true;
+                    break;
+                }
+            }
+            EXPECT_TRUE(reverse_found);
+        }
+    }
+}

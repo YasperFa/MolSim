@@ -367,3 +367,95 @@ TEST(CalculateFTest, UpwardForceOnDifferentAxis) {
     EXPECT_NEAR(10.3849, testContainer.getParticles()[0].getF()[0], 1e-5);
     EXPECT_NEAR(-0.3849, testContainer.getParticles()[1].getF()[0], 1e-5);
 }
+
+
+TEST(HarmonicForceCalculatorTest, CalculateForceDirectSumContainer) {
+    // Create a DirectSumContainer
+    ParticleContainers::DirectSumContainer container;
+
+    // Add particles
+    Particle p1({0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p2({1.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p3({0.0, 1.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+
+    // Add neighbor connections
+    double stiffnessConstant = 10.0;
+    double avgBondLength = 0.5;
+    p1.addNeighbourParticle(&p2 - &p1, avgBondLength, stiffnessConstant);
+    p1.addNeighbourParticle(&p3 - &p1, avgBondLength, stiffnessConstant);
+
+    container.addParticle(p1);
+    container.addParticle(p2);
+    container.addParticle(p3);
+
+    // Create the HarmonicForceCalculator
+    Calculators::HarmonicForceCalculator calculator(container);
+
+    // Calculate force for p1
+    auto calculatedForce = calculator.calculateForce(p1);
+
+    // Verify forces (force is symmetrical and acts along the displacement vectors)
+    EXPECT_NEAR(5.0, calculatedForce[0], 1e-5); // Force from p2
+    EXPECT_NEAR(5.0, calculatedForce[1], 1e-5); // Force from p3
+    EXPECT_NEAR(0.0, calculatedForce[2], 1e-5);
+}
+
+
+TEST(HarmonicForceCalculatorTest, PeriodicBoundaryAdjustment) {
+    // Create a LinkedCellContainer with periodic boundaries
+    ParticleContainers::LinkedCellContainer container({10.0, 10.0, 10.0}, 5.0, false);
+
+    // Add particles
+    Particle p1({9.5, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p2({0.5, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+
+    // Add neighbor connection
+    double stiffnessConstant = 10.0;
+    double avgBondLength = 0.5;
+    p1.addNeighbourParticle(&p2 - &p1, avgBondLength, stiffnessConstant);
+
+    container.addParticle(p1);
+    container.addParticle(p2);
+
+    // Create the HarmonicForceCalculator
+    Calculators::HarmonicForceCalculator calculator(container);
+
+    // Calculate force for p1
+    auto calculatedForce = calculator.calculateForce(p1);
+
+    // Verify that periodic boundary conditions were applied correctly
+    EXPECT_NEAR(5.0, calculatedForce[0], 1e-5); // Force should account for periodic boundary
+    EXPECT_NEAR(0.0, calculatedForce[1], 1e-5);
+    EXPECT_NEAR(0.0, calculatedForce[2], 1e-5);
+}
+
+TEST(HarmonicForceCalculatorTest, NoForceForEquilibrium) {
+    // Create a DirectSumContainer
+    ParticleContainers::DirectSumContainer container;
+
+    // Add particles
+    Particle p1({0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p2({1.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+
+    // Add neighbor connection
+    double stiffnessConstant = 10.0;
+    double avgBondLength = 1.0;
+    p1.addNeighbourParticle(&p2 - &p1, avgBondLength, stiffnessConstant);
+
+    container.addParticle(p1);
+    container.addParticle(p2);
+
+    // Create the HarmonicForceCalculator
+    Calculators::HarmonicForceCalculator calculator(container);
+
+    // Calculate force for p1
+    auto calculatedForce = calculator.calculateForce(p1);
+
+    // Verify that the force is zero at equilibrium
+    EXPECT_NEAR(0.0, calculatedForce[0], 1e-5);
+    EXPECT_NEAR(0.0, calculatedForce[1], 1e-5);
+    EXPECT_NEAR(0.0, calculatedForce[2], 1e-5);
+}
+
+
+
