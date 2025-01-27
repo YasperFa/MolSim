@@ -10,6 +10,7 @@ public:
     bool is3D, const int n) : Thermostat(targetTemperature, maxDeltaT, is3D, n){}
     ~ZXThermostat() override = default;
     void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) override;
+    double getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) override;
 
 };
 

@@ -43,15 +43,7 @@ public:
  * @param particleContainer: Particle container
  * @return kinetic energy of the container
  */
- static double getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) {
-    double total = 0;
-    for (auto& particle : particleContainer) {
-     if (particle.getFixed()) continue;
-     std::array<double, 3> v = particle.getV();
-     total += particle.getM() * (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) * 0.5;
-    }
-     return total;
-  }
+ virtual  double getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) =0;
  /**
  * @brief calculates the average velocity of particles in the container
  * @param particleContainer: Particle container
@@ -77,7 +69,7 @@ public:
  /**
 * @return number of timesteps
 */
- static double getCurrentTemperature(ParticleContainers::ParticleContainer& particleContainer, const bool is3D)  {
+  double getCurrentTemperature(ParticleContainers::ParticleContainer& particleContainer, const bool is3D)  {
   const int dimension = is3D ? 3 : 2;
   return 2 * getContainerKineticEnergy(particleContainer) / (dimension * particleContainer.sizeParticles());
  }

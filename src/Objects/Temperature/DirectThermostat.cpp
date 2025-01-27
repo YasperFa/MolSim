@@ -22,4 +22,14 @@ void DirectThermostat::applyThermostat(ParticleContainers::ParticleContainer& pa
         particle.setV(newV);
     }
 
+
+}
+double DirectThermostat::getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) {
+    double total = 0;
+    for (auto& particle : particleContainer) {
+        if (particle.getFixed()) continue;
+        std::array<double, 3> v = particle.getV();
+        total += particle.getM() * (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) * 0.5;
+    }
+    return total;
 }

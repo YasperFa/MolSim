@@ -6,13 +6,7 @@
 
 void ZXThermostat::applyThermostat(ParticleContainers::ParticleContainer& particleContainer) {
     double temperatureChange;
-    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
-    double keneticEnergy = 0;
-    for (auto& particle : particleContainer) {
-        if (particle.getFixed()) continue;
-        std::array<double, 3> v = particle.getV();
-        keneticEnergy += particle.getM() * (v[0] * v[0] + (v[1] - averageVelocity[1])*(v[1] - averageVelocity[1])  + v[2] * v[2]) * 0.5;
-    }
+    double keneticEnergy = getContainerKineticEnergy(particleContainer);
     int dimension = is3D ? 3 : 2;
     const double currentTemperature = 2 * keneticEnergy / (dimension * particleContainer.sizeParticles());
     if (targetTemperature > currentTemperature) {
@@ -30,4 +24,14 @@ void ZXThermostat::applyThermostat(ParticleContainers::ParticleContainer& partic
          newV[2] = scaleFactor*particle.getV()[2];
         particle.setV(newV);
     }
+}
+double ZXThermostat::getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) {
+    std::array<double, 3> averageVelocity = getAverageVelocity(particleContainer);
+    double keneticEnergy = 0;
+    for (auto& particle : particleContainer) {
+        if (particle.getFixed()) continue;
+        std::array<double, 3> v = particle.getV();
+        keneticEnergy += particle.getM() * (v[0] * v[0] + (v[1] - averageVelocity[1])*(v[1] - averageVelocity[1])  + v[2] * v[2]) * 0.5;
+    }
+    return keneticEnergy;
 }

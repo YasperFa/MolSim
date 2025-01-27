@@ -19,6 +19,7 @@ public:
          * @param averageVelocity
          */
      void applyThermostat(ParticleContainers::ParticleContainer& particleContainer) override;
+    double getContainerKineticEnergy(ParticleContainers::ParticleContainer& particleContainer) override;
 
 };
 
