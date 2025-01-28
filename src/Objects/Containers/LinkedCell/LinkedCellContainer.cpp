@@ -85,7 +85,7 @@ namespace ParticleContainers {
 
         } else {
             SPDLOG_ERROR("Cell does not exist, particle to be removed is out of bounds!");
-            throw std::runtime_error("Cell does not exist, particle to be removed is out of bounds!");
+            particles.erase(std::find(particles.begin(), particles.end(), particle));
         }
     }
 
