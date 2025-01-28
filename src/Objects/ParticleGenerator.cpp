@@ -164,7 +164,7 @@ void ParticleGenerator::generateDisc(ParticleContainers::ParticleContainer &part
                 }
                 SPDLOG_DEBUG("line {}", j);
                 const std::array<double, 3> particlePosition = {center[0] + j * h, center[1] + i * h, center[2] + k * h};
-                SPDLOG_INFO("{} {} {}", center[0] + j * h, center[1] + i * h, center[2] + k * h);
+                SPDLOG_DEBUG("{} {} {}", center[0] + j * h, center[1] + i * h, center[2] + k * h);
                 // create new particle
                 Particle nParticle(particlePosition, initVel, mass, type, epsilon, sigma, isFixed);
                 // add new particle to container
