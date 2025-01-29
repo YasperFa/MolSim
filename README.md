@@ -9,7 +9,12 @@ To be able to build and run this code, the following tools have to be installed:
 - g++
 - libxerces-c-dev
 (-Optional: Doxygen)
-
+## Cluster
+To be able to build and run this code on the cluster, do the following:
+ - module load user_spack
+ - spack install xerces-c
+ - module load xerces-c/3.2.1
+ - (Note: when compiling use -DBUILD_TESTS=OFF to disable the tests from compiling, otherwise it won't work.)
 ## Building and Running
 1) Create a 'build' directory and switch to the newly created directory:
 
