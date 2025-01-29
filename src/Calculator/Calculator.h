@@ -27,6 +27,14 @@ namespace Calculators {
         * @param particleContainer the container that is operated on
         * @param delta_t timestep between iterations
         * @param gravity the gravitational acceleration
+        * @param harmonicOn whether to add harmonic force to the particles
+        * @param stiffnessConstant
+        * @param avgBondLength
+        * @param upwardsForce
+        * @param activeTimesteps
+        * @param gravityAxis
+        * @param specialForceAxis
+        * @param boundaryHandler
         */
         void calculateXFV(ParticleContainers::ParticleContainer &particleContainer, double delta_t,
                           double gravity = 0.0, bool harmonicOn = false,
@@ -61,8 +69,13 @@ namespace Calculators {
         * calculate the force for all particles
         * @param particleContainer the container that is operated on
         * @param gravity
+        * @param harmonicOn
         * @param stiffnessConstant
         * @param avgBondLength
+        * @param upwardsForce
+        * @param activeTimesteps
+        * @param gravityAxis
+        * @param specialForceAxis
         */
         void calculateF(ParticleContainers::ParticleContainer &particleContainer, double gravity = 0.0,
                         bool harmonicOn = false,
@@ -100,7 +113,7 @@ namespace Calculators {
             }
         }
 
-        /**Calculates the force for all particles in a DirectSumContainer
+        /** Calculates the force for all particles in a DirectSumContainer
          * @param particleContainer the DirectSumContainer that is operated on
         */
 
@@ -127,7 +140,7 @@ namespace Calculators {
             }
         }
 
-        /**Calculates the force for all particles in a LinkedCellContainer
+        /** Calculates the force for all particles in a LinkedCellContainer
         * @param lcCon the LinkedCellContainer that is operated on
         */
         void calculateFLinkedCell(ParticleContainers::LinkedCellContainer &lcCon) {
@@ -207,7 +220,7 @@ namespace Calculators {
             }
         }
 
-        /**Calculates the force for all particles in a LinkedCellContainer accodring to version 2 of parallelization
+        /** Calculates the force for all particles in a LinkedCellContainer accodring to version 2 of parallelization
         * @param lcCon the LinkedCellContainer that is operated on
         */
         void calculateFLinkedCellV2(ParticleContainers::LinkedCellContainer &lcCon) {
@@ -302,7 +315,6 @@ namespace Calculators {
         * @param epsilon2 the Lennard-Jones parameter epsilon of j
         * @param sigma1 the Lennard-Jones parameter sigma of i
         * @param sigma2 the Lennard-Jones parameter sigma of j
-        * @param neighbours true if the two particles are neighbours
         * @return force between i and j
         */
         virtual std::array<double, 3> calculateFIJ(const std::array<double, 3> &sub, double m1, double m2,

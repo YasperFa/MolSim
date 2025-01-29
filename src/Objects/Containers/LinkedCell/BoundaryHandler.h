@@ -66,10 +66,11 @@ class BoundaryHandler{
      */
     double minDist(double sigma);
 
-     /**Get opposite boundary cell on opposite side for a halo cell
-     * @param position position of the cell in the cell grid
-     * @param i boundary of halo cell
-     * @returns position of boundary cell on opposite side
+     /**Get opposite boundary cell on opposite side for a halo cell / 
+      * Get opposite halo cell on opposite side for a boundary cell / 
+     * @param position position of input cell in the cell grid
+     * @param i boundary that input cell borders on
+     * @returns position of cell on opposite side bordering on opposite(i)
      */
     
     std::array<int, 3> oppositeCell(std::array<int, 3> position, int i);
@@ -83,23 +84,33 @@ class BoundaryHandler{
     */
     void handleReflecting();
 
+    /**Adds forces of particles in boundary cells on the opposite side of the domain to particles in boundary cells if necessary */
     void handlePeriodicAddForces();
 
+    /**Moves particles in halo cells to boundary cells on the opposite side of the domain */
     void handlePeriodicMoveParticles();
 
     private:
 
+    /**For periodic boundary handling
+     * Contains for every boundary cell a vector with entries that each represent a boundary cell on the opposite side of the domain which has to be included for force calculations
+     * Every entry consists of a pair of
+     * - Reference to the cell
+     * - vector containing up to 3 ints which show how the position of the neighbor cell relates to the position of the cell
+     * 
+     * Every pair of boundary cells is only represented once in the vector
+     */
     std::vector<std::vector<std::pair<std::reference_wrapper<Cell>, std::vector<int>>>> neighborCells;
 
     /** determines what condition is used on what border
-     * boundaries of the simulation: left, right, top, bottom(, front, back)
+     * boundaries of the simulation: left, right, top, bottom, front, back
      */
     const std::array<bCondition, 6> type; 
 
     /** ParticleContainer that the BoundaryHandler operates on */
     ParticleContainers::LinkedCellContainer & container;
 
-    /**boundaries of the simulation: left, right, top, bottom(, front, back) */
+    /**boundaries of the simulation: left, right, top, bottom, front, back*/
     const std::array<double, 6> boundaries;
 
     /**Get int of opposite side
@@ -108,8 +119,18 @@ class BoundaryHandler{
      */
     int oppositeSide(int i);
 
+    /** Helper function for moving all particles of a halo cell to the boundary cell on the opposite side of the domain
+     * @param cell Reference to the cell
+     * @param cellPos position of the cell in the cell grid
+     * @param i boundary that the halo cell borders on
+    */
     void moveParticlesToOppositeSideHelper(Cell & cell, std::array<int, 3> cellPos, int i);
 
+    /** Get boundary cell on opposite side of the domain for a given boundary cell
+     * @param position Position of the cell in the cell grid
+     * @param i Boundary that the cell borders on
+     * @returns position of corresponding boundary cell that borders on opposite(i)
+     */
     std::array<int, 3> oppositeNeighborCell(std::array<int, 3> position, int i);
 
 };

@@ -78,6 +78,7 @@ namespace ParticleContainers {
    * @brief Constructor for a new Linked Cell Container
    * @param domainSize size of the domain that will be used for the simulation
    * @param cutoff cut off radius for the simulation
+   * @param version2 whether or not to use parallelization version 2 (if false: use version 1)
    */
   LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff, const bool version2);
 

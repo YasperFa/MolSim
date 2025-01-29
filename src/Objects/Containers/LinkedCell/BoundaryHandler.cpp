@@ -13,6 +13,7 @@
 #include "../../../Calculator/Calculator.h"
 #include "../../../Calculator/LennardJonesCalculator.h"
 
+/** Enum for different sides/boundaries of the domain */
 enum side{ // no enum class to allow for implicit type conversion
     RIGHT = 0,
     LEFT = 1,
@@ -244,7 +245,7 @@ void BoundaryHandler::moveParticlesToOppositeSideHelper(Cell& cell, std::array<i
 void BoundaryHandler::handlePeriodicAddForces(){
     SPDLOG_TRACE("handle add forces");
     
-    int i = 0; //todo: parallelize?
+    int i = 0;
 
     for (auto & cell : container.getBoundaryCells()){
         

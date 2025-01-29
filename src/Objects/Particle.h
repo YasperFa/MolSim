@@ -59,8 +59,12 @@ private:
     /**Lennard-Jones parameter sigma */
     double sigma;
 
+    /** @brief true if this particle should not move over the course of the simulation */
     bool isFixed;
 
+    /**
+     * The list of connected particles for membranes
+     */
     std::vector<std::tuple<long, double, double> > neighbourParticles;
 
     /**
@@ -101,14 +105,34 @@ public:
 
     bool getFixed() const;
 
+    /** Setter for attribute f
+     * This function is safe for parallelization.
+     * @param newF
+     */
     void setF(const std::array<double, 3> &newF);
 
+    /** Adds a force vector to the current force
+     * This function is safe for parallelization.
+     * @param newF force to be added
+     */
     void addF(const std::array<double, 3> &newF);
 
+    /** Subtracts a force vector from the current force
+     * This function is safe for parallelization.
+     * @param newF force to be subtracted
+     */
     void subF(const std::array<double, 3> &newF);
 
+    /** Setter for attribute f
+     * This function is not safe for parallelization.
+     * @param newF
+     */
     void setF_no_mutex(const std::array<double, 3> &newF);
 
+    /** Adds a force vector to the current force
+     * This function is not safe for parallelization.
+     * @param newF force to be added
+     */
     void addF_no_mutex(const std::array<double, 3> &newF);
 
     void setOldF(const std::array<double, 3> &newOldF);
@@ -117,6 +141,7 @@ public:
 
     void setV(const std::array<double, 3> &V);
 
+    /** Sets attribute isFixed to true */
     void fixParticle();
 
     bool operator==(Particle &other);
@@ -141,8 +166,12 @@ public:
      */
     const std::vector<std::tuple<long, double, double> > &getNeighbourParticles() const;
 
+    /** Sets the markedForUpwardForce attribute to true*/
     void markForUpwardForce();
 
+    /** Getter for attribute markedForUpwardForce
+     * @returns markedForUpwardForce
+    */
     bool upwardForceMarked() const;
 
     std::string toString() const;

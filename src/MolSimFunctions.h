@@ -31,9 +31,13 @@ namespace MolSim {
      * @param deltaT
      * @param endTime
      * @param gravity
+     * @param harmonicOn
+     * @param stiffnessConstant
+     * @param avgBondLength
      * @param outputWriter that will be used to write the output
      * @param calculator that will be used during the simulation
-     * @particleContainer empty ParticleContainer
+     * @param particleContainer empty ParticleContainer
+     * @param boundaryHandler
      */
     bool parseArguments(int argc, char *argv[], std::string &inputFile, double &deltaT, double &endTime,
                         double &gravity,
@@ -50,11 +54,20 @@ namespace MolSim {
      * @param deltaT
      * @param endTime
      * @param gravity
+     * @param harmonicOn
+     * @param stiffnessConstant
+     * @param avgBondLength
+     * @param upwardsForce
+     * @param activeTimsteps
      * @param freq
+     * @param gravityAxis
+     * @param specialForceAxis axis where additional force should be applied
+     * @param version2 if true, use parallelization method 2, else use method 1
      * @param outputWriter that will be used to write the output
      * @param calculator that will be used during the simulation
      * @param boundaryHandler that will be used to handle boundaries
      * @param thermostat to adjust the temperature of the simulation
+     * @param inputFile
     */
     void runSim(ParticleContainers::ParticleContainer &particleContainer, double &deltaT, double &endTime,
                 double &gravity,
