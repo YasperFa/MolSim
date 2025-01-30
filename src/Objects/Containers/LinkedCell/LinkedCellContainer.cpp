@@ -259,10 +259,11 @@ namespace ParticleContainers {
     }
     void LinkedCellContainer::initParallelV2() {
         SPDLOG_DEBUG("Initializing parallel V2...");
+        // the gap between cells from the same order
         int dx = 3;
         int dy = 3;
         int dz = 3;
-
+        // 2d versions don't have halo cells for z dimension
         if (cellNumPerDimension[2] == 1) {
             for (int x = 0; x < dx; ++x) {
                 for (int y = 0; y < dy; ++y) {

@@ -82,14 +82,12 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
                     gravityAxis = 1;
                 }
             }
-
-
             SPDLOG_DEBUG("HarmonicOn: {}, StiffnessConstant: {}, AvgBondLength: {}",
                          harmonicOn, stiffnessConstant, avgBondLength);
 
             if (sim->parameters().parallelVersion2().present()) {
                 version2 = sim->parameters().parallelVersion2().get();
-                SPDLOG_INFO("Parallel version from XML selected: {}", version2);
+                SPDLOG_INFO("Parallel version 2 from XML selected: {}", version2);
             }
             SPDLOG_DEBUG("Reading container from file");
             if (sim->container().containerType() == "DSC") {

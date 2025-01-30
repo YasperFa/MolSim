@@ -39,8 +39,7 @@ void ParticleGenerator::generateCuboid(ParticleContainers::ParticleContainer &pa
                 //scale according to temperature
 
                 if (initTemperature != -1) {
-                    double scale = 1;
-                    scale = std::sqrt(initTemperature / m);
+                    double scale = std::sqrt(initTemperature / m);
                     maxwell_vel = maxwellBoltzmannDistributedVelocity(scale, dimensions);
                 }
                 // add maxwell velocity to initial velocity

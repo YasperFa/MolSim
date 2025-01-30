@@ -184,7 +184,7 @@ namespace Calculators {
                     if (neighbourCell == nullptr) {
                         continue;
                     }
-
+                    //ensures that the pair of cells is processed only once
                     if (neighbourCell < &(*itCell)) {
                         continue;
                     }
@@ -268,7 +268,7 @@ namespace Calculators {
                         if (neighbourCell == nullptr) {
                             continue;
                         }
-
+                        //ensures that the pair of cells is processed only once
                         if (neighbourCell < itCell) {
                             continue;
                         }
