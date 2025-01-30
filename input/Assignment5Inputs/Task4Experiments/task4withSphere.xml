@@ -2,7 +2,7 @@
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
-        <writeFrequency>40</writeFrequency>
+        <writeFrequency>50</writeFrequency>
     </output>
     <calculator>
         <calculatorForce>LJC</calculatorForce>
@@ -108,15 +108,17 @@
                 <y>15.6</y>
                 <z>6.6</z>
             </center>
-            <radius>18</radius>
+            <radius>8</radius>
             <initialVelocity>
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
             </initialVelocity>
-            <distance>0.2</distance>
+            <distance>0.5</distance>
             <mass>1.0</mass>
             <type>2</type>
+            <epsilon>2.0</epsilon>
+            <sigma>1.1</sigma>
             <isFixed>1</isFixed>
         </disc>
     </shapes>
