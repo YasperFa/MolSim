@@ -3,7 +3,7 @@
             xsi:noNamespaceSchemaLocation="../src/IO/Input/schema.xsd">
     <output>
         <baseName>VTK</baseName>
-        <writeFrequency>20</writeFrequency>
+        <writeFrequency>100000</writeFrequency>
     </output>
     <calculator>
         <calculatorForce>LJC</calculatorForce>
@@ -16,14 +16,14 @@
             <y>50</y>
             <z>1</z>
         </domainSize>
-        <BoundaryType>
-            <x>false</x>
-            <y>false</y>
-            <z>false</z>
-            <l>false</l>
-            <m>false</m>
-            <k>false</k>
-        </BoundaryType>
+        <boundaryType>
+            <left>outflow</left>
+            <right>outflow</right>
+            <top>outflow</top>
+            <bottom>outflow</bottom>
+            <front>outflow</front>
+            <back>outflow</back>
+        </boundaryType>
     </container>
     <parameters>
         <tEnd>10</tEnd>
@@ -46,4 +46,9 @@
             <mass>1.0</mass>
         </disc>
     </shapes>
+    <temperature>
+        <ThermoType>direct</ThermoType>
+        <initialTemperature>10.0</initialTemperature>
+        <timeSteps>10</timeSteps>
+    </temperature>
 </simulation>

@@ -1,6 +1,6 @@
 \mainpage Molecular Dynamics WS24 - GroupG
-
  
+
 ===
 ## Prerequisites
 To be able to build and run this code, the following tools have to be installed:
@@ -10,9 +10,18 @@ To be able to build and run this code, the following tools have to be installed:
 - libxerces-c-dev
 (-Optional: Doxygen)
 
+---
+## Cluster
+To be able to build and run this code on the cluster, do the following:
+ - module load user_spack
+ - spack install xerces-c
+ - module load xerces-c/3.2.1
+ Note: when compiling use -DBUILD_TESTS=OFF to disable the tests from compiling, otherwise it won't work.
+ For xml input, the 'xsi:noNamespaceSchemaLocation'-path has to be adjusted depending on the directory in which the code is executed
+
+ ---
 ## Building and Running
 1) Create a 'build' directory and switch to the newly created directory:
-
 
         'mkdir build && cd build'
 ---
@@ -50,10 +59,10 @@ The user should ensure they are in the directory where they built the project wi
 4) Running the code: ** values from the command line will be overwritten by the values specified in the xml file if the latter is specified as input file **
 
 
-        './MolSim -i .{INPUT_PATH} -c {CALCULATOR} -p {PARTICLE_CONTAINER} -d {DELTA_T} -e {END_TIME} -o {OUTPUT_WRITER} -l {LOG_LEVEL} -s {DOMAIN_SIZE} -r {CUTOFF_RADIUS} -b {BOUNDARY_CONDITION}
+        './MolSim -i .{INPUT_PATH} -c {CALCULATOR} -p {PARTICLE_CONTAINER} -d {DELTA_T} -e {END_TIME} -o {OUTPUT_WRITER} -l {LOG_LEVEL} -s {DOMAIN_SIZE} -r {CUTOFF_RADIUS} -b {BOUNDARY_CONDITION} -g {GRAVITY}
 or
 
-        './MolSim --input=.{INPUT_PATH} --calculator={CALCULATOR} --particleContainer={PARTICLE_CONTAINER} --deltaT={DELTA_T} -endTime={END_TIME} --output={OUTPUT_WRITER} --logLevel={LOG_LEVEL}' --domainSize={DOMAIN_SIZE} --cutoffRadius={CUTOFF_RADIUS} --boundaryCondition={BOUNDARY_CONDITION}
+        './MolSim --input=.{INPUT_PATH} --calculator={CALCULATOR} --particleContainer={PARTICLE_CONTAINER} --deltaT={DELTA_T} -endTime={END_TIME} --output={OUTPUT_WRITER} --logLevel={LOG_LEVEL}' --domainSize={DOMAIN_SIZE} --cutoffRadius={CUTOFF_RADIUS} --boundaryCondition={BOUNDARY_CONDITION} --g={GRAVITY}
 
 
 Example calls: 
@@ -64,7 +73,7 @@ Example calls:
         './MolSim -i ../input/schema.xml -c Default -o VTK -l debug'
         './MolSim --input=../input/eingabe-sonne.txt --calculator=Default --deltaT=0.014 --endTime=1000 --output=XYZ --logLevel=info --particleContainer=DSC'
         './MolSim -i ../input/cuboid-example.txt -c LJC -o VTK -d 0.0002 -e 5 -p DSC'
-        './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b 0,0,0,1,0,0'
+        './MolSim -i ../input/disc-example.txt -c LJC -o VTK -d 0.00005 -e 10 -p LCC -r 3.0 -s 120,50,1 -b o,o,o,r,o,o'
 
 The output should be in the build directory.    
     
@@ -107,7 +116,9 @@ The output should be in the build directory.
         '{CUTOFF_RADIUS}': The cutoff radius that will be used by the LinkedCellContainer. The argument has to be passed with a positive number
         following the format: '-r {radius}' or '--cutoffRadius {radius}'. If no radius is specified, a default radius of 3 will be used.
 
-        '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error. The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are 0 for ourflow and 1 for reflecting. The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', where boundaryCondition has the following format: {left},{right},{top},{bottom},{front},{back}. If no value is specified, outflow will be used for all boundaries.
+        '{BOUNDARY_CONDITION}': The boundary condition that will be used by the LinkedCellContainer. Setting this when LCC is not selected will cause an error. The boundary condition consists of six values seperated by commas, each of them determines one boundary and possible values are o for outflow, r for reflecting and p for periodic. The argument has to be passed with the following format: '-b {boundaryCondition}' or '--boundaryCondition {boundaryCondition}', where boundaryCondition has the following format: {left},{right},{top},{bottom},{front},{back}. If no value is specified, outflow will be used for all boundaries.
+
+        '{GRAVITY}': The gravitatonal acceleration in y-direction. Passed as a positive or negative double value. If no value is given, the defult value of 0 will be used.
 
 ---
 ## Creating Doxygen Documentation:

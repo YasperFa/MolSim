@@ -9,84 +9,172 @@
 
 #include <array>
 #include <string>
+#include <vector>
 #include "ParticleIdInitializer.h"
+#include <mutex>
 
 class Particle {
-
 private:
- /**
-  * Position of the particle
-  */
- std::array<double, 3> x;
+    mutable std::mutex forceMutex;
+    /**
+     * Position of the particle
+     */
+    std::array<double, 3> x;
 
- /**
-  * Velocity of the particle
-  */
- std::array<double, 3> v;
+    /**
+     * Velocity of the particle
+     */
+    std::array<double, 3> v;
 
- /**
-  * Force effective on this particle
-  */
- std::array<double, 3> f;
+    /**
+     * Force effective on this particle
+     */
+    std::array<double, 3> f;
 
- /**
-  * Force which was effective on this particle
-  */
- std::array<double, 3> old_f;
+    /**
+     * Force which was effective on this particle
+     */
+    std::array<double, 3> old_f;
 
- /**
-  * Mass of this particle
-  */
- double m;
+    /**
+     * Mass of this particle
+     */
+    double m;
 
- /**
-  * Type of the particle. Use it for whatever you want (e.g. to separate
-  * molecules belonging to different bodies, matters, and so on)
-  */
- int type;
+    /**
+     * Type of the particle. Use it for whatever you want (e.g. to separate
+     * molecules belonging to different bodies, matters, and so on)
+     */
+    int type;
 
- /** Id of the particle. New particles are created with ascending id numbers starting with 1.
-  *  Every id is unique. 
-  *  The ids of shadow particles are the negated ids of their corresponding particles in the boundary
- */
+    /** Id of the particle. New particles are created with ascending id numbers starting with 1.
+     *  Every id is unique.
+    */
 
-int id;
+    int id;
+
+    /**Lennard-Jones parameter epsilon */
+    double epsilon;
+
+    /**Lennard-Jones parameter sigma */
+    double sigma;
+
+    /** @brief true if this particle should not move over the course of the simulation */
+    bool isFixed;
+
+    /**
+     * The list of connected particles for membranes
+     */
+    std::vector<std::tuple<long, double, double> > neighbourParticles;
+
+    /**
+     * @brief true if the upward force is supposed to be used on the particle
+     */
+    bool markedForUpwardForce;
 
 public:
- explicit Particle(int type = 0);
+    explicit Particle(int type = 0);
 
- Particle(const Particle &other);
+    Particle(const Particle &other);
 
- Particle(
-     // for visualization, we need always 3 coordinates
-     // -> in case of 2d, we use only the first and the second
-     std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-     int type = 0);
+    Particle(
+        // for visualization, we need always 3 coordinates
+        // -> in case of 2d, we use only the first and the second
+        std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
+        int type = 0, double epsilon_arg = 5, double sigma_arg = 1, bool isFixed = false);
 
- virtual ~Particle();
+    virtual ~Particle();
 
- const std::array<double, 3> &getX() const;
+    const std::array<double, 3> &getX() const;
 
- const std::array<double, 3> &getV() const;
+    const std::array<double, 3> &getV() const;
 
- const std::array<double, 3> &getF() const;
+    const std::array<double, 3> &getF() const;
 
- const std::array<double, 3> &getOldF() const;
+    const std::array<double, 3> &getOldF() const;
 
- int getID() const;
+    double getEpsilon();
 
- double getM() const;
+    double getSigma();
 
- int getType() const;
+    int getID() const;
 
- void setF(const std::array<double, 3> &newF);
- void setOldF(const std::array<double, 3> &newOldF);
- void setX(const std::array<double, 3> &X);
- void setV(const std::array<double, 3> &V);
- bool operator==(Particle &other);
- bool operator==(const Particle &other);
+    double getM() const;
 
- std::string toString() const;
+    int getType() const;
+
+    bool getFixed() const;
+
+    /** Setter for attribute f
+     * This function is safe for parallelization.
+     * @param newF
+     */
+    void setF(const std::array<double, 3> &newF);
+
+    /** Adds a force vector to the current force
+     * This function is safe for parallelization.
+     * @param newF force to be added
+     */
+    void addF(const std::array<double, 3> &newF);
+
+    /** Subtracts a force vector from the current force
+     * This function is safe for parallelization.
+     * @param newF force to be subtracted
+     */
+    void subF(const std::array<double, 3> &newF);
+
+    /** Setter for attribute f
+     * This function is not safe for parallelization.
+     * @param newF
+     */
+    void setF_no_mutex(const std::array<double, 3> &newF);
+
+    /** Adds a force vector to the current force
+     * This function is not safe for parallelization.
+     * @param newF force to be added
+     */
+    void addF_no_mutex(const std::array<double, 3> &newF);
+
+    void setOldF(const std::array<double, 3> &newOldF);
+
+    void setX(const std::array<double, 3> &X);
+
+    void setV(const std::array<double, 3> &V);
+
+    /** Sets attribute isFixed to true */
+    void fixParticle();
+
+    bool operator==(Particle &other);
+
+    bool operator==(const Particle &other);
+
+    Particle &operator=(const Particle &other);
+
+    //Neighbour functions
+
+    // Connection functions for harmonic force
+    /**
+     * @brief Adds a connected particle with the given parameters
+     * @param ptr_diff Difference in memory addresses between this and the connected particle
+     * @param l0 Preferred distance (rest length of the spring)
+     * @param k Spring constant
+     */
+    void addNeighbourParticle(long ptr_diff, double l0, double k);
+
+    /**
+     * @return The list of connected particles
+     */
+    const std::vector<std::tuple<long, double, double> > &getNeighbourParticles() const;
+
+    /** Sets the markedForUpwardForce attribute to true*/
+    void markForUpwardForce();
+
+    /** Getter for attribute markedForUpwardForce
+     * @returns markedForUpwardForce
+    */
+    bool upwardForceMarked() const;
+
+    std::string toString() const;
 };
 
 std::ostream &operator<<(std::ostream &stream, Particle &p);

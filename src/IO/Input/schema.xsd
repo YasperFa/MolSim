@@ -3,10 +3,12 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="output" type="OutputType"/>
-                <xs:element name="calculator" type="CalculatorType" />
+                <xs:element name="calculator" type="CalculatorType"/>
                 <xs:element name="container" type="ContainerType"/>
                 <xs:element name="parameters" type="ParametersType"/>
                 <xs:element name="shapes" type="ShapeType"/>
+                <xs:element name="temperature" type="TempType" minOccurs="0"/>
+                <xs:element name="subSimulations" type="SubSimulationsType" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -21,6 +23,7 @@
     <xs:complexType name="CalculatorType">
         <xs:sequence>
             <xs:element name="calculatorForce" type="xs:string" minOccurs="0"/>
+            <xs:element name="repulsiveOnly" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -29,13 +32,25 @@
             <xs:element name="containerType" type="xs:string"/>
             <xs:element name="cutoffRadius" type="xs:double" minOccurs="0"/>
             <xs:element name="domainSize" type="DoubleVectorType" minOccurs="0"/>
-            <xs:element name="BoundaryType" type="BoolVector" minOccurs="0"/>
+            <xs:element name="boundaryType" type="ConditionVector" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParametersType">
         <xs:sequence>
             <xs:element name="tEnd" type="xs:double" minOccurs="0"/>
             <xs:element name="deltaT" type="xs:double" minOccurs="0"/>
+            <xs:element name="gravity" type="xs:double" minOccurs="0"/>
+            <xs:element name="gravityAxis" type="xs:string" minOccurs="0"/>
+            <xs:element name="parallelVersion2" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="harmonicForce" type="HarmonicForceType" minOccurs="0"/>
+            <xs:element name="specialForce" type="SpecialForceType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HarmonicForceType">
+        <xs:sequence>
+            <xs:element name="harmonicOn" type="xs:boolean" default="false"/>
+            <xs:element name="stiffnessConstant" type="xs:double" default="0.0" minOccurs="0"/>
+            <xs:element name="avgBondLength" type="xs:double" default="0.0" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ShapeType">
@@ -43,7 +58,7 @@
             <xs:element name="cuboid" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="disc" type="DiscType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="particle" type="ParticleType" minOccurs="0" maxOccurs="unbounded"/>
-
+            <xs:element name="membrane" type="CuboidType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="CuboidType">
@@ -54,6 +69,10 @@
             <xs:element name="distance" type="xs:double"/>
             <xs:element name="meanVelocity" type="xs:double"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DiscType">
@@ -63,6 +82,10 @@
             <xs:element name="initialVelocity" type="DoubleVectorType"/>
             <xs:element name="distance" type="xs:double"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ParticleType">
@@ -70,6 +93,19 @@
             <xs:element name="position" type="DoubleVectorType"/>
             <xs:element name="velocity" type="DoubleVectorType"/>
             <xs:element name="mass" type="xs:double"/>
+            <xs:element name="type" type="xs:int" minOccurs="0"/>
+            <xs:element name="epsilon" type="xs:double" minOccurs="0"/>
+            <xs:element name="sigma" type="xs:double" minOccurs="0"/>
+            <xs:element name="isFixed" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TempType">
+        <xs:sequence>
+            <xs:element name="ThermoType" type="xs:string"/>
+            <xs:element name="initialTemperature" type="xs:double"/>
+            <xs:element name="timeSteps" type="xs:int"/>
+            <xs:element name="targetTemperature" type="xs:double" minOccurs="0"/>
+            <xs:element name="maxDeltaTemperature" type="xs:double" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="DoubleVectorType">
@@ -79,14 +115,14 @@
             <xs:element name="z" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="BoolVector">
+    <xs:complexType name="ConditionVector">
         <xs:sequence>
-            <xs:element name="x" type="xs:boolean"/>
-            <xs:element name="y" type="xs:boolean"/>
-            <xs:element name="z" type="xs:boolean"/>
-            <xs:element name="l" type="xs:boolean"/>
-            <xs:element name="m" type="xs:boolean"/>
-            <xs:element name="k" type="xs:boolean"/>
+            <xs:element name="left" type="ConditionType"/>
+            <xs:element name="right" type="ConditionType"/>
+            <xs:element name="top" type="ConditionType"/>
+            <xs:element name="bottom" type="ConditionType"/>
+            <xs:element name="front" type="ConditionType"/>
+            <xs:element name="back" type="ConditionType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -97,4 +133,47 @@
             <xs:element name="z" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
+    <xs:simpleType name="ConditionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="outflow"/>
+            <xs:enumeration value="reflecting"/>
+            <xs:enumeration value="periodic"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="SubSimulationsType">
+        <xs:sequence>
+            <xs:element name="subSimulation" type="SubSimulationType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SubSimulationType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="inputFile" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UpwardForceMarkType">
+        <xs:sequence>
+            <xs:element name="coordinates" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="x" type="xs:double"/>
+                        <xs:element name="y" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SpecialForceType">
+        <xs:sequence>
+            <xs:element name="upwardForce" type="xs:double" minOccurs="1"/>
+            <xs:element name="forceAxis" type="xs:string" minOccurs="1"/>
+            <xs:element name="activeTimeSteps" type="xs:int" minOccurs="1"/>
+            <xs:element name="markedParticles" type="UpwardForceMarkType" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

@@ -21,7 +21,10 @@ namespace ParticleContainers {
   * @brief A vector to store Cell objects.
   */
   std::vector<Cell> cells;
-
+  /**
+   * @brief A vector to store iteration orders.
+   */
+  std::vector<std::vector<Cell*>> iterationOrders;
   /**
    * @brief An array of size 3 to save the domain size. The size is set to 3 to allow 3D simulation.
    */
@@ -73,12 +76,16 @@ namespace ParticleContainers {
  public:
   /**
    * @brief Constructor for a new Linked Cell Container
-   * BOUNDARIES FROM TASK 3 HAS TO BE ADDED!!!
    * @param domainSize size of the domain that will be used for the simulation
    * @param cutoff cut off radius for the simulation
+   * @param version2 whether or not to use parallelization version 2 (if false: use version 1)
    */
-  LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff);
+  LinkedCellContainer(const std::array<double, 3> &domainSize, const double cutoff, const bool version2);
 
+  /**
+   * indicates whether version 2 of parallelization is enabled
+   */
+  const bool version2;
   /**
    * @brief Add the particle passed in to the container.
    * @param particle is the particle to be added.
@@ -166,7 +173,7 @@ namespace ParticleContainers {
    *
    * @return a vector containing the cells
    */
-  std::vector<Cell> getCells() const;
+  std::vector<Cell> & getCells();
 
   /**
    *
@@ -191,7 +198,11 @@ namespace ParticleContainers {
    * @return a vector containing references to the halo cells.
    */
   std::vector<std::reference_wrapper<Cell>> getHaloCells();
-
+  /**
+   *
+   * @return a vector containing iteration orders.
+   */
+  std::vector<std::vector<Cell*>> getIterationOrders();
   /**
    * @brief Getter for the cutoff radius.
    * @return cutoff radius
@@ -236,10 +247,10 @@ namespace ParticleContainers {
    * @returns index of the cell in the cells vector
    */
   int cellIndex(int x, int y, int z) const;
-
   /**
- * @brief Remove particles that are contained in halo cells from the particle container.
- */
-  void deleteHaloParticles();
+   * @brief initialize parallelV2 iteration*/
+  void initParallelV2();
+
+
  };
 }

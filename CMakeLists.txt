@@ -5,7 +5,7 @@ project(PSEMolDyn_GroupG VERSION 0.0.1)
 
 # let ccmake and cmake-gui offer the default build type options
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
-
+find_package(XercesC REQUIRED)
 # testing is enabled by default
 option(BUILD_TESTS "Build the tests" ON)
 # build tests only if enabled
@@ -51,11 +51,16 @@ target_include_directories(MolSim
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+#OpenMP
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(MolSim PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 target_link_libraries(MolSim
         # stuff that is used in headers and source files
         PUBLIC
-        xerces-c
+        XercesC::XercesC
         cxxopts
 )
 

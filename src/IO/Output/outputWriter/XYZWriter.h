@@ -37,7 +37,8 @@ namespace outputWriters {
          * @param filename of file where output should be written
          * @param iteration
          */
-        void plotParticles(int iteration, ParticleContainers::ParticleContainer &particleContainer, const std::string &filename) override;
+        void plotParticles(int iteration, ParticleContainers::ParticleContainer& particleContainer, const std::string& filename, const std::string input,
+            double &endTime, double& gravity, double &deltaT)  override;
         std::string toString() override;
 
     };

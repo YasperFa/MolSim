@@ -3,8 +3,10 @@
 //
 
 #pragma once
-#include "Cuboid.h"
-#include "Disc.h"
+#include "Shapes/Cuboid.h"
+#include "Shapes/Disc.h"
+#include "Containers/ParticleContainer.h"
+
 /**class that generates particles from a given cuboid or disc */
 class ParticleGenerator {
 
@@ -15,14 +17,29 @@ public:
    * @brief generates particles from a given cuboid
    * @param particles empty Particle container where particles will be inserted
    * @param cuboid Cuboid that defines parameters
+   * @param type defines the type of the particles
+   * @param epsilon
+   * @param sigma
+   * @param initTemperature initial temperature
+   * @param isFixed
    */
-   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid);
+   static void generateCuboid(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
+      isFixed =false, bool is3d = false);
+
+   static void generateMembrane(ParticleContainers::ParticleContainer &particles, Cuboid& cuboid, int type, double epsilon, double sigma, double initTemperature, bool
+      isFixed =false, bool is3d = false, double stiffnessConstant = 0.0);
    /**
    * @brief generates particles from a given disc
+   * If it is a 3d simulation, a sphere will be created instead
    * @param particles empty Particle container where particles will be inserted
    * @param disc Disc that defines parameters
+   * @param type defines the type of the particles
+   * @param epsilon
+   * @param sigma
+   * @param isFixed
    */
-   static void generateDisc(ParticleContainers::ParticleContainer &particles, Disc& disc);
+   static void generateDisc(ParticleContainers::ParticleContainer &particles, Disc& disc, int type, double epsilon, double sigma, double initTemperature, bool
+      isFixed =false, bool is3d = false);
 };
 
 
