@@ -122,9 +122,7 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
              cxxopts::value<double>()->default_value("0.0"))
             ("bondLength", "Set the average bond length for harmonic force",
              cxxopts::value<double>()->default_value("0.0"))
-            ("repulsive", "Set the force calulation to repulsive only", cxxopts::value<bool>()->default_value("false"))
-            ("nonNeighbours", "Set the force calculation to non neighbouring particles only",
-             cxxopts::value<bool>()->default_value("false"));
+            ("repulsive", "Set the force calulation to repulsive only", cxxopts::value<bool>()->default_value("false"));
 
 
     auto parseResult = options.parse(argc, argv);
@@ -315,7 +313,6 @@ bool MolSim::parseArguments(int argc, char *argv[], std::string &inputFile, doub
     avgBondLenght = parseResult["bondLength"].as<double>();
 
     bool repulsiveOnly = parseResult["repulsive"].as<bool>();
-    bool nonNeighboursOnly = parseResult["nonNeighbours"].as<bool>();
 
 
     //set the output writer

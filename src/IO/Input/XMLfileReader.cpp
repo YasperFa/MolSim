@@ -247,8 +247,8 @@ int XMLfileReader::parseXMLFromFile(std::ifstream &fileStream, double &deltaT, d
             }
 
 
-            std::array<double, 3> cuboidX;
-            double cuboidH;
+            std::array<double, 3> cuboidX = {0, 0, 0};
+            double cuboidH = 0;
 
 
             for (int i = 0; i < (int) sim->shapes().cuboid().size(); i++) {
