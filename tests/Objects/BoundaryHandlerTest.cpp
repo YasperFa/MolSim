@@ -248,6 +248,7 @@ for (int i = 1; i < 5; i++) {
 
 }
 
+/**Tests function handlePeriodicMoveParticles for periodic boundaries */
 TEST(BoundaryHandlerTest, conditionPeriodicMoveParticles) {
 ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({4, 4, 1}, 1, false);
 BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::OUTFLOW, BoundaryHandler::bCondition::OUTFLOW}, testContainer);
@@ -286,7 +287,7 @@ comp = {3, 3, 0};
 EXPECT_EQ(comp, testContainer.mapParticleToCell(testContainer.getParticles().at(2))->getPosition());
 }
 
-
+/**Tests function handlePeriodicAddForces for periodic boundaries */
 TEST(BoundaryHandlerTest, conditionPeriodicAddForces){
      ParticleContainers::LinkedCellContainer testContainer = ParticleContainers::LinkedCellContainer({30, 30, 30}, 10, false);
      BoundaryHandler handler = BoundaryHandler({BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC, BoundaryHandler::bCondition::PERIODIC}, testContainer);
